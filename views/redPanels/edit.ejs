@@ -1,0 +1,54 @@
+<%- include("../partials/header") %>
+
+
+<div class="main-body">
+
+    <div class="element">
+
+        <h1>Edit Red Panel <%= redpanel.panel %> of <%= redpanel.section.name %></h1>
+        <form action="/sections/<%= redpanel.section.id %>/redPanels/<%= redpanel._id%>?_method=PUT" method="POST">
+
+            <div class="form-row">
+                <label for="">Panel name:</label>
+                <!-- <select name="redPanel[panel]" id="Panel" >
+                    <option value="">Select</option>
+                    <option value="58E">58E</option>
+                    <option value="59E">59E</option>
+                    <option value="60E">60E</option>
+                </select> -->
+                <input type="text" name="redPanel[panel]" value="<%= redpanel.panel %>" required>
+            </div>
+
+            <div class="form-row">
+                <label for="">TARP red trigger(s):</label>
+                <input type="text" name=redPanel[trigger] value="<%= redpanel.trigger %>" required>
+            </div>
+
+            <div class="form-row">
+                <label for="reportNumber">Report number:</label>
+                <input id="reportNumber" name="redPanel[reportNumber]" type="text" value="<%= redpanel.reportNumber %>" required>
+            </div>
+
+            <div class="form-row">
+                <label for="">Date panel declared:</label>
+                <input name=redPanel[declaredDate] type="datetime-local" required>
+            </div>
+
+            <div class="form-row">
+                <label for="">Date report issued:</label>
+                <input name=redPanel[issueDate] type="date" required>
+            </div>
+
+            <div class="form-row">
+                <label for="">Attach report:</label>
+                <input name=redPanel[issuedReport] type="file" accept=".pdf" required>
+            </div>
+
+            <button type="submit">Update!</button>
+        </form>
+    </div>
+</div>
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

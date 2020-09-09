@@ -1,0 +1,49 @@
+<%- include("../partials/header") %>
+ <div class="main-body">
+    <!-- <p class="header"><span>Reporting <%= section.name %> 's blast</p> -->
+
+    <div class="element">
+
+        <h2><span><%= section.name %>'s Supported Panels</h2>
+
+        <form action="/sections/<%= section._id %>/production/support" method="post">
+
+            <div>
+                <input type="radio" name="blast[shift]" id="" checked>
+                <label for="">Morning Shift</label>
+                <input type="radio" name="blast[shift]" id="">
+                <label for="">Afternoon Shift</label>
+                <input type="radio" name="blast[shift]" id="">
+                <label for="">Night Shift</label>
+            </div>
+
+            <br>
+
+            <table class="form-row">
+                <tr class="inputs">
+                    <td class="form-row">
+                        <input type="text" id="panel" name=support[1][panel] placeholder="panel_name" required>
+                    </td>
+                    <td class="form-row">
+                        <input type="number" id="quantity" name=support[1][quantity] placeholder="metres" required>
+                    </td>
+                    <td class="form-row">
+                        <input type="button" id="add" onClick="addAnotherSupport()" value="+ panel">
+
+                    </td>
+                </tr>
+            </table>
+
+            <p>
+                <button type="submit" id="submit">Done!</button>
+            </p>
+
+        </form>
+    </div>
+
+        
+ </div>
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

@@ -1,0 +1,61 @@
+<%- include("../partials/header") %>
+
+
+<div class="main-body">
+
+    <div class="element">
+
+        <h1>Add New Red Panel for <%= section.name %></h1>
+        <form action="/sections/<%= section._id %>/redPanels" method="POST" enctype="multipart/form-data">
+            <!-- <div class="form-row">
+                <label for="">Section:</label>
+                <select required name="redPanel[section]" id="Section">
+                    <option value="">Select</option>
+                    <option value="MKA">MKA</option>
+                    <option value="MKB">MKB</option>
+                    <option value="MKC">MKC</option>
+                </select>
+            </div> -->
+
+            <div class="form-row">
+                <label for="">Panel:</label>
+                <select name="redPanel[panel]" id="Panel" required>
+                    <option value="">Select</option>
+                    <option value="58E">58E</option>
+                    <option value="59E">59E</option>
+                    <option value="60E">60E</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <label for="">TARP red trigger(s):</label>
+                <input type="text" name=redPanel[trigger] required>
+            </div>
+            <div class="form-row">
+                <label for="">Report number:</label>
+                <input name="redPanel[reportNumber]" type="text" required>
+            </div>
+
+            <div class="form-row">
+                <label for="">Date panel declared:</label>
+                <input name=redPanel[declaredDate] type="datetime-local" required>
+            </div>
+
+            <div class="form-row">
+                <label for="">Date report issued:</label>
+                <input name=redPanel[issueDate] type="datetime-local" required>
+            </div>
+
+
+            <div class="form-row">
+                <label for="">Attach report:</label>
+                <input name=redPanel[issuedReport] type="file" accept=".pdf" required>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

@@ -1,0 +1,27 @@
+<%- include("../partials/header") %>
+
+ <div class="main-body">
+
+    <div class="element">
+        <div>
+            <h1>TARP Red Panel <%= redPanel.panel %> of: <%= redPanel.section.name %></h1>
+            <p>Trigger(s) - <%= redPanel.trigger %></p>
+            <p>Report number - <%= redPanel.reportNumber %></p>
+            <p>Date report issued - <%= redPanel.issueDate.toDateString() %></p>
+            <p>Download report - <%= redPanel.issuedReport %></p>
+         </div>
+
+         <a href="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/edit">Edit</a>
+         <br>
+         <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>?_method=DELETE" method="post">
+            <!-- <a href="#">Close</a> -->
+            <button type="submit">Close</button>
+         </form>
+         
+    </div>  
+    
+ </div>
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

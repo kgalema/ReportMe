@@ -1,0 +1,25 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+
+    <div class="element">
+
+        <h3>Select A Section</h3>
+        
+        <div>
+            <% sections.forEach(function(section){ %>
+                <a href="/sections/<%= section._id %>"><%= section.name %></a> |
+            <% }) %>
+        </div>
+
+        <br>
+
+        <a class="button" href="/sections/new">Add New Section</a>
+
+    </div>
+
+</div>
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

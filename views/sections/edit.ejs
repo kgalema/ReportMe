@@ -1,0 +1,28 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+
+    
+        <h2>Edit <%= section.name %> Section</h2>
+    
+            <form action="/sections/<%= section._id %>?_method=PUT" method="post">
+                <div class="form-row">
+                    <label for="section">Section:</label>
+                    <input id="section" type="text" name="section[name]" value="<%= section.name %>">
+                </div>
+
+                <div class="form-row">
+                    <label for="mineOverseer">Mine Overseer:</label>
+                    <input id="mineOverseer" type="text" name="section[mineOverseer]" value="<%= section.mineOverseer %>">
+                </div>
+                <input type="submit" value="Update!">
+                <!-- <button type="submit">Add</button> -->
+            </form>
+        
+    </div>
+</div>
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

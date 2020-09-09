@@ -1,0 +1,63 @@
+<%- include("../partials/header") %>
+
+ <div class="main-body">
+
+    <div class="element">
+        
+        <h2>TARP Red Panels</h2>
+        <p>Total number of active TARP red panels: <%= redpanels.length %></p>
+
+        <table>
+            <colgroup>
+                <col style="background-color: grey; width: 20px;" span="<%= 6 %>">
+            </colgroup>
+            <tr>
+                <th>Panel</th>
+                <th>Section</th>
+                <th>Trigger</th>
+                <th>Date Panel Declared</th>
+                <th>Date Report Issued</th>
+                <th>Days Open</th>
+            </tr>
+
+            <% redpanels.forEach(function(red){ %>
+            
+                    <tr>
+                        <td>
+                        <a href="/redPanel/<%= red._id %>"><%= red.panel %></a> 
+                        </td>
+            
+                        <td>
+                            <%= red.section.name %>
+                        </td>
+                    
+                        <td>
+                            <%= red.trigger %>
+                        </td>
+
+                        <td>
+                            <%= red.declaredDate.toDateString() %>
+                        </td>
+                    
+                        <td>
+                            <%= red.issueDate.toDateString() %>
+                        </td>
+
+                        <td>
+                            <p> <%= moment(red.issueDate).fromNow() %> </p>
+                        </td>
+                    </tr>
+            <% }) %>
+
+        </table>
+
+        <p>
+            <a class="button" href="/sections">Add New Red Panel</a>
+        </p>
+    </div>
+ </div>
+
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

@@ -1,0 +1,52 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <div class="heading">
+            <h2>Production Report</h2>
+            <div class="myBtnContainer">
+                <button>Morning Shift</button>
+                <button>Afternoon Shift</button>
+                <button>Night Shift</button>
+            </div>
+            <!-- <p> <span><a href="#">Night</a></span> | <span><a href="#">Day</a></span> | <span><a href="#">Afternoon</a></span></p> -->
+        </div>
+
+        <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Section</th>
+                    <th>TARP Red Panels</th>
+                    <th>Blasted Panels</th>
+                    <th>Cleaned Panels</th>
+                    <th>Supported Panels</th>
+                </tr>
+            </thead>
+            <tbody>
+        <% sections.forEach(function(e){ %>
+                
+                    <tr>
+                        <td>
+                            <a href="/sections/<%= e._id %>/production/show">
+                                <%= e.name %>
+                            </a>
+                        </td>
+                        <td><%= e.redPanels.length %></td>
+                        <td><%= e.blastedPanels.length %></td>
+                        <td><%= e.cleanedPanels.length %></td>
+                        <td><%= e.supportedPanels.length %></td>
+                    </tr>
+
+        <% }) %>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

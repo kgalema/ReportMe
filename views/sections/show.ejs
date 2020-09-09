@@ -1,0 +1,35 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <h1><%= section.name %></h1>
+        
+            <div class="show-section-1">
+                <p>
+                    Mine Overseer: <%= section.mineOverseer %>
+                 </p>
+                 <p>
+                     Active Red Panels: <%= section.redPanels.length %>
+                 </p>
+            </div>
+                
+            
+            <div class="show-section">
+                <a class="button" href="/sections/<%= section._id %>/production/new">Production Report</a>
+                <a class="button" href="/sections/<%= section._id %>/redPanel/new">Add New Red Panel</a>
+            </div>
+
+            <div class="admin">
+                <a href="/sections/<%= section._id %>/edit">Edit</a>
+                <form action="/sections/<%= section._id %>?_method=DELETE" method="post">
+                    <button  id="delete" type="submit">Delete</button>
+                </form>
+            </div>
+                
+            
+    </div>
+</div>
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %> 

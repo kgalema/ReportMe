@@ -1,0 +1,39 @@
+<%- include("partials/header") %>
+
+
+    <div class="main-body">
+        <div class="element">
+        <h3>Gain Access!</h3>
+            <form method="GET" action="">
+                <table class="form-row">
+                    <tr>
+                        <td class="form-row">
+                            <label for="username">Username:</label>
+                        </td>
+                        <td class="form-row">
+                            <input type="text" placeholder="my_username">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="password">Password:</label>
+                        </td>
+                        <td class="form-row">
+                            <input type="password" placeholder="my_password">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row"  colspan="2">
+                            <input style="width: 100%;" type="submit" value="Log In!">
+                        </td>
+                    </tr>
+                </table>
+                <a href="#">Register New Account</a>
+                <a href="#">Forgotten password?</a>
+            </form>
+        </div>
+    </div>
+
+    <%- include("partials/sidebar") %>
+    <%- include("partials/footer") %>
+

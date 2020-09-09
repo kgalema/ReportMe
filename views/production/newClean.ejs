@@ -1,0 +1,54 @@
+<%- include("../partials/header") %>
+ <div class="main-body">
+    <!-- <p class="header"><span>Reporting <%= section.name %> 's blast</p> -->
+    <div class="element">
+
+        <h2><span><%= section.name %>'s Cleaned Panels</h2>
+
+        <form action="/sections/<%= section._id %>/production/clean" method="post">
+            
+            <div>
+                <input type="radio" name="blast[shift]" id="" checked>
+                <label for="">Morning Shift</label>
+                <input type="radio" name="blast[shift]" id="">
+                <label for="">Afternoon Shift</label>
+                <input type="radio" name="blast[shift]" id="">
+                <label for="">Night Shift</label>
+            </div>
+
+            <br>
+
+            <table class="form-row">
+                <tr class="inputs">
+                    <td class="form-row">
+                        <input type="text" id="panel" name=clean[1][panel] placeholder="panel_name" required>
+                    </td>
+                    <td class="form-row">
+                        <input type="number" id="quantity" name=clean[1][quantity] placeholder="metres" required>
+                    </td>
+                    <td class="form-row">
+                        <input type="number" id="advance" name=clean[1][advance] placeholder="advance" step="0.1" required>
+                    </td>
+                    <td class="form-row">
+                        <input type="button" id="add" onClick="addAnotherClean()" value="+ panel">
+                    </td>
+                </tr>
+            </table>
+      
+            <p>
+                <button type="submit" id="submit">Submit</button>
+            </p>
+
+            <br>
+
+            <a href="/sections/<%= section._id %>/production/newSupport">Report Supported Panels</a>
+
+        </form>
+    </div>
+
+        
+ </div>
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

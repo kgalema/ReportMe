@@ -1,0 +1,53 @@
+<%- include("../partials/header") %>
+ <div class="main-body">
+    <!-- <p class="header"><span>Reporting <%= section.name %> 's blast</p> -->
+
+    <div class="element">
+
+        <h2><span><%= section.name %>'s Blasted Panels</h2>
+
+        <form action="/sections/<%= section._id %>/production" method="post">
+
+            <div>
+                <input type="radio" name="blast[shift]" id="" checked>
+                <label for="">Morning Shift</label>
+            </div>
+
+            <br>
+
+            <table class="form-row">
+                <tr id="inputs">
+                    <td class="form-row">
+                        <input type="text" id="panel" name=blast[1][panel] placeholder="panel_name" required>
+                    </td>
+                    <td class="form-row" >
+                        <input type="number" id="quantity" name=blast[1][quantity] placeholder="metres" required>
+                    </td>
+                    <td class="form-row">
+                        <input type="button" id="addPanel" value="+ panel" onClick="addAnotherField()">
+                    </td>
+                </tr>
+            </table>
+                     
+                <p>
+                    <button type="submit" id="submit">Submit</button>
+                </p>
+
+        </form>
+
+        <div>
+            <a href="/sections/<%= section._id %>/production/newClean">Report Cleaned Panels</a>
+        </div>
+        <div>
+            <a href="/sections/<%= section._id %>/production/newSupport">Report Supported Panels</a>
+        </div>
+
+    </div>
+
+        
+ </div>
+ 
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

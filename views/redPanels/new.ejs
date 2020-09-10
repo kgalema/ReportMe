@@ -6,16 +6,7 @@
     <div class="element">
 
         <h1>Add New Red Panel for <%= section.name %></h1>
-        <form action="/sections/<%= section._id %>/redPanels" method="POST" enctype="multipart/form-data">
-            <!-- <div class="form-row">
-                <label for="">Section:</label>
-                <select required name="redPanel[section]" id="Section">
-                    <option value="">Select</option>
-                    <option value="MKA">MKA</option>
-                    <option value="MKB">MKB</option>
-                    <option value="MKC">MKC</option>
-                </select>
-            </div> -->
+        <form action="/sections/<%= section._id %>/redPanels" method="POST">
 
             <div class="form-row">
                 <label for="">Panel:</label>

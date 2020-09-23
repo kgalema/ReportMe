@@ -8,6 +8,7 @@ const cleanSchema = new mongoose.Schema({
 	panel: String,
 	quantity: String,
 	advance: String,
+	shift: String,
 	section: {
 		id: {
 			type: mongoose.Schema.Types.ObjectId,

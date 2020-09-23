@@ -78,13 +78,16 @@ router.post("/sections/:id/production", function(req, res){
 				if(err){
 					console.log(err)
 				} else{
+					// console.log(blasted[0].shift)
 					//add section name and id to blasted panel
 					// console.log(blasted)
 					blasted.forEach(function(b){
 						b.section.id = section._id;
 						b.section.name = section.name;
+						b.shift = blasted[0].shift;
 					})
-					// console.log(blasted)
+					console.log(blasted)
+
 					//save an array of blasted panels
 					blasted.forEach(function(e){
 						e.save()
@@ -123,16 +126,20 @@ router.post("/sections/:id/production/clean", function(req, res){
 				if(err){
 					console.log(err)
 				} else{
+					console.log(cleaned)
 					//add section name and id to cleaned panel
 					cleaned.forEach(function(b){
 						b.section.id = section._id;
 						b.section.name = section.name;
+						b.shift = cleaned[0].shift;
 					})
 
 					//save an array of cleaned panels
 					cleaned.forEach(function(e){
 						e.save()
 					})
+
+					console.log(cleaned)
 					
 					//associated cleaned panels with a section
 					cleaned.forEach(function(e){
@@ -163,16 +170,20 @@ router.post("/sections/:id/production/support", function(req, res){
 				if(err){
 					console.log(err)
 				} else{
+					console.log(supported)
 					//add section name and id to supported panel
 					supported.forEach(function(b){
 						b.section.id = section._id;
 						b.section.name = section.name;
+						b.shift = supported[0].shift;
 					})
 
 					//save an array of supported panels
 					supported.forEach(function(e){
 						e.save()
 					})
+
+					console.log(supported)
 					
 					//associated supported panels with a section
 					supported.forEach(function(e){

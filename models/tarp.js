@@ -8,7 +8,6 @@ const redpanelSchema = new mongoose.Schema({
 	trigger: String,
 	reportNumber: String,
 	issueDate: {type: Date},
-	issuedReport: {},
 	declaredDate: {type: Date},
 	created: {type: Date, default: Date.now},
 	section: {

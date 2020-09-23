@@ -7,6 +7,7 @@ const mongoose = require("mongoose")
 const supportSchema = new mongoose.Schema({
 	panel: String,
 	quantity: String,
+	shift: String,
 	section: {
 		id: {
 			type: mongoose.Schema.Types.ObjectId,

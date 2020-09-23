@@ -8,12 +8,12 @@
         <form action="/sections/<%= section._id %>/production/clean" method="post">
             
             <div>
-                <input type="radio" name="blast[shift]" id="" checked>
-                <label for="">Morning Shift</label>
-                <input type="radio" name="blast[shift]" id="">
-                <label for="">Afternoon Shift</label>
-                <input type="radio" name="blast[shift]" id="">
-                <label for="">Night Shift</label>
+                <input type="radio" name="clean[1][shift]" id="morning" value="morning" required>
+                <label for="morning">Morning Shift</label>
+                <input type="radio" name="clean[1][shift]" id="afternoon" value="afternoon">
+                <label for="afternoon">Afternoon Shift</label>
+                <input type="radio" name="clean[1][shift]" id="night" value="night">
+                <label for="night">Night Shift</label>
             </div>
 
             <br>

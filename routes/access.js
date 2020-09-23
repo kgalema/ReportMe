@@ -5,11 +5,13 @@ const router  = express.Router()
 
 // REGISTER ROUTES
 
-// LOG IN ROUTES
+// Log in routes
 router.get("/login", function(req, res){
 	res.render("login")
 })
 
+
+// Register routes
 router.get("/register", function(req, res){
 	res.render("register")
 })

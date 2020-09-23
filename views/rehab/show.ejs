@@ -4,7 +4,7 @@
 
     <div class="element">
         <div>
-            <h1>TARP Red Panel <%= redPanel.panel %> of: <%= redPanel.section.name %></h1>
+            <h1>TARP Red Panel <%= redPanel.panel %> at <%= redPanel.section %></h1>
             <p>Trigger(s) - <%= redPanel.trigger %></p>
             <p>Report number - <%= redPanel.reportNumber %></p>
             <p>Date report issued - <%= redPanel.issueDate.toDateString() %></p>
@@ -13,8 +13,8 @@
 
          <a href="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/edit">Edit</a>
          <br>
-         <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>?_method=DELETE" method="POST">
-            <button type="submit">Close!</button>
+         <form action="/sections/<%= redPanel.sectionid %>/redPanels/<%= redPanel._id %>?_method=DELETE" method="POST">
+            <button type="submit">Delete!</button>
          </form>
          <!-- <form action="/sections/<%= redPanel.section.id %>/rehabs/<%= redPanel._id %>/now_rehabed" action="" method="get">
             <button type="submit">Rehabilitated!</button>

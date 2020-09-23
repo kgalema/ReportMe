@@ -14,7 +14,7 @@ const redPanelsRoutes  = require("./routes/redPanels")
 const sectionsRoutes   = require("./routes/sections")
 const productionRoutes   = require("./routes/production")
 const accessRoutes   = require("./routes/access")
-
+const rehabilitated = require("./routes/rehabilitated")
 
 
 
@@ -61,6 +61,7 @@ app.use(redPanelsRoutes)
 app.use(sectionsRoutes)
 app.use(productionRoutes)
 app.use(accessRoutes)
+app.use(rehabilitated)
 
 
 let port = process.env.PORT;

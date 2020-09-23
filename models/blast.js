@@ -7,6 +7,7 @@ const mongoose = require("mongoose")
 const blastSchema = new mongoose.Schema({
 	panel: String,
 	quantity: String,
+	shift: String,
 	section: {
 		id: {
 			type: mongoose.Schema.Types.ObjectId,

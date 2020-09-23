@@ -1,7 +1,9 @@
 const express = require("express")
+const Rehab = require("../models/rehab")
 const router  = express.Router()
 const Section = require("../models/section")
 const Redpanel = require("../models/tarp")
+
 
 
 
@@ -46,6 +48,7 @@ router.post("/sections/:id/redPanels", function(req, res){
 				if(err){
 					console.log(err)
 				} else{
+					console.log(req.body.redPanel)
 					//add section and section id to repanel
 					redpanel.section.id = section._id
 					redpanel.section.name = section.name
@@ -53,14 +56,13 @@ router.post("/sections/:id/redPanels", function(req, res){
 					redpanel.save()
 					section.redPanels.push(redpanel)
 					section.save()
-					// console.log(section)
+					// connsole.log(section)
 					//redirect to sections show page
 					res.redirect("/sections/" + section._id)
 				}
 			})
 		}
 	})
-	
 })
 
 // 4. Show route - shows info about one specific redpanel
@@ -103,9 +105,25 @@ router.delete("/sections/:id/redPanels/:redpanel_id", function(req, res){
 		if(err){
 			res.redirect("back")
 		} else {
+			console.log(req.params.redpanel_id)
 			res.redirect("/redPanel")
 		}
 	})
+	// Redpanel.findById(req.params.redpanel_id, function(err, found){
+	// 	if(err){
+	// 		res.redirect("back")
+	// 	} else {
+	// 		console.log(found);
+	// 		Rehab.create(found, function(err, rehabed){
+	// 			if(err){
+	// 				console.log(err);
+	// 				res.redirect("back")
+	// 			} else {
+	// 				res.redirect("/redPanel")
+	// 			}
+	// 		} )
+	// 	}
+	// })
 })
 
 

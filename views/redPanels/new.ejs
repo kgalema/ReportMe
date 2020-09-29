@@ -7,7 +7,7 @@
 
         <h3>Add New Red Panel for <%= section.name %></h3>
 
-        <form action="/sections/<%= section._id %>/redPanels" method="POST">
+        <form action="/sections/<%= section._id %>/redPanels" enctype="multipart/form-data" method="POST">
             <table class="form-row">
                 <tr>
                     <td class="form-row">
@@ -27,7 +27,7 @@
                         <label for="">TARP red trigger(s):</label>
                     </td>
                     <td class="form-row">
-                        <input type="text" name=redPanel[trigger] required>
+                        <input type="text" name="redPanel[trigger]" required>
                     </td>
                 </tr>
                 <tr>
@@ -43,7 +43,7 @@
                         <label for="">Date panel declared:</label>
                     </td>
                     <td class="form-row">
-                        <input name=redPanel[declaredDate] type="datetime-local" required>
+                        <input name="redPanel[declaredDate]" type="datetime-local" required>
                     </td>
                 </tr>
                 <tr>
@@ -51,17 +51,17 @@
                         <label for="">Date report issued:</label>
                     </td>
                     <td class="form-row">
-                        <input name=redPanel[issueDate] type="datetime-local" required>
+                        <input name="redPanel[issueDate]" type="datetime-local" required>
                     </td>
                 </tr>
-                <!-- <tr>
+                <tr>
                     <td class="form-row">
                         <label for="">Attach report:</label>
                     </td>
                     <td class="form-row">
-                        <input name=redPanel[issuedReport] type="file" accept=".pdf" required>
+                        <input name="issuedReport" type="file" accept=".pdf" required>
                     </td>
-                </tr> -->
+                </tr>
                 <tr>
                     <td class="form-row" colspan="2">
                         <button style="width: 100%;" type="submit">Submit</button>

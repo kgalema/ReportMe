@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express          = require("express")
 const app              = express()
 const bodyParser       = require("body-parser")
@@ -5,9 +6,9 @@ const mongoose         = require("mongoose")
 const expressSanitizer = require("express-sanitizer")
 const methodOverride   = require('method-override')
 const flash 	       = require("connect-flash")
-const multer		   = require("multer");
 const path	           = require("path")
 const GridFsStorage	   = require("multer-gridfs-storage")
+
 
 
 const redPanelsRoutes  = require("./routes/redPanels")
@@ -17,21 +18,6 @@ const accessRoutes   = require("./routes/access")
 const rehabilitated = require("./routes/rehabilitated")
 
 
-
-
-
-
-// Uploading files to the locally in the mongodb database
-const storage =   multer.diskStorage({
-	destination: function (req, file, callback) {
-	  callback(null, './uploads');
-	},
-	filename: function (req, file, callback) {
-	  callback(null, Date.now() + file.originalname);
-	}
-  });
-  
-  var upload = multer({ storage : storage});
 
 // ==================end here====================
 

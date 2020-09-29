@@ -4,6 +4,48 @@ const router  = express.Router()
 const Section = require("../models/section")
 const Redpanel = require("../models/tarp")
 
+const multer	= require("multer");
+
+
+
+// ======Saving files on my local machine=======
+
+const storage =   multer.diskStorage({
+	destination: function (req, file, callback) {
+	  callback(null, './public/uploads');
+	},
+	filename: function (req, file, callback) {
+		console.log(file);
+	  callback(null, Date.now() +"-"+ file.originalname);
+	}
+  });
+  
+  const upload = multer({ storage : storage});
+
+// ======Upload on cloudinary===================
+// const storage = multer.diskStorage({
+// 	filename: function(req, file, callback) {
+// 	  callback(null, Date.now() + file.originalname);
+// 	}
+//   });
+
+// ++++++++++image filter++++++
+//   var imageFilter = function (req, file, cb) {
+// 	  // accept image files only
+// 	  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+// 		  return cb(new Error('Only image files are allowed!'), false);
+// 	  }
+// 	  cb(null, true);
+//   };
+
+//   const upload = multer({ storage: storage})
+  
+  const cloudinary = require('cloudinary');
+  cloudinary.config({ 
+	cloud_name: 'dojtbpbwc', 
+	api_key: process.env.CLOUDINARY_API_KEY, 
+	api_secret: process.env.CLOUDINARY_API_SECRET
+  });
 
 
 
@@ -36,33 +78,63 @@ router.get("/sections/:id/redPanel/new", function(req, res){
 })
 
 // 3. Create route - creates a tarp red panel data
-router.post("/sections/:id/redPanels", function(req, res){
-	// lookup section using ID
-	Section.findById(req.params.id, function(err, section){
-		if(err){
-			console.log(err)
-			res.redirect("/sections")
-		} else {
-			// create new redPanel
-			Redpanel.create(req.body.redPanel, function(err, redpanel){
-				if(err){
-					console.log(err)
-				} else{
-					console.log(req.body.redPanel)
-					//add section and section id to repanel
-					redpanel.section.id = section._id
-					redpanel.section.name = section.name
-					//save redpanel
-					redpanel.save()
-					section.redPanels.push(redpanel)
-					section.save()
-					// connsole.log(section)
-					//redirect to sections show page
-					res.redirect("/sections/" + section._id)
-				}
-			})
-		}
+router.post("/sections/:id/redPanels", upload.single("issuedReport"), function(req, res){
+	cloudinary.v2.uploader.upload(req.file.path, function(err, result){
+		req.body.redPanel.issuedReport = result.secure_url;
+
+		// lookup section using ID
+		Section.findById(req.params.id, function(err, section){
+			if(err){
+				console.log(err)
+				res.redirect("/sections")
+			} else {
+				// create new redPanel
+				Redpanel.create(req.body.redPanel, function(err, redpanel){
+					if(err){
+						console.log(err)
+					} else{
+						console.log(req.body.redPanel)
+						//add section and section id to repanel
+						redpanel.section.id = section._id
+						redpanel.section.name = section.name
+						//save redpanel
+						redpanel.save()
+						section.redPanels.push(redpanel)
+						section.save()
+						// connsole.log(section)
+						//redirect to sections show page
+						res.redirect("/sections/" + section._id)
+					}
+				})
+			}
+		})
 	})
+	// lookup section using ID
+	// Section.findById(req.params.id, function(err, section){
+	// 	if(err){
+	// 		console.log(err)
+	// 		res.redirect("/sections")
+	// 	} else {
+	// 		// create new redPanel
+	// 		Redpanel.create(req.body.redPanel, function(err, redpanel){
+	// 			if(err){
+	// 				console.log(err)
+	// 			} else{
+	// 				console.log(req.body.redPanel)
+	// 				//add section and section id to repanel
+	// 				redpanel.section.id = section._id
+	// 				redpanel.section.name = section.name
+	// 				//save redpanel
+	// 				redpanel.save()
+	// 				section.redPanels.push(redpanel)
+	// 				section.save()
+	// 				// connsole.log(section)
+	// 				//redirect to sections show page
+	// 				res.redirect("/sections/" + section._id)
+	// 			}
+	// 		})
+	// 	}
+	// })
 })
 
 // 4. Show route - shows info about one specific redpanel

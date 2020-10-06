@@ -214,7 +214,16 @@ router.get("/sections/:id/production/show", function(req, res){
 	});
 })
 
-// 5. Edit - shows an edit form form
+// 5.1 Edit - shows an edit form form
+router.get("/sections/:id/production/:redpanel_id/edit", function(req, res){
+	Redpanel.findById(req.params.redpanel_id, function(err, foundRed){
+		if(err){
+			res.redirect("back")
+		} else {
+			res.render("redPanels/edit", {section_id: req.params.id, redpanel: foundRed})
+		}
+	})
+})
 // 6. Update - takes info from edit form and PUTs it into existing data
 
 // 7. Destroy - delete one specific production panel

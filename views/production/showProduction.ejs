@@ -1,53 +1,73 @@
 <%- include("../partials/header") %>
  <div class="main-body">
     <div class=element>
-        <div class="heading1">
-            <h2>Reported Production: <%= reported.name %></h2>
+        <div class="element2">
+            <h2>Reported Production: <%= reported.section.name %></h2>
             <p>
-                Date goes here
+                <%= reported.created.toDateString() %>
             </p>
-            <div class="heading2">
-                <!-- <table>
-                    <thead>
-                        <tr>
-                            <th colspan="2">Blast</th>
-                            <th colspan="3">Clean</th>
-                            <th colspan="2">Support</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Panel(s)</td>
-                            <td>Lenth(m)</td>
-                            <td>Panel(s)</td>
-                            <td>Length(m)</td>
-                            <td>Advance(m)</td>
-                            <td>Panels(s)</td>
-                            <td>Length(m)</td>
-                        </tr>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Panel(s)</th>
+                        <th>Length(m)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Call</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
                         
-                        <% reported.blastedPanels.forEach(function(e){ %>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        <% }) %>
-                        
-                    </tbody>
-                </table> -->
-                <div class="heading3">Blasted</div>
-                <div class="heading3">Cleaned</div>
-                <div class="heading3">Supported</div>
+                    <tr>
+                        <td>Blasted</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Cleaned</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Support</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Prep'd</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Drilled</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Not Clean</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>LHDs</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="admin">
+                <a href="/sections/<%= reported.section.id %>/production/<%= reported._id %>/edit">Edit</a>
             </div>
         </div>
     </div>
  </div>
 
+ 
 
 <%- include("../partials/sidebar") %>
 <%- include("../partials/footer") %>

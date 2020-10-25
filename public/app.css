@@ -55,6 +55,7 @@ body {
  
  td.form-row {
     border: none;
+    padding: 2px;
 }
 
 
@@ -96,11 +97,20 @@ body {
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
+    margin: 5px;
     overflow: auto;
     /* z-index: -1; */
-    margin-top: 5rem;
+    /* margin-top: 5rem; */
     /* margin-bottom: -15rem; */
     /* z-index: 0; */
+}
+
+.element2 {
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 3px;
 }
 
 form {
@@ -233,3 +243,108 @@ a {
     color: white;
     cursor: pointer;
 }
+
+/* =============Production form=========== */
+.collapse {
+    background-color: #2980b9;
+    display: flex;
+    flex-direction: column;
+}
+
+.parent {
+    display: flex;
+    flex-direction: column;
+    /* width: fit-content; */
+    /* width: 360px; */
+	/* margin: 100px auto; */
+	/* box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+	background-color: #f7f7f7; */
+}
+
+form.new-production  {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    /* justify-self: center; */
+    align-self: center;
+}
+
+.shift {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+
+/* =======Production form: The solution====== */
+
+.collapsible {
+    background-color: #777;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+  }
+
+  .active, .collapsible:hover {
+    background-color: #555;
+  }
+
+  .content {
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    /* background-color: #f1f1f1; */
+  }
+
+  .collapsible:after {
+    content: '\002B';
+    color: white;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+  }
+  
+  .active:after {
+    content: "\2212";
+  }
+
+  button.collapsible {
+    margin: 2px 0;
+  }
+
+  /* .stick {
+    position: sticky;
+    top: 0;
+  } */
+
+
+  /* Scroll bars */
+  /* width */
+::-webkit-scrollbar {
+    width: 8px;
+    /* margin: 8px; */
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 1px grey; 
+    border-radius: 10px;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    /* background: red;  */
+    background-color: #777;
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+  }

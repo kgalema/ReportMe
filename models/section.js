@@ -18,26 +18,12 @@ const sectionSchema = new mongoose.Schema({
 		}
 	],
 
-	blastedPanels: [
+	production: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
-			ref: "Blast"
+			ref: "Production"
 		}
 	],
-
-	supportedPanels: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Support"
-		}
-	],
-
-	cleanedPanels: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Clean"
-		}
-	]
 })
 
 const Section = mongoose.model("Section", sectionSchema)

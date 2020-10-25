@@ -6,8 +6,7 @@
             <h2>Production Report</h2>
             <div class="myBtnContainer">
                 <button>Morning Shift</button>
-                <button>Afternoon Shift</button>
-                <button>Night Shift</button>
+                <button>Back Shift</button>
             </div>
             <!-- <p> <span><a href="#">Night</a></span> | <span><a href="#">Day</a></span> | <span><a href="#">Afternoon</a></span></p> -->
         </div>
@@ -24,21 +23,21 @@
                 </tr>
             </thead>
             <tbody>
-        <% sections.forEach(function(e){ %>
+        <!-- forEach goes here -->
                 
                     <tr>
                         <td>
-                            <a href="/sections/<%= e._id %>/production/show">
-                                <%= e.name %>
+                            <a href="#">
+                                Name of Section
                             </a>
                         </td>
-                        <td><%= e.redPanels.length %></td>
-                        <td><%= e.blastedPanels.length %></td>
-                        <td><%= e.cleanedPanels.length %></td>
-                        <td><%= e.supportedPanels.length %></td>
+                        <td>Red Panels</td>
+                        <td>Blasted Panels</td>
+                        <td>Cleaned Panels</td>
+                        <td>Supported Panels</td>
                     </tr>
 
-        <% }) %>
+        <!-- forEach ends here -->
             </tbody>
         </table>
         </div>

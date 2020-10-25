@@ -5,12 +5,22 @@
     <div class="element">
 
         <h3>Select A Section</h3>
+
+        <% if(!sections){ %>
+           <% return %> <p>No Section</p>
+        <% } else { %>
+            <div>
+                <% sections.forEach(function(section){ %>
+                    <a href="/sections/<%= section._id %>"><%= section.name %></a> |
+                <% }) %>
+            </div>
+        <% } %>
         
-        <div>
+        <!-- <div>
             <% sections.forEach(function(section){ %>
                 <a href="/sections/<%= section._id %>"><%= section.name %></a> |
             <% }) %>
-        </div>
+        </div> -->
 
         <br>
 

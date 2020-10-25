@@ -1,7 +1,166 @@
 <%- include("../partials/header") %>
 
+<div class="main-body">
+    <div class="element">
+        <div class="element2">
+            <form class="new-production" action="/sections/<%= production.section.id %>/production" method="post">
+                <h2>Edit <%= production.section.name %>'s Production Report</h2>
+                <h3><%= production.created.toDateString() %></h3>
+                <div class="shift">
+                    <input type="radio" name="production[general][1][shift]" id="morning" value="morning">
+                    <label for="morning">Morning Shift</label>
+                    <input type="radio" name="production[general][1][shift]" id="backshift" value="backshift" required>
+                    <label for="afternoon">Back Shift</label>
+                </div>
 
-<h1>You've hit the edit route</h1>
+                <br>
+    
+                <button type="button" class="collapsible">Blasted Panels Report</button>
+                <div class="content" id="blast-report">
+                    <table class="form-row">
+                        <tbody>
+                            <%= production.blastforEach %>
+                            <tr id="inputs" class="form-row">
+                                <td class="form-row">
+                                    <input type="text" id="panel" name="production[blast][1][panel]" placeholder="panel_name" required>
+                                </td>
+                                <td class="form-row">
+                                    <input type="number" id="length" name="production[blast][1][length]" placeholder="metres" required>
+                                </td>
+                                <td class="form-row">
+                                    <input type="button" id="addPanel" value="+ panel" onClick="addAnotherField(parentNode.parentNode.parentNode.parentNode.parentNode)">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="collapsible" id="clean-report">Cleaned Panels Report</button>
+                <div class="content">
+                    <table class="form-row">
+                        <tbody>
+                            <tr class="form-row">
+                                <td class="form-row">
+                                    <input type="text" id="panel" name="production[clean][1][panel]" placeholder="panel_name" required>
+                                </td>
+                                <td class="form-row">
+                                    <input type="number" id="length" name="production[clean][1][length]" placeholder="metres" required>
+                                </td>
+                                <td class="form-row">
+                                    <input type="number" id="advance" name="production[clean][1][advance]" placeholder="advance" step="0.1" required>
+                                </td>
+                                <td class="form-row">
+                                    <input type="button" id="add" onClick="addAnotherClean(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ panel">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="collapsible" id="support-report">Supported Panels Report</button>
+                <div class="content">
+                    <table class="form-row">
+                        <tbody>
+                            <tr class="form-row">
+                                <td class="form-row">
+                                    <input type="text" id="panel" name="production[support][1][panel]" placeholder="panel_name" required>
+                                </td>
+                                <td class="form-row">
+                                    <input type="number" id="length" name="production[support][1][length]" placeholder="metres" required>
+                                </td>
+                                <td class="form-row">
+                                    <input type="button" id="add" onClick="addAnotherSupport(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ panel">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="collapsible" id="drill-report">Drilled Panels Report</button>
+                <div class="content">
+                    <table class="form-row">
+                        <tbody>
+                            <tr class="form-row">
+                                <td class="form-row">
+                                    <input type="text" id="panel" name="production[drill][1][panel]" placeholder="panel_name" required>
+                                </td>
+                                <td class="form-row">
+                                    <input type="number" id="length" name="production[drill][1][length]" placeholder="metres" required>
+                                </td>
+                                <td class="form-row">
+                                    <input type="button" id="add" onClick="addAnotherDrilled(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ panel">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="collapsible" id="prepared-report">Prepared Panels (Marked)</button>
+                <div class="content">
+                    <table class="form-row">
+                        <tbody>
+                            <tr class="form-row">
+                                <td class="form-row">
+                                    <input type="text" id="panel" name="production[prep][1][panel]" placeholder="panel_name" required>
+                                </td>
+                                <td class="form-row">
+                                    <input type="number" id="length" name="production[prep][1][length]" placeholder="metres" required>
+                                </td>
+                                <td class="form-row">
+                                    <input type="button" id="add" onClick="addAnotherPrepared(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ panel">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="collapsible" id="notClean-report">Not Cleaned Report (Including Backlash)</button>
+                <div class="content">
+                    <table class="form-row">
+                        <tbody>
+                            <tr class="form-row">
+                                <td class="form-row">
+                                    <input type="text" id="panel" name="production[notClean][1][panel]" placeholder="panel_name" required>
+                                </td>
+                                <td class="form-row">
+                                    <input type="number" id="length" name="production[notClean][1][length]" placeholder="metres" required>
+                                </td>
+                                <td class="form-row">
+                                    <input type="button" id="add" onClick="addAnotherNC(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ panel">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="collapsible" id="LHD-report">LHD Report</button>
+                <div class="content">
+                    <table class="form-row">
+                        <tbody>
+                            <tr class="form-row">
+                                <td class="form-row">
+                                    <input type="number" id="coyNumber" name="production[LHD][1][coyNumber]" placeholder="operator_coy_number" required>
+                                </td>
+                                <td class="form-row">
+                                    <input type="text" id="LHDnumber" name="production[LHD][1][LHDnumber]" placeholder="LHD_number" required>
+                                </td>
+                                <td class="form-row">
+                                    <input type="button" id="add" onClick="addAnotherLHD(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ LHD">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="collapsible" id="comments">Comments</button>
+                <div class="content">
+                    <br>
+                    <textarea name="production[general][1][comments]" id="" cols="60" rows="10"></textarea>
+                </div>
+    
+                <br>
+    
+                <button type="submit" id="submit">Submit</button>
+    
+            </form>
+        </div>
+        
+
+    </div>
+</div>
 
 
 <%- include("../partials/sidebar") %>

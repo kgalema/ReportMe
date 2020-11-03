@@ -3,43 +3,96 @@
 <div class="main-body">
     <div class="element">
         <div class="heading">
-            <h2>Production Report</h2>
+            <h2>KDL Production Report</h2>
             <div class="myBtnContainer">
                 <button>Morning Shift</button>
                 <button>Back Shift</button>
             </div>
-            <!-- <p> <span><a href="#">Night</a></span> | <span><a href="#">Day</a></span> | <span><a href="#">Afternoon</a></span></p> -->
         </div>
 
         <div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Section</th>
-                    <th>TARP Red Panels</th>
-                    <th>Blasted Panels</th>
-                    <th>Cleaned Panels</th>
-                    <th>Supported Panels</th>
-                </tr>
-            </thead>
-            <tbody>
-        <!-- forEach goes here -->
-                
+            <table>
+                <thead>
+                    <tr>
+                        <th>Section</th>
+                        <th>Blasted Panels</th>
+                        <th>Cleaned Panels</th>
+                        <th>Supported Panels</th>
+                        <th>Drilled Panels</th>
+                        <th>Prep'd Panels</th>
+                        <th>Not Cleaned Panels</th>
+                        <th>LHDs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% production.forEach(function(e){ %>
                     <tr>
                         <td>
-                            <a href="#">
-                                Name of Section
+                            <a href="/sections/<%= e.section.id %>/production/<%= e._id %>">
+                                <%= e.section.name %>
                             </a>
                         </td>
-                        <td>Red Panels</td>
-                        <td>Blasted Panels</td>
-                        <td>Cleaned Panels</td>
-                        <td>Supported Panels</td>
+
+                        <td>
+                            <a href="#">
+                                <%= e.blast.length %>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#">
+                                <%= e.clean.length %>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#">
+                                <%= e.support.length %>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#">
+                                <%= e.drill.length %>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#">
+                                <%= e.prep.length %>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#">
+                                <%= e.notClean.length %>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#">
+                                <%= e.LHD.length %>
+                            </a>
+                        </td>
+                    </tr>
+                    <% }) %>
+
+                    <tr>
+                        <th>Totals</th>
+                        <td>
+                            <!-- <% production.forEach(function(e){ %>
+
+                            <%= e.blast.filter(b => b.length).map(b => b.length).reduce((a, b) => a+b) %>
+                            <% }) %> -->
+
+                            <!-- <%= production.filter(a => a) %> -->
+
+
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
 
-        <!-- forEach ends here -->
-            </tbody>
-        </table>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

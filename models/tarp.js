@@ -7,10 +7,10 @@ const redpanelSchema = new mongoose.Schema({
 	panel: String,
 	trigger: String,
 	reportNumber: String,
-	issueDate: {type: Date},
-	declaredDate: {type: Date},
-	issuedReport: String,
-	created: {type: Date, default: Date.now},
+	issueDate: { type: Date },
+	declaredDate: { type: Date },
+	issuedReport: {},
+	created: { type: Date, default: Date.now },
 	section: {
 		id: {
 			type: mongoose.Schema.Types.ObjectId,

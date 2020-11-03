@@ -18,6 +18,7 @@ const productionSchema = new mongoose.Schema({
         {
             panel: String,
             length: Number,
+            advance: Number
 
         }
     ],
@@ -51,14 +52,14 @@ const productionSchema = new mongoose.Schema({
             LHDnumber: String,
         }
     ],
-	section: {
-		id: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Section"
-		},
-		name: String
-	},
-	created: {type: Date, default: Date.now}
+    section: {
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Section"
+        },
+        name: String
+    },
+    created: { type: Date, default: Date.now }
 })
 
 const Production = mongoose.model("Production", productionSchema)

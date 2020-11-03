@@ -1,11 +1,52 @@
 <%- include("../partials/header") %>
- <div class="main-body">
+<div class="main-body">
     <div class=element>
         <div class="element2">
             <h2>Reported Production: <%= reported.section.name %></h2>
             <p>
+                <!-- <input type="date" name="" id="" value="2020-10-11"> -->
                 <%= reported.created.toDateString() %>
             </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">Blasted</th>
+                    </tr>
+                    <th>Panels</th>
+                    <th>Length (m)</th>
+                </thead>
+                <tbody>
+                    <% reported.blast.forEach(function(e){ %>
+                    <tr>
+                        <td>
+                            <%= e.panel %>
+                        </td>
+                        <td>
+                            <%= e.length %>
+                        </td>
+                    </tr>
+                    <% }) %>
+
+                    <tr>
+                        <th colspan="2">Cleaned</th>
+                    </tr>
+
+                    <% reported.clean.forEach(function(e){ %>
+                    <tr>
+                        <td>
+                            <%= e.panel %>
+                        </td>
+                        <td>
+                            <%= e.length %>
+                        </td>
+                        <!-- <td>
+                            <%= e.advance %>
+                        </td> -->
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            <br>
             <table>
                 <thead>
                     <tr>
@@ -16,31 +57,63 @@
                 </thead>
 
                 <tbody>
-                    <tr>
+                    <!-- <tr>
                         <td>Call</td>
                         <td></td>
                         <td></td>
-                    </tr>
-                        
+                    </tr> -->
+
                     <tr>
                         <td>Blasted</td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            <% reported.blast.forEach(function(e){ %>
+                            <%= e.panel %>,
+                            <% }) %>
+                        </td>
+                        <td>
+                            <% reported.blast.forEach(function(e){ %>
+                            <%= e.length %>
+                            <% }) %>
+                        </td>
                     </tr>
                     <tr>
                         <td>Cleaned</td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            <% reported.clean.forEach(function(e){ %>
+                            <%= e.panel %>,
+                            <% }) %>
+                        </td>
+                        <td>
+                            <% reported.clean.forEach(function(e){ %>
+                            <%= e.length %>,
+                            <% }) %>
+                        </td>
                     </tr>
                     <tr>
                         <td>Support</td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            <% reported.support.forEach(function(e){ %>
+                            <%= e.panel %>,
+                            <% }) %>
+                        </td>
+                        <td>
+                            <% reported.support.forEach(function(e){ %>
+                            <%= e.length %>,
+                            <% }) %>
+                        </td>
                     </tr>
                     <tr>
                         <td>Prep'd</td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            <% reported.prep.forEach(function(e){ %>
+                            <%= e.panel %>,
+                            <% }) %>
+                        </td>
+                        <td>
+                            <% reported.prep.forEach(function(e){ %>
+                            <%= e.length %>,
+                            <% }) %>
+                        </td>
                     </tr>
                     <tr>
                         <td>Drilled</td>
@@ -62,12 +135,16 @@
             </table>
             <div class="admin">
                 <a href="/sections/<%= reported.section.id %>/production/<%= reported._id %>/edit">Edit</a>
+                <form action="/sections/<%= reported.section.id %>/production/<%= reported._id %>?_method=DELETE"
+                    method="POST">
+                    <button id="delete" type="submit">Delete!</button>
+                </form>
             </div>
         </div>
     </div>
- </div>
+</div>
 
- 
+
 
 <%- include("../partials/sidebar") %>
 <%- include("../partials/footer") %>

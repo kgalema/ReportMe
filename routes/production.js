@@ -6,6 +6,7 @@ const Blast = require("../models/blast")
 const Clean = require("../models/clean")
 const Support = require("../models/support")
 const Production = require("../models/production")
+const moment = require("moment")
 
 
 
@@ -25,12 +26,27 @@ router.get("/", function (req, res) {
 
 // 1. ***Index route: Shows you all captured reports***
 router.get("/production", function (req, res) {
+	console.log(req.query.q)
+	console.log(req.params)
+	Production.find({}, function (err, allProduction) {
+		if (err) {
+			console.log(err);
+		} else {
+			// let data = allProduction.filter(prod => moment(prod.created).format('YYYY-MM-DD') === req.query.q)
+			// console.log(data.length)
+			// res.render("production/index", { production: allProduction })
+			res.render("production/index", { production: allProduction })
+		}
+	})
+})
+router.get("/api/production", function (req, res) {
 	Production.find({}, function (err, allProduction) {
 		if (err) {
 			console.log(err);
 		} else {
 			// console.log(allProduction)
-			res.render("production/index", { production: allProduction })
+			// res.render("production/index", { production: allProduction })
+			res.send(allProduction)
 		}
 	})
 })
@@ -68,7 +84,7 @@ router.post("/sections/:id/production", function (req, res) {
 			res.redirect("back");
 		} else {
 			// console.log(req.body.production)
-			Production.create(req.body.production, function (err, foundProduction) {
+			Production.create(req.body.production, async function (err, foundProduction) {
 				if (err) {
 					console.log(err)
 				} else {
@@ -78,7 +94,7 @@ router.post("/sections/:id/production", function (req, res) {
 					// console.log(report);
 					foundProduction.save();
 					section.production.push(foundProduction);
-					section.save();
+					await section.save();
 					res.redirect("/production");
 				}
 			})

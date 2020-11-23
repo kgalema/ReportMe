@@ -39,100 +39,17 @@
                         <td>
                             <%= e.length %>
                         </td>
-                        <!-- <td>
+                        <td>
                             <%= e.advance %>
-                        </td> -->
+                        </td>
                     </tr>
                     <% }) %>
                 </tbody>
             </table>
             <br>
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Panel(s)</th>
-                        <th>Length(m)</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <!-- <tr>
-                        <td>Call</td>
-                        <td></td>
-                        <td></td>
-                    </tr> -->
-
-                    <tr>
-                        <td>Blasted</td>
-                        <td>
-                            <% reported.blast.forEach(function(e){ %>
-                            <%= e.panel %>,
-                            <% }) %>
-                        </td>
-                        <td>
-                            <% reported.blast.forEach(function(e){ %>
-                            <%= e.length %>
-                            <% }) %>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Cleaned</td>
-                        <td>
-                            <% reported.clean.forEach(function(e){ %>
-                            <%= e.panel %>,
-                            <% }) %>
-                        </td>
-                        <td>
-                            <% reported.clean.forEach(function(e){ %>
-                            <%= e.length %>,
-                            <% }) %>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Support</td>
-                        <td>
-                            <% reported.support.forEach(function(e){ %>
-                            <%= e.panel %>,
-                            <% }) %>
-                        </td>
-                        <td>
-                            <% reported.support.forEach(function(e){ %>
-                            <%= e.length %>,
-                            <% }) %>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Prep'd</td>
-                        <td>
-                            <% reported.prep.forEach(function(e){ %>
-                            <%= e.panel %>,
-                            <% }) %>
-                        </td>
-                        <td>
-                            <% reported.prep.forEach(function(e){ %>
-                            <%= e.length %>,
-                            <% }) %>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Drilled</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Not Clean</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>LHDs</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    </tr>
-                </tbody>
-            </table>
+            <p>
+                <a href="/production">Back</a>
+            </p>
             <div class="admin">
                 <a href="/sections/<%= reported.section.id %>/production/<%= reported._id %>/edit">Edit</a>
                 <form action="/sections/<%= reported.section.id %>/production/<%= reported._id %>?_method=DELETE"

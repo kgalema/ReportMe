@@ -3,6 +3,9 @@ const Rehab = require("../models/rehab")
 const router = express.Router()
 const Section = require("../models/section")
 const Redpanel = require("../models/tarp")
+const GridFSStorage = require("multer-gridfs-storage")
+const moment = require("moment")
+
 
 const multer = require("multer");
 
@@ -16,11 +19,20 @@ const storage = multer.diskStorage({
 	},
 	filename: function (req, file, callback) {
 		// console.log(file);
-		callback(null, new Date().toDateString() + "-" + file.originalname);
+		callback(null, moment(new Date()).format('YYYY-MM-DD') + "-" + file.originalname);
 	}
 });
 
+// const storage = new GridFSStorage({
+// 	db: connection,
+// 	file: (req, file) => {
+// 		return { filename: new Date() + "_file" }
+// 	}
+// })
+
 const upload = multer({ storage: storage });
+
+// const storage = new GridFSStorage({})
 
 // ======Upload on cloudinary===================
 // const storage = multer.diskStorage({
@@ -40,12 +52,12 @@ const upload = multer({ storage: storage });
 
 //   const upload = multer({ storage: storage})
 
-const cloudinary = require('cloudinary');
-cloudinary.config({
-	cloud_name: 'dojtbpbwc',
-	api_key: process.env.CLOUDINARY_API_KEY,
-	api_secret: process.env.CLOUDINARY_API_SECRET
-});
+// const cloudinary = require('cloudinary');
+// cloudinary.config({
+// 	cloud_name: 'dojtbpbwc',
+// 	api_key: process.env.CLOUDINARY_API_KEY,
+// 	api_secret: process.env.CLOUDINARY_API_SECRET
+// });
 
 
 
@@ -100,8 +112,10 @@ router.post("/sections/:id/redPanels", upload.single("issuedReport"), function (
 					section.redPanels.push(redpanel)
 					section.save()
 					// connsole.log(section)
-					//redirect to sections show page
-					res.redirect("/redPanel")
+					// res.redirect("/redPanel")
+					console.log(section)
+					console.log(redpanel)
+					res.redirect("/sections/" + req.params.id)
 				}
 			})
 		}
@@ -148,6 +162,19 @@ router.get("/redPanel/:id", function (req, res) {
 	});
 })
 
+// 4.1 Downloading the stored file
+router.get("/sections/:id/redPanels/:redpanel_id/download", function (req, res) {
+	Redpanel.findById(req.params.redpanel_id, function (err, foundRed) {
+		if (err) {
+			res.redirect("back")
+		} else {
+			// let path = __dirname+'/public/' + foundRed
+			res.download(foundRed.issuedReport.path)
+			// res.render("redPanels/edit", { section_id: req.params.id, redpanel: foundRed })
+		}
+	})
+})
+
 // 5. Edit route - Edit a specific redpanel (Renders a form)
 router.get("/sections/:id/redPanels/:redpanel_id/edit", function (req, res) {
 	Redpanel.findById(req.params.redpanel_id, function (err, foundRed) {
@@ -160,7 +187,10 @@ router.get("/sections/:id/redPanels/:redpanel_id/edit", function (req, res) {
 })
 
 // 6. Update route - Puts the supplied info from edit form into the database
-router.put("/sections/:id/redPanels/:redpanel_id", function (req, res) {
+router.put("/sections/:id/redPanels/:redpanel_id", upload.single("issuedReport"), function (req, res) {
+	if (req.file) {
+		req.body.redPanel.issuedReport = req.file
+	}
 	Redpanel.findByIdAndUpdate(req.params.redpanel_id, req.body.redPanel, function (err, updatedRedpanel) {
 		if (err) {
 			res.redirect("back")

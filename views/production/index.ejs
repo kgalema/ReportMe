@@ -2,100 +2,391 @@
 
 <div class="main-body">
     <div class="element">
-        <div class="heading">
-            <h2>KDL Production Report</h2>
-            <div class="myBtnContainer">
-                <button>Morning Shift</button>
-                <button>Back Shift</button>
-            </div>
-        </div>
+        <div class="element2">
+            <div class="heading">
+                <h2>KDL Production Report</h2>
+                <div id="fromDB">
+                    <% let newProduction = production.filter(prod => moment(prod.created).format('YYYY-MM-DD') === moment(new Date()).format('YYYY-MM-DD')) %>
+                    <% let dayshift = newProduction.filter(prod => prod.general[0].shift === "morning")%>
+                    <% let backshift = newProduction.filter(prod => prod.general[0].shift === "backshift")%>
+                </div>
+                <div id="dateVariable">
+                    <!-- <% let es = function add(){ %>
+                    <% return 1+3 %>
+                    <% } %>
+                    <% let sum = es()%>
+                    <%= es() %> -->
+                </div>
+                <div id="fromAPI">
 
-        <div>
+                </div>
+
+                <div class="myBtnContainer" id="myBtnContainer">
+                    <button class="btn selected" id="all" onclick="filter('all')">All</button>
+                    <button class="btn" onclick="filter('day')">Morning Shift</button>
+                    <button class="btn" onclick="filter('night')">Back Shift</button>
+                    <!-- <label for="all"><input type="radio" name="shift" onclick="handleClick(this)" id="all"
+                            value="all-shift">All</label>
+                    <label for="morning"><input type="radio" name="shift" onclick="handleClick(this)" id="morning"
+                            value="day-shift">Morning Shift</label>
+                    <label for="backshift"><input type="radio" name="shift" onclick="handleClick(this)" id="backshift"
+                            value="night-shift">Back Shift</label> -->
+                    <input type="date" id="dateFilter" oninput="dateChange(this, <%= JSON.stringify(production)%> )"
+                        value="<%= moment(new Date()).format('YYYY-MM-DD')%>">
+                </div>
+
+            </div>
+
+            <div id="tables">
+                <table id="all-shift" class="filterDiv all">
+                    <thead>
+                        <tr>
+
+                        </tr>
+                        <tr>
+                            <th>All</th>
+                            <th>Blasted (m)</th>
+                            <th>Cleaned (m)</th>
+                            <th>Supported (m)</th>
+                            <th>Drilled (m)</th>
+                            <th>Prep'd (m)</th>
+                            <th>Not Cleaned (m)</th>
+                            <th>LHDs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% newProduction.forEach(function(e){ %>
+                        <tr>
+                            <td>
+                                <a href=" /sections/<%= e.section.id %>/production/<%= e._id %>">
+                                    <%= e.section.name %>
+                                </a>
+                            </td>
+
+                            <td>
+                                <a href="#">
+                                    <%= e.blast.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <!-- <%= e.clean.length %> -->
+                                    <%= e.clean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <!-- <%= e.support.length %> -->
+                                    <%= e.support.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <!-- <%= e.drill.length %> -->
+                                    <%= e.drill.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <!-- <%= e.prep.length %> -->
+                                    <%= e.prep.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <!-- <%= e.notClean.length %> -->
+                                    <%= e.notClean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <%= e.LHD.length %>
+                                </a>
+                            </td>
+                        </tr>
+                        <% }) %>
+
+                        <tr>
+                            <th>Totals</th>
+                            <td>
+
+                                <% let a = newProduction.map(b => b.blast) %>
+
+
+                                <%= a.map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j)).reduce((x,y)=>x+y, 0)%>
+
+                            </td>
+                            <td>
+                                <!-- <%= production.map(b => b.clean).map(sub1 => sub1.length).reduce((i, j) => i+j, 0) %> -->
+                                <%= newProduction.map(b => b.clean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <!-- <%= production.map(b => b.support).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= newProduction.map(b => b.support).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <!-- <%= production.map(b => b.drill).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= newProduction.map(b => b.drill).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <!-- <%= production.map(b => b.prep).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= newProduction.map(b => b.prep).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <!-- <%= production.map(b => b.notClean).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= newProduction.map(b => b.notClean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <%= newProduction.map(b => b.LHD).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <br>
+                <table id="day-shift" class="filterDiv day">
+                    <thead>
+                        <tr>
+
+                        </tr>
+                        <tr>
+                            <th>Day</th>
+                            <th>Blasted (m)</th>
+                            <th>Cleaned (m)</th>
+                            <th>Supported (m)</th>
+                            <th>Drilled (m)</th>
+                            <th>Prep'd (m)</th>
+                            <th>Not Cleaned (m)</th>
+                            <th>LHDs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% dayshift.forEach(function(e){ %>
+                        <tr>
+                            <td>
+                                <a href=" /sections/<%= e.section.id %>/production/<%= e._id %>">
+                                    <%= e.section.name %>
+                                </a>
+                            </td>
+
+                            <td>
+                                <a href="#">
+                                    <%= e.blast.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <!-- <%= e.clean.length %> -->
+                                    <%= e.clean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <!-- <%= e.support.length %> -->
+                                    <%= e.support.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <!-- <%= e.drill.length %> -->
+                                    <%= e.drill.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <!-- <%= e.prep.length %> -->
+                                    <%= e.prep.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <!-- <%= e.notClean.length %> -->
+                                    <%= e.notClean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <%= e.LHD.length %>
+                                </a>
+                            </td>
+                        </tr>
+                        <% }) %>
+
+                        <tr>
+                            <th>Totals</th>
+                            <td>
+
+                                <!-- <% let placeholderA = production.map(b => b.blast) %> -->
+
+                                <!-- <%= production.map(b => b.blast).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= dayshift.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <!-- <%= production.map(b => b.clean).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= dayshift.map(b => b.clean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <!-- <%= production.map(b => b.support).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= dayshift.map(b => b.support).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <!-- <%= production.map(b => b.drill).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= dayshift.map(b => b.drill).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <!-- <%= production.map(b => b.prep).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= dayshift.map(b => b.prep).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <!-- <%= production.map(b => b.notClean).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= dayshift.map(b => b.notClean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <%= dayshift.map(b => b.LHD).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <br>
+                <table id="night-shift" class="filterDiv night">
+                    <thead>
+                        <tr>
+
+                        </tr>
+                        <tr>
+                            <th>Night</th>
+                            <th>Blasted (m)</th>
+                            <th>Cleaned (m)</th>
+                            <th>Supported (m)</th>
+                            <th>Drilled (m)</th>
+                            <th>Prep'd (m)</th>
+                            <th>Not Cleaned (m)</th>
+                            <th>LHDs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% backshift.forEach(function(e){ %>
+                        <tr>
+                            <td>
+                                <a href=" /sections/<%= e.section.id %>/production/<%= e._id %>">
+                                    <%= e.section.name %>
+                                </a>
+                            </td>
+
+                            <td>
+                                <a href="#">
+                                    <%= e.blast.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <!-- <%= e.clean.length %> -->
+                                    <%= e.clean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <!-- <%= e.support.length %> -->
+                                    <%= e.support.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <!-- <%= e.drill.length %> -->
+                                    <%= e.drill.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <!-- <%= e.prep.length %> -->
+                                    <%= e.prep.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <!-- <%= e.notClean.length %> -->
+                                    <%= e.notClean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <%= e.LHD.length %>
+                                </a>
+                            </td>
+                        </tr>
+                        <% }) %>
+
+                        <tr>
+                            <th>Totals</th>
+                            <td>
+
+                                <!-- <% let placeholderB = production.map(b => b.blast) %> -->
+
+                                <!-- <%= production.map(b => b.blast).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= backshift.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
+
+                            </td>
+                            <td>
+                                <!-- <%= production.map(b => b.clean).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= backshift.map(b => b.clean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <!-- <%= production.map(b => b.support).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= backshift.map(b => b.support).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <!-- <%= production.map(b => b.drill).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= backshift.map(b => b.drill).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <!-- <%= production.map(b => b.prep).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= backshift.map(b => b.prep).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <!-- <%= production.map(b => b.notClean).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                <%= backshift.map(b => b.notClean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
+                            </td>
+                            <td>
+                                <%= backshift.map(b => b.LHD).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <!-- <div class="month-to-date">
             <table>
                 <thead>
                     <tr>
-                        <th>Section</th>
-                        <th>Blasted Panels</th>
-                        <th>Cleaned Panels</th>
-                        <th>Supported Panels</th>
-                        <th>Drilled Panels</th>
-                        <th>Prep'd Panels</th>
-                        <th>Not Cleaned Panels</th>
-                        <th>LHDs</th>
+                        <th>Date</th>
+                        <th>Forecast</th>
+                        <th>Actual</th>
+                        <th>Var</th>
+                        <td></td>
+                        <th>Forecast</th>
+                        <th>Actual</th>
+                        <th>Var</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <% production.forEach(function(e){ %>
                     <tr>
-                        <td>
-                            <a href="/sections/<%= e.section.id %>/production/<%= e._id %>">
-                                <%= e.section.name %>
-                            </a>
-                        </td>
-
-                        <td>
-                            <a href="#">
-                                <%= e.blast.length %>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="#">
-                                <%= e.clean.length %>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="#">
-                                <%= e.support.length %>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="#">
-                                <%= e.drill.length %>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="#">
-                                <%= e.prep.length %>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="#">
-                                <%= e.notClean.length %>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="#">
-                                <%= e.LHD.length %>
-                            </a>
-                        </td>
-                    </tr>
-                    <% }) %>
-
-                    <tr>
-                        <th>Totals</th>
-                        <td>
-                            <!-- <% production.forEach(function(e){ %>
-
-                            <%= e.blast.filter(b => b.length).map(b => b.length).reduce((a, b) => a+b) %>
-                            <% }) %> -->
-
-                            <!-- <%= production.filter(a => a) %> -->
-
-
-                        </td>
-                        <td></td>
-                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
                     </tr>
-
                 </tbody>
             </table>
+        </div> -->
         </div>
     </div>
+    <!-- hello -->
+    <!-- hello -->
 </div>
+
+
 
 
 

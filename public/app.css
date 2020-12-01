@@ -35,14 +35,15 @@ body {
  .side-footer {
      position: absolute;
      bottom: 0;
-     right: 0;
-     margin: 0;
+     /* right: 0; */
+     /* margin: 0; */
  }
  .side-footer p {
-     position: absolute;
-     bottom: 0;
-     right: 0;
-     margin: 0;
+     /* position: absolute; */
+     /* bottom: 0; */
+     /* right: 0; */
+     margin: 16px;
+     color: red;
  }
 
 
@@ -378,4 +379,25 @@ form.new-production  {
 .show {
     display: block;
     border: none;
+}
+
+/* Flash messages */
+.success {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    border-color: #c3e6cb;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid transparent;
+    border-color: #f5c6cb;
+    border-radius: .25rem;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
 }

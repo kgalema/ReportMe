@@ -7,6 +7,7 @@ const Clean = require("../models/clean")
 const Support = require("../models/support")
 const Production = require("../models/production")
 const moment = require("moment")
+const { isLoggedIn } = require("../middleware")
 
 
 
@@ -17,7 +18,7 @@ const moment = require("moment")
 
 // 1. Landing Route
 router.get("/", function (req, res) {
-	res.render("welcomePage")
+	res.render("welcomePage", { title: "home" })
 })
 // 			res.render("production/index", { sections: allSections })
 // 		}
@@ -26,8 +27,6 @@ router.get("/", function (req, res) {
 
 // 1. ***Index route: Shows you all captured reports***
 router.get("/production", function (req, res) {
-	console.log(req.query.q)
-	console.log(req.params)
 	Production.find({}, function (err, allProduction) {
 		if (err) {
 			console.log(err);
@@ -35,7 +34,7 @@ router.get("/production", function (req, res) {
 			// let data = allProduction.filter(prod => moment(prod.created).format('YYYY-MM-DD') === req.query.q)
 			// console.log(data.length)
 			// res.render("production/index", { production: allProduction })
-			res.render("production/index", { production: allProduction })
+			res.render("production/index", { production: allProduction, title: "production-dash" })
 		}
 	})
 })
@@ -63,39 +62,58 @@ router.get("/api/production", function (req, res) {
 // })
 
 // 2. ***New route: Renders production report form***
-router.get("/sections/:id/production/new", function (req, res) {
+router.get("/sections/:id/production/new", isLoggedIn, function (req, res) {
 	Section.findById(req.params.id, function (err, foundSection) {
 		if (err || !foundSection) {
-			console.log(err);
+			// console.log(err.castError);
 			res.redirect("back")
 		} else {
 			// console.log(foundSection)
-			res.render("production/new", { section: foundSection });
+			res.render("production/new", { section: foundSection, title: "production-report" });
 		}
 	})
 })
 
 
 // 3. Create route - post the information into the database
-router.post("/sections/:id/production", function (req, res) {
+router.post("/sections/:id/production", isLoggedIn, function (req, res) {
 	Section.findById(req.params.id, function (err, section) {
 		if (err || !section) {
 			console.log(err);
 			res.redirect("back");
 		} else {
 			// console.log(req.body.production)
-			Production.create(req.body.production, async function (err, foundProduction) {
+			Production.create(req.body.production, function (err, foundProduction) {
 				if (err) {
 					console.log(err)
+					res.redirect("back")
 				} else {
-					// console.log(report)
 					foundProduction.section.id = section._id;
 					foundProduction.section.name = section.name;
-					// console.log(report);
-					foundProduction.save();
-					section.production.push(foundProduction);
-					await section.save();
-					res.redirect("/production");
+					console.log("==============now save=========")
+					// foundProduction.save()
+					foundProduction.save(function (err, savedProduction) {
+						if (err) {
+							console.log(err)
+							res.redirect("back")
+						} else {
+							console.log(savedProduction)
+							section.production.push(foundProduction);
+							section.save(function (err, savedSection) {
+								if (err) {
+									console.log(err)
+									res.redirect("back")
+								} else {
+									req.flash("success", "Successfully Added Production Report")
+									res.redirect("/production");
+								}
+							});
+						}
+					});
+					// section.production.push(foundProduction);
+					// section.save();
+					// req.flash("success", "Successfully Added Production Report")
+					// res.redirect("/production");
 				}
 			})
 		}
@@ -112,40 +130,43 @@ router.get("/sections/:id/production/:production", function (req, res) {
 			console.log(err)
 			res.redirect("back")
 		} else {
-			res.render("production/showProduction", { reported: foundProduction });
+			// console.log(foundProduction)
+			res.render("production/showProduction", { reported: foundProduction, title: "production-dash" });
 		}
 	});
 })
 
 // 5. Edit - shows an edit production edit form
-router.get("/sections/:id/production/:production_id/edit", function (req, res) {
+router.get("/sections/:id/production/:production_id/edit", isLoggedIn, function (req, res) {
 	Production.findById(req.params.production_id, function (err, foundProduction) {
 		if (err) {
 			return res.redirect("/back")
 		} else {
-			res.render("production/edit", { production: foundProduction })
+			res.render("production/edit", { production: foundProduction, title: "production-dash" })
 		}
 	})
 })
 // 6. Update - takes info from edit form and PUTs it into existing data in the database
-router.put("/sections/:id/production/:production_id", function (req, res) {
+router.put("/sections/:id/production/:production_id", isLoggedIn, function (req, res) {
 	Production.findByIdAndUpdate(req.params.production_id, req.body.production, function (err, updatedProduction) {
 		if (err || !updatedProduction) {
 			console.log(err)
 			res.redirect("back")
 		} else {
-			console.log(updatedProduction)
+			// console.log(updatedProduction)
+			req.flash("success", "Successfully Updated Production Report")
 			res.redirect("/sections/" + req.params.id + "/production/" + req.params.production_id)
 		}
 	})
 })
 
 // 7. Destroy - delete one specific production report
-router.delete("/sections/:id/production/:production_id", function (req, res) {
+router.delete("/sections/:id/production/:production_id", isLoggedIn, function (req, res) {
 	Production.findByIdAndRemove(req.params.production_id, function (err) {
 		if (err) {
 			res.redirect("back")
 		} else {
+			req.flash("success", "Successfully Deleted Production Report")
 			res.redirect("/production")
 		}
 	})

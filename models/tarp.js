@@ -17,6 +17,10 @@ const redpanelSchema = new mongoose.Schema({
 			ref: "Section"
 		},
 		name: String
+	},
+	author: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "User"
 	}
 })
 

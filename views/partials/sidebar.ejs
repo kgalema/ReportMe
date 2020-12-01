@@ -7,30 +7,33 @@
                 <a href="/"><img src="/pictures/LOGO.png" alt="kwena"></a>
             </div>
             <ul id="side-list">
-                <li class="side-item">
+                <li class="side-item <% if (title === 'home') { %>selected <% } %>">
                     <a href="/">Home</a>
                 </li>
-                <li class="side-item">
+                <li class="side-item <% if (title === 'production-report') { %>selected <% } %> ">
                     <a href="/sections">Production Report</a>
                 </li>
-                <li class="side-item">
+                <li class="side-item <% if (title === 'production-dash') { %>selected <% } %>">
                     <a href="/production">Production Dashboard</a>
                 </li>
-                <li class="side-item">
+                <li class="side-item <% if (title === 'TARP-Red') { %>selected <% } %> ">
                     <a href="/redPanel">TARP Red tracker</a>
                 </li>
-                <li class="side-item">
+                <li class="side-item  <% if (title === 'sections') { %>selected <% } %>">
                     <a href="/sections">Sections</a>
                 </li>
-                <li class="side-item">
+                <% if(!currentUser){ %>
+                <li class="side-item  <% if (title === 'Login') { %>selected <% } %>">
                     <a href="/login">Login</a>
                 </li>
-                <li class="side-item">
+                <li class="side-item <% if (title === 'Register') { %>selected <% } %>">
                     <a href="/register">Register</a>
                 </li>
+                <% } else { %>
                 <li class="side-item">
-                    <a href="">Logout</a>
+                    <a href="/logout">Logout</a>
                 </li>
+                <% } %>
             </ul>
         </div>
     </div>
@@ -38,7 +41,10 @@
 
 
     <div class="side-footer">
-        <p>v1.0.0</p>
+        <% if(currentUser){ %>
+        <p id="log-in">Logged in as: <%= currentUser.username %></p>
+        <% } %>
+        <!-- <p>v1.0.0</p> -->
     </div>
 
 </div>

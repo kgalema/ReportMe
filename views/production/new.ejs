@@ -15,20 +15,23 @@
                 </div>
 
                 <br>
-    
+
                 <button type="button" class="collapsible">Blasted Panels Report</button>
                 <div class="content" id="blast-report">
                     <table class="form-row">
                         <tbody>
                             <tr id="inputs" class="form-row">
                                 <td class="form-row">
-                                    <input type="text" id="panel" name="production[blast][1][panel]" placeholder="panel_name" required>
+                                    <input type="text" id="panel" name="production[blast][1][panel]"
+                                        placeholder="panel_name" required>
                                 </td>
                                 <td class="form-row">
-                                    <input type="number" id="length" name="production[blast][1][length]" placeholder="metres" required>
+                                    <input type="number" id="length" name="production[blast][1][length]"
+                                        placeholder="metres" required>
                                 </td>
                                 <td class="form-row">
-                                    <input type="button" id="addPanel" value="+ panel" onClick="addAnotherField(parentNode.parentNode.parentNode.parentNode.parentNode)">
+                                    <input type="button" id="addPanel" value="+ panel"
+                                        onClick="addAnotherField(parentNode.parentNode.parentNode.parentNode.parentNode)">
                                 </td>
                             </tr>
                         </tbody>
@@ -40,16 +43,21 @@
                         <tbody>
                             <tr class="form-row">
                                 <td class="form-row">
-                                    <input type="text" id="panel" name="production[clean][1][panel]" placeholder="panel_name" required>
+                                    <input type="text" id="panel" name="production[clean][1][panel]"
+                                        placeholder="panel_name" required>
                                 </td>
                                 <td class="form-row">
-                                    <input type="number" id="length" name="production[clean][1][length]" placeholder="metres" required>
+                                    <input type="number" id="length" name="production[clean][1][length]"
+                                        placeholder="metres" required>
                                 </td>
                                 <td class="form-row">
-                                    <input type="number" id="advance" name="production[clean][1][advance]" placeholder="advance" step="0.1" required>
+                                    <input type="number" id="advance" name="production[clean][1][advance]"
+                                        placeholder="advance" step="0.1" required>
                                 </td>
                                 <td class="form-row">
-                                    <input type="button" id="add" onClick="addAnotherClean(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ panel">
+                                    <input type="button" id="add"
+                                        onClick="addAnotherClean(parentNode.parentNode.parentNode.parentNode.parentNode)"
+                                        value="+ panel">
                                 </td>
                             </tr>
                         </tbody>
@@ -61,13 +69,21 @@
                         <tbody>
                             <tr class="form-row">
                                 <td class="form-row">
-                                    <input type="text" id="panel" name="production[support][1][panel]" placeholder="panel_name" required>
+                                    <input type="text" id="panel" name="production[support][1][panel]"
+                                        placeholder="panel_name" required>
                                 </td>
                                 <td class="form-row">
-                                    <input type="number" id="length" name="production[support][1][length]" placeholder="metres" required>
+                                    <input type="number" id="length" name="production[support][1][length]"
+                                        placeholder="metres" required>
                                 </td>
+                                <!-- <td class="form-row">
+                                    <input type="number" id="length" name="production[support][1][length]"
+                                        placeholder="holes" required>
+                                </td> -->
                                 <td class="form-row">
-                                    <input type="button" id="add" onClick="addAnotherSupport(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ panel">
+                                    <input type="button" id="add"
+                                        onClick="addAnotherSupport(parentNode.parentNode.parentNode.parentNode.parentNode)"
+                                        value="+ panel">
                                 </td>
                             </tr>
                         </tbody>
@@ -79,13 +95,17 @@
                         <tbody>
                             <tr class="form-row">
                                 <td class="form-row">
-                                    <input type="text" id="panel" name="production[drill][1][panel]" placeholder="panel_name" required>
+                                    <input type="text" id="panel" name="production[drill][1][panel]"
+                                        placeholder="panel_name" required>
                                 </td>
                                 <td class="form-row">
-                                    <input type="number" id="length" name="production[drill][1][length]" placeholder="metres" required>
+                                    <input type="number" id="length" name="production[drill][1][length]"
+                                        placeholder="metres" required>
                                 </td>
                                 <td class="form-row">
-                                    <input type="button" id="add" onClick="addAnotherDrilled(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ panel">
+                                    <input type="button" id="add"
+                                        onClick="addAnotherDrilled(parentNode.parentNode.parentNode.parentNode.parentNode)"
+                                        value="+ panel">
                                 </td>
                             </tr>
                         </tbody>
@@ -97,31 +117,40 @@
                         <tbody>
                             <tr class="form-row">
                                 <td class="form-row">
-                                    <input type="text" id="panel" name="production[prep][1][panel]" placeholder="panel_name" required>
+                                    <input type="text" id="panel" name="production[prep][1][panel]"
+                                        placeholder="panel_name" required>
                                 </td>
                                 <td class="form-row">
-                                    <input type="number" id="length" name="production[prep][1][length]" placeholder="metres" required>
+                                    <input type="number" id="length" name="production[prep][1][length]"
+                                        placeholder="metres" required>
                                 </td>
                                 <td class="form-row">
-                                    <input type="button" id="add" onClick="addAnotherPrepared(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ panel">
+                                    <input type="button" id="add"
+                                        onClick="addAnotherPrepared(parentNode.parentNode.parentNode.parentNode.parentNode)"
+                                        value="+ panel">
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <button type="button" class="collapsible" id="notClean-report">Not Cleaned Report (Including Backlash)</button>
+                <button type="button" class="collapsible" id="notClean-report">Not Cleaned Report (Including
+                    Backlash)</button>
                 <div class="content">
                     <table class="form-row">
                         <tbody>
                             <tr class="form-row">
                                 <td class="form-row">
-                                    <input type="text" id="panel" name="production[notClean][1][panel]" placeholder="panel_name" required>
+                                    <input type="text" id="panel" name="production[notClean][1][panel]"
+                                        placeholder="panel_name" required>
                                 </td>
                                 <td class="form-row">
-                                    <input type="number" id="length" name="production[notClean][1][length]" placeholder="metres" required>
+                                    <input type="number" id="length" name="production[notClean][1][length]"
+                                        placeholder="metres" required>
                                 </td>
                                 <td class="form-row">
-                                    <input type="button" id="add" onClick="addAnotherNC(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ panel">
+                                    <input type="button" id="add"
+                                        onClick="addAnotherNC(parentNode.parentNode.parentNode.parentNode.parentNode)"
+                                        value="+ panel">
                                 </td>
                             </tr>
                         </tbody>
@@ -133,13 +162,17 @@
                         <tbody>
                             <tr class="form-row">
                                 <td class="form-row">
-                                    <input type="number" id="coyNumber" name="production[LHD][1][coyNumber]" placeholder="operator_coy_number" required>
+                                    <input type="number" id="coyNumber" name="production[LHD][1][coyNumber]"
+                                        placeholder="operator_coy_number" required>
                                 </td>
                                 <td class="form-row">
-                                    <input type="text" id="LHDnumber" name="production[LHD][1][LHDnumber]" placeholder="LHD_number" required>
+                                    <input type="text" id="LHDnumber" name="production[LHD][1][LHDnumber]"
+                                        placeholder="LHD_number" required>
                                 </td>
                                 <td class="form-row">
-                                    <input type="button" id="add" onClick="addAnotherLHD(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ LHD">
+                                    <input type="button" id="add"
+                                        onClick="addAnotherLHD(parentNode.parentNode.parentNode.parentNode.parentNode)"
+                                        value="+ LHD">
                                 </td>
                             </tr>
                         </tbody>
@@ -150,14 +183,14 @@
                     <br>
                     <textarea name="production[general][1][comments]" id="" cols="60" rows="10"></textarea>
                 </div>
-    
+
                 <br>
-    
+
                 <button type="submit" id="submit">Submit</button>
-    
+
             </form>
         </div>
-        
+
 
     </div>
 </div>

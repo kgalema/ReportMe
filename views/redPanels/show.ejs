@@ -11,18 +11,19 @@
          <!-- <p>Download report - <%= redPanel.issuedReport %></p> -->
          <p>
          <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/download">
-            <button type="submit">Download</button>
+            <button type="submit">Download Recommendation</button>
          </form>
          </p>
 
       </div>
 
-      <a href="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/edit">Edit</a>
-
-      <br>
       <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>?_method=DELETE" method="POST">
          <button type="submit">Rehabilitated</button>
       </form>
+      <p>
+         <a href="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/edit">Edit</a>
+      </p>
+
       <!-- <form action="/sections/<%= redPanel.section.id %>/rehabs/<%= redPanel._id %>/now_rehabed" action="" method="get">
             <button type="submit">Rehabilitated!</button>
          </form> -->

@@ -62,5 +62,14 @@ const productionSchema = new mongoose.Schema({
     created: { type: Date, default: Date.now }
 })
 
+// productionSchema.index({
+//     "general.shift": 1,
+//     section: 1
+// }, {
+//     unique: true,
+// });
+
+// productionSchema.index({ "general.shift": 1, section: 1, created: 1 }, { unique: true, dropDups: true })
+
 const Production = mongoose.model("Production", productionSchema)
 module.exports = Production

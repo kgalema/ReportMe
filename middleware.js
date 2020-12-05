@@ -54,11 +54,11 @@ module.exports.isSectionAuthor = (req, res, next) => {
     })
 }
 module.exports.isProductionAuthor = (req, res, next) => {
-    Production.findById(req.params.id, function (err, foundProduction) {
+    Production.findById(req.params.production_id, function (err, foundProduction) {
         if (err) {
             console.log(err)
             req.flash("error", "Something went wrong")
-            return res.redirect(`/production/${req.params.redpanel_id}`)
+            return res.redirect(`/sections/${foundProduction.section.id}/production/${req.params.production_id}`)
         }
         console.log(foundProduction.author)
         console.log(req.user._id)
@@ -66,7 +66,7 @@ module.exports.isProductionAuthor = (req, res, next) => {
         if (!foundProduction.author.equals(req.user._id) && !req.user.isAdmin) {
             console.log("You dont have permission to do that(edit section)")
             req.flash("error", "You do not have permission to do that")
-            return res.redirect(`/production/${req.params.production}`)
+            return res.redirect(`/sections/${foundProduction.section.id}/production/${req.params.production_id}`)
         }
         console.log("hit next")
         next()

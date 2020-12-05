@@ -123,8 +123,8 @@ router.post("/sections/:id/production", isLoggedIn, function (req, res) {
 
 
 // 4. Show route: Shows info about 1 specific production report
-router.get("/sections/:id/production/:production", function (req, res) {
-	Production.findById(req.params.production, function (err, foundProduction) {
+router.get("/sections/:id/production/:production_id", function (req, res) {
+	Production.findById(req.params.production_id, function (err, foundProduction) {
 		if (err || !foundProduction) {
 			console.log(err)
 			req.flash("error", "Oops! Seems like what you are looking for has vanished from the database")

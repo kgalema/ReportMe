@@ -101,10 +101,9 @@ app.use(productionRoutes)
 app.use(accessRoutes)
 app.use(rehabilitated)
 
-
-let port = process.env.PORT;
-if (port == null || port == "") {
-	port = 4000;
-};
+const port = process.env.PORT || 4000;
+// if (port == null || port == "") {
+// 	port = 4000;
+// };
 
 app.listen(port, () => console.log(`ReportMe server is running on port ${port}`));

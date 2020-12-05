@@ -1,0 +1,46 @@
+<%- include("../partials/header") %>
+
+
+<div class="main-body">
+    <div class="element">
+        <% if(success && success.length) {%>
+        <div class="success"><%= success %></div>
+        <% } %>
+        <% if(error && error.length) {%>
+        <div class="error"><%= error %></div>
+        <% } %>
+
+
+        <form method="POST" action="/reset/<%= token %>">
+            <legend>Reset Password</legend>
+            <hr>
+            <table class="form-row">
+                <tr>
+                    <td class="form-row">
+                        <label for="new_password">New Password:</label>
+                    </td>
+                    <td class="form-row">
+                        <input id="new_password" type="password" name="password" placeholder="new_password">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="form-row">
+                        <label for="confirm">Confirm Password:</label>
+                    </td>
+                    <td class="form-row">
+                        <input id="confirm" type="password" name="confirm" placeholder="confirm_password">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="form-row" colspan="2">
+                        <input style="width: 100%;" type="submit" value="Updated Password">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

@@ -3,6 +3,12 @@
 <div class="main-body">
 
    <div class="element">
+      <% if(success && success.length) {%>
+      <div class="success"><%= success %></div>
+      <% } %>
+      <% if(error && error.length) {%>
+      <div class="error"><%= error %></div>
+      <% } %>
       <div>
          <h1>TARP Red Panel <%= redPanel.panel %> of: <%= redPanel.section.name %></h1>
          <p>Trigger(s) - <%= redPanel.trigger %></p>
@@ -16,17 +22,19 @@
          </p>
 
       </div>
-
+      <% if( currentUser && redPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
       <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>?_method=DELETE" method="POST">
          <button type="submit">Rehabilitated</button>
       </form>
       <p>
          <a href="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/edit">Edit</a>
       </p>
+      <% } %>
 
-      <!-- <form action="/sections/<%= redPanel.section.id %>/rehabs/<%= redPanel._id %>/now_rehabed" action="" method="get">
-            <button type="submit">Rehabilitated!</button>
-         </form> -->
+      <!-- <form action="/sections/<%= redPanel.section.id %>/rehabs/<%= redPanel._id %>/now_rehabed" action=""
+      method="get">
+      <button type="submit">Rehabilitated!</button>
+      </form> -->
 
    </div>
 

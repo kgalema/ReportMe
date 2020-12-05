@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const Section = require("../models/section")
-const { isLoggedIn } = require("../middleware")
+const { isLoggedIn, isSectionAuthor } = require("../middleware")
 
 
 //================
@@ -30,11 +30,19 @@ router.post("/sections", isLoggedIn, function (req, res) {
 	Section.create(req.body.section, function (err, newSection) {
 		if (err) {
 			console.log(err)
-			res.render("sections/new", { title: "section" })
+			return res.render("sections/new", { title: "section" })
 		} else {
 			console.log(req.body)
+			newSection.author = req.user._id
+			newSection.save(function (err, savedSection) {
+				if (err) {
+					req.flash("error", "Something went wrong")
+					return res.redirect("back")
+				}
+				req.flash("success", "Successfully added new section")
+				res.redirect("/sections")
+			})
 			// then redirect to the index route
-			res.redirect("/sections")
 		}
 	});
 })
@@ -43,7 +51,7 @@ router.get("/sections/:id", function (req, res) {
 	Section.findById(req.params.id).populate("redPanels").exec(function (err, foundSection) {
 		if (err || !foundSection) {
 			console.log(err)
-			res.redirect("back")
+			return res.redirect("back")
 		} else {
 			// console.log(foundSection)
 			res.render("sections/show", { section: foundSection, title: "sections" })
@@ -52,30 +60,30 @@ router.get("/sections/:id", function (req, res) {
 })
 
 // 5. Edit route - renders edit form to edit one particular section
-router.get("/sections/:id/edit", isLoggedIn, function (req, res) {
+router.get("/sections/:id/edit", isLoggedIn, isSectionAuthor, function (req, res) {
 	Section.findById(req.params.id, function (err, section) {
 		if (err) {
-			res.redirect("back")
+			return res.redirect("back")
 		} else {
 			res.render("sections/edit", { section: section, title: "sections" })
 		}
 	})
 })
 // 6. Update route - Puts edited info about one particular section in the database
-router.put("/sections/:id", isLoggedIn, function (req, res) {
+router.put("/sections/:id", isLoggedIn, isSectionAuthor, function (req, res) {
 	Section.findByIdAndUpdate(req.params.id, req.body.section, function (err, updatedSection) {
 		if (err) {
-			res.redirect("back")
+			return res.redirect("back")
 		} else {
 			res.redirect("/sections/" + req.params.id)
 		}
 	})
 })
 // 7. Destroy route - Deletes a particular section 
-router.delete("/sections/:id", isLoggedIn, function (req, res) {
+router.delete("/sections/:id", isLoggedIn, isSectionAuthor, function (req, res) {
 	Section.findByIdAndRemove(req.params.id, function (err) {
 		if (err) {
-			res.redirect("back")
+			return res.redirect("back")
 		} else {
 			res.redirect("/sections")
 		}

@@ -11,7 +11,7 @@
                     <a href="/">Home</a>
                 </li>
                 <li class="side-item <% if (title === 'production-report') { %>selected <% } %> ">
-                    <a href="/sections">Production Report</a>
+                    <a href="/sections">Add Report</a>
                 </li>
                 <li class="side-item <% if (title === 'production-dash') { %>selected <% } %>">
                     <a href="/production">Production Dashboard</a>
@@ -24,14 +24,14 @@
                 </li>
                 <% if(!currentUser){ %>
                 <li class="side-item  <% if (title === 'Login') { %>selected <% } %>">
-                    <a href="/login">Login</a>
+                    <a href="/login">Log In</a>
                 </li>
                 <li class="side-item <% if (title === 'Register') { %>selected <% } %>">
                     <a href="/register">Register</a>
                 </li>
                 <% } else { %>
                 <li class="side-item">
-                    <a href="/logout">Logout</a>
+                    <a href="/logout">Log Out</a>
                 </li>
                 <% } %>
             </ul>
@@ -42,8 +42,13 @@
 
     <div class="side-footer">
         <% if(currentUser){ %>
-        <p id="log-in">Logged in as: <%= currentUser.username %></p>
+        <p id="log-in">Logged in as: <strong><%= currentUser.username %></strong></p>
         <% } %>
+        <p>
+            <% if (currentUser && currentUser.isAdmin){ %>
+        <h5>You're an admin</h5>
+        <% } %>
+        </p>
         <!-- <p>v1.0.0</p> -->
     </div>
 

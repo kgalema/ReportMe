@@ -1,4 +1,7 @@
-require('dotenv').config();
+if (process.env.NODE_ENV !== "production") {
+	require('dotenv').config();
+}
+
 const express = require("express")
 const app = express()
 const bodyParser = require("body-parser")
@@ -13,6 +16,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local")
 const User = require("./models/user")
 
+const MongoStore = require("connect-mongo")(session)
 
 const redPanelsRoutes = require("./routes/redPanels")
 const sectionsRoutes = require("./routes/sections")
@@ -25,36 +29,46 @@ const userRoutes = require("./routes/access")
 
 // ==================end here====================
 
-// mongoose.set('useUnifiedTopology', true);
+// const dbUrl = "mongodb://localhost/reportMe"
+const dbUrl = process.env.DB_URL || "mongodb://localhost/reportMe";
+
 mongoose.set('useFindAndModify', false);
-const connection = mongoose.connect("mongodb://localhost/reportMe", {
+const connection = mongoose.connect(dbUrl, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 	useCreateIndex: true
 })
 	.then(() => console.log("Connected to DB"))
-	.catch(error => console.log(error.message));
+	.catch(error => {
+		console.log(error.message);
+	});
 
-// const storage = new GridFSStorage({ db: connection })
-// const storage = new GridFSStorage({
-// 	db: connection,
-// 	file: (req, file) => {
-// 		return { filename: new Date() + "_file" }
-// 	}
-// })
+const secret = process.env.SECRET || "highSchoolCrush";
 
-// const upload = multer({ storage: storage });
-const sessionOptions = {
+const store = new MongoStore({
+	url: dbUrl,
+	secret,
+	touchAfter: 24 * 60 * 60
+})
+
+store.on("error", function (e) {
+	console.log("SESSION STORE ERROR", e)
+})
+
+
+const sessionConfig = {
+	store,
+	name: "session",
+	secret,
 	resave: false,
 	saveUninitialized: true,
-	secret: "secret",
 	cookie: {
 		httpOnly: true,
 		expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
 		maxAge: 1000 * 60 * 60 * 24 * 7
 	}
 }
-app.use(session(sessionOptions))
+app.use(session(sessionConfig))
 app.use(flash())
 app.use(passport.initialize())
 app.use(passport.session())

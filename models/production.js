@@ -59,6 +59,10 @@ const productionSchema = new mongoose.Schema({
         },
         name: String
     },
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
     created: { type: Date, default: Date.now }
 })
 

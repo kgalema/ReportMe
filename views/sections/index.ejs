@@ -1,33 +1,25 @@
 <%- include("../partials/header") %>
 
 <div class="main-body">
-
     <div class="element">
-
-        <h3>Select A Section</h3>
-
+        <!-- <h4>Select A Section</h4> -->
+        <legend><strong>Choose Section</strong></legend>
+        <hr>
         <% if(!sections){ %>
-           <% return %> <p>No Section</p>
+        <p>No Sections</p>
         <% } else { %>
-            <div>
-                <% sections.forEach(function(section){ %>
-                    <a href="/sections/<%= section._id %>"><%= section.name %></a> |
-                <% }) %>
-            </div>
-        <% } %>
-        
-        <!-- <div>
+        <div>
             <% sections.forEach(function(section){ %>
-                <a href="/sections/<%= section._id %>"><%= section.name %></a> |
+            <a href="/sections/<%= section._id %>"><%= section.name %></a> |
             <% }) %>
-        </div> -->
+        </div>
+        <% } %>
 
         <br>
-
+        <% if(currentUser && currentUser.isAdmin){ %>
         <a class="button" href="/sections/new">Add New Section</a>
-
+        <%} %>
     </div>
-
 </div>
 
 

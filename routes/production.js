@@ -2,12 +2,9 @@ const express = require("express")
 const router = express.Router()
 const Section = require("../models/section")
 const Redpanel = require("../models/tarp")
-const Blast = require("../models/blast")
-const Clean = require("../models/clean")
-const Support = require("../models/support")
 const Production = require("../models/production")
 const moment = require("moment")
-const { isLoggedIn } = require("../middleware")
+const { isLoggedIn, isProductionAuthor } = require("../middleware")
 
 
 
@@ -18,6 +15,7 @@ const { isLoggedIn } = require("../middleware")
 
 // 1. Landing Route
 router.get("/", function (req, res) {
+	// console.log(GMAILPW)
 	res.render("welcomePage", { title: "home" })
 })
 // 			res.render("production/index", { sections: allSections })
@@ -30,10 +28,9 @@ router.get("/production", function (req, res) {
 	Production.find({}, function (err, allProduction) {
 		if (err) {
 			console.log(err);
+			req.flash("error", "Oops! Seems like the database is down. Please contact admin")
+			return res.redirect("back")
 		} else {
-			// let data = allProduction.filter(prod => moment(prod.created).format('YYYY-MM-DD') === req.query.q)
-			// console.log(data.length)
-			// res.render("production/index", { production: allProduction })
 			res.render("production/index", { production: allProduction, title: "production-dash" })
 		}
 	})
@@ -42,6 +39,8 @@ router.get("/api/production", function (req, res) {
 	Production.find({}, function (err, allProduction) {
 		if (err) {
 			console.log(err);
+			req.flash("error", "Oops! Seems like the database is down. Please contact admin")
+			return res.redirect("back")
 		} else {
 			// console.log(allProduction)
 			// res.render("production/index", { production: allProduction })
@@ -66,7 +65,8 @@ router.get("/sections/:id/production/new", isLoggedIn, function (req, res) {
 	Section.findById(req.params.id, function (err, foundSection) {
 		if (err || !foundSection) {
 			// console.log(err.castError);
-			res.redirect("back")
+			req.flash("error", "Oops! Seems like the database is down or section has been deleted")
+			return res.redirect("back")
 		} else {
 			// console.log(foundSection)
 			res.render("production/new", { section: foundSection, title: "production-report" });
@@ -80,25 +80,24 @@ router.post("/sections/:id/production", isLoggedIn, function (req, res) {
 	Section.findById(req.params.id, function (err, section) {
 		if (err || !section) {
 			console.log(err);
-			res.redirect("back");
+			req.flash("error", "Oops! Seems like the database is down or section has been deleted")
+			return res.redirect("back");
 		} else {
-			// console.log(req.body.production)
 			Production.create(req.body.production, function (err, foundProduction) {
 				if (err) {
 					console.log(err)
-					res.redirect("back")
+					return res.redirect("back")
 				} else {
 					foundProduction.section.id = section._id;
 					foundProduction.section.name = section.name;
-					console.log("==============now save=========")
-					// foundProduction.save()
+					foundProduction.author = req.user._id
 					foundProduction.save(function (err, savedProduction) {
 						if (err) {
 							console.log(err)
 							res.redirect("back")
 						} else {
-							console.log(savedProduction)
-							section.production.push(foundProduction);
+							// console.log(savedProduction)
+							// section.production.push(foundProduction);
 							section.save(function (err, savedSection) {
 								if (err) {
 									console.log(err)
@@ -128,7 +127,8 @@ router.get("/sections/:id/production/:production", function (req, res) {
 	Production.findById(req.params.production, function (err, foundProduction) {
 		if (err || !foundProduction) {
 			console.log(err)
-			res.redirect("back")
+			req.flash("error", "Oops! Seems like what you are looking for has vanished from the database")
+			return res.redirect("back")
 		} else {
 			// console.log(foundProduction)
 			res.render("production/showProduction", { reported: foundProduction, title: "production-dash" });
@@ -137,9 +137,10 @@ router.get("/sections/:id/production/:production", function (req, res) {
 })
 
 // 5. Edit - shows an edit production edit form
-router.get("/sections/:id/production/:production_id/edit", isLoggedIn, function (req, res) {
+router.get("/sections/:id/production/:production_id/edit", isLoggedIn, isProductionAuthor, function (req, res) {
 	Production.findById(req.params.production_id, function (err, foundProduction) {
 		if (err) {
+			req.flash("error", "Something went wrong with the database")
 			return res.redirect("/back")
 		} else {
 			res.render("production/edit", { production: foundProduction, title: "production-dash" })
@@ -147,11 +148,12 @@ router.get("/sections/:id/production/:production_id/edit", isLoggedIn, function 
 	})
 })
 // 6. Update - takes info from edit form and PUTs it into existing data in the database
-router.put("/sections/:id/production/:production_id", isLoggedIn, function (req, res) {
+router.put("/sections/:id/production/:production_id", isLoggedIn, isProductionAuthor, function (req, res) {
 	Production.findByIdAndUpdate(req.params.production_id, req.body.production, function (err, updatedProduction) {
 		if (err || !updatedProduction) {
 			console.log(err)
-			res.redirect("back")
+			req.flash("error", "Something went wrong with the database")
+			return res.redirect("back")
 		} else {
 			// console.log(updatedProduction)
 			req.flash("success", "Successfully Updated Production Report")
@@ -161,10 +163,11 @@ router.put("/sections/:id/production/:production_id", isLoggedIn, function (req,
 })
 
 // 7. Destroy - delete one specific production report
-router.delete("/sections/:id/production/:production_id", isLoggedIn, function (req, res) {
+router.delete("/sections/:id/production/:production_id", isLoggedIn, isProductionAuthor, function (req, res) {
 	Production.findByIdAndRemove(req.params.production_id, function (err) {
 		if (err) {
-			res.redirect("back")
+			req.flash("error", "Something went wrong with the database")
+			return res.redirect("back")
 		} else {
 			req.flash("success", "Successfully Deleted Production Report")
 			res.redirect("/production")

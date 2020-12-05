@@ -19,6 +19,9 @@ const userSchema = new mongoose.Schema({
         unique: true,
         required: [true, "email cannot be blank"]
     },
+    isAdmin: { type: Boolean, default: false },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
 
     created: { type: Date, default: Date.now }
 

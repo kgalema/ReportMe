@@ -5,7 +5,7 @@ const Section = require("../models/section")
 const Redpanel = require("../models/tarp")
 const GridFSStorage = require("multer-gridfs-storage")
 const moment = require("moment")
-const { isLoggedIn } = require("../middleware")
+const { isLoggedIn, isAuthor } = require("../middleware")
 
 
 const multer = require("multer");
@@ -73,6 +73,7 @@ router.get("/redPanel", function (req, res) {
 	Redpanel.find({}, function (err, redpanels) {
 		if (err) {
 			console.log(err);
+			return res.redirect("back")
 		} else {
 			res.render("redPanels/index", { redpanels: redpanels, title: "TARP-Red" })
 		}
@@ -84,6 +85,7 @@ router.get("/sections/:id/redPanel/new", isLoggedIn, function (req, res) {
 	Section.findById(req.params.id, function (err, foundSection) {
 		if (err) {
 			console.log(err);
+			return res.redirect("back")
 		} else {
 			res.render("redPanels/new", { section: foundSection, title: "TARP-Red" })
 		}
@@ -95,28 +97,29 @@ router.post("/sections/:id/redPanels", isLoggedIn, upload.single("issuedReport")
 	Section.findById(req.params.id, function (err, section) {
 		if (err) {
 			console.log(err)
-			res.redirect("/sections")
+			return res.redirect("/sections")
 		} else {
 			req.body.redPanel.issuedReport = req.file
 			Redpanel.create(req.body.redPanel, function (err, redpanel) {
 				if (err) {
 					console.log(err)
 				} else {
-					console.log(req.body.redPanel)
+					// console.log(req.body.redPanel)
 					//add section and section id to repanel
 					redpanel.section.id = section._id
 					redpanel.section.name = section.name
+					redpanel.author = req.user._id
 					//save redpanel
-					redpanel.save()
-					section.redPanels.push(redpanel)
-					section.save()
-					// connsole.log(section)
-					// res.redirect("/redPanel")
-					// console.log(section)
-					// console.log(redpanel)
-					req.flash("success", "Successfully added TARP Red panel")
+					redpanel.save(function () {
+						console.log(redpanel)
+						req.flash("success", "Successfully added TARP Red panel")
+						res.redirect("/redPanel")
+					})
+					// section.redPanels.push(redpanel)
+					// section.save()
+					// req.flash("success", "Successfully added TARP Red panel")
 					// res.redirect("/sections/" + req.params.id)
-					res.redirect("/redPanel")
+					// res.redirect("/redPanel")
 				}
 			})
 		}
@@ -178,7 +181,7 @@ router.get("/sections/:id/redPanels/:redpanel_id/download", function (req, res) 
 })
 
 // 5. Edit route - Edit a specific redpanel (Renders a form)
-router.get("/sections/:id/redPanels/:redpanel_id/edit", isLoggedIn, function (req, res) {
+router.get("/sections/:id/redPanels/:redpanel_id/edit", isLoggedIn, isAuthor, function (req, res) {
 	Redpanel.findById(req.params.redpanel_id, function (err, foundRed) {
 		if (err || !foundRed) {
 			req.flash("error", "Cannot find requested TARP Red panel")
@@ -190,7 +193,7 @@ router.get("/sections/:id/redPanels/:redpanel_id/edit", isLoggedIn, function (re
 })
 
 // 6. Update route - Puts the supplied info from edit form into the database
-router.put("/sections/:id/redPanels/:redpanel_id", isLoggedIn, upload.single("issuedReport"), function (req, res) {
+router.put("/sections/:id/redPanels/:redpanel_id", isLoggedIn, isAuthor, upload.single("issuedReport"), function (req, res) {
 	if (req.file) {
 		req.body.redPanel.issuedReport = req.file
 	}
@@ -205,7 +208,7 @@ router.put("/sections/:id/redPanels/:redpanel_id", isLoggedIn, upload.single("is
 	})
 })
 // 7. Delete route - Delete particular red panel
-router.delete("/sections/:id/redPanels/:redpanel_id", isLoggedIn, function (req, res) {
+router.delete("/sections/:id/redPanels/:redpanel_id", isLoggedIn, isAuthor, function (req, res) {
 	Redpanel.findByIdAndRemove(req.params.redpanel_id, function (err) {
 		if (err) {
 			req.flash("error", "Oops! Something went wrong :(")

@@ -10,7 +10,7 @@ const mongoose = require("mongoose")
 const sectionSchema = new mongoose.Schema({
 	name: String,
 	mineOverseer: String,
-	created: {type: Date, default: Date.now},
+	created: { type: Date, default: Date.now },
 	redPanels: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
@@ -24,6 +24,10 @@ const sectionSchema = new mongoose.Schema({
 			ref: "Production"
 		}
 	],
+	author: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "User"
+	}
 })
 
 const Section = mongoose.model("Section", sectionSchema)

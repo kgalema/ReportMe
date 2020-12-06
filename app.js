@@ -11,6 +11,7 @@ const methodOverride = require('method-override')
 const session = require('express-session')
 const flash = require("connect-flash")
 const path = require("path")
+const fs = require("fs")
 const GridFSStorage = require("multer-gridfs-storage")
 const passport = require("passport");
 const LocalStrategy = require("passport-local")
@@ -40,7 +41,8 @@ const connection = mongoose.connect(dbUrl, {
 })
 	.then(() => console.log("Connected to DB"))
 	.catch(error => {
-		console.log(error.message);
+		console.log(error.message)
+		throw error
 	});
 
 const secret = process.env.SECRET || "highSchoolCrush";
@@ -78,7 +80,11 @@ passport.deserializeUser(User.deserializeUser())
 
 
 app.use(bodyParser.urlencoded({ extended: true }))
+
+// app.use(bodyParser.json())
+
 app.use(express.static("public"))
+// app.use(express.static("uploads"))
 app.set("view engine", "ejs")
 
 app.use(expressSanitizer());

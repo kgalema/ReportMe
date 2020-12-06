@@ -1,14 +1,14 @@
 const express = require("express")
-const Rehab = require("../models/rehab")
+const fs = require("fs")
 const router = express.Router()
+const path = require("path")
+const moment = require("moment")
 const Section = require("../models/section")
 const Redpanel = require("../models/tarp")
-const GridFSStorage = require("multer-gridfs-storage")
-const moment = require("moment")
 const { isLoggedIn, isAuthor } = require("../middleware")
 
-
-const multer = require("multer");
+const multer = require("multer")
+// const toUpload = multer({ dest: "uploads/" })
 
 
 
@@ -16,42 +16,28 @@ const multer = require("multer");
 
 const storage = multer.diskStorage({
 	destination: function (req, file, callback) {
-		callback(null, './public/uploads');
+		callback(null, 'uploads/');
 	},
 	filename: function (req, file, callback) {
 		// console.log(file);
-		callback(null, moment(new Date()).format('YYYY-MM-DD') + "-" + file.originalname);
+		// callback(null, moment(Date.now()).format('YYYY-MM-DD') + "-" + file.originalname);
+		callback(null, Date.now() + "-" + file.originalname);
 	}
 });
 
-// const storage = new GridFSStorage({
-// 	db: connection,
-// 	file: (req, file) => {
-// 		return { filename: new Date() + "_file" }
-// 	}
-// })
+// const upload = multer({ storage: storage });
 
-const upload = multer({ storage: storage });
+// ++++++++++file filter++++++
+const fileFilter = function (req, file, cb) {
+	// accept pdf files only
+	if (file.mimetype === "application/pdf") {
+		return cb(null, true)
+		// return cb(new Error('Only image files are allowed!'), false);
+	}
+	return cb(new Error("Only pdfs allowed"), false);
+};
 
-// const storage = new GridFSStorage({})
-
-// ======Upload on cloudinary===================
-// const storage = multer.diskStorage({
-// 	filename: function(req, file, callback) {
-// 	  callback(null, Date.now() + file.originalname);
-// 	}
-//   });
-
-// ++++++++++image filter++++++
-//   var imageFilter = function (req, file, cb) {
-// 	  // accept image files only
-// 	  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
-// 		  return cb(new Error('Only image files are allowed!'), false);
-// 	  }
-// 	  cb(null, true);
-//   };
-
-//   const upload = multer({ storage: storage})
+const upload = multer({ storage: storage, fileFilter: fileFilter })
 
 // const cloudinary = require('cloudinary');
 // cloudinary.config({
@@ -99,12 +85,20 @@ router.post("/sections/:id/redPanels", isLoggedIn, upload.single("issuedReport")
 			console.log(err)
 			return res.redirect("/sections")
 		} else {
-			req.body.redPanel.issuedReport = req.file
+			console.log(req.file.path)
+			// const obj = {
+			// 	data: fs.readFileSync(path.join(__dirname + "/uploads/" + req.file.filename)),
+			// 	contentType: "application/pdf"
+			// }
+			// req.body.redPanel.issuedReport = obj
+			req.body.redPanel.issuedReport = req.file.path
+			// console.log(obj)
 			Redpanel.create(req.body.redPanel, function (err, redpanel) {
 				if (err) {
 					console.log(err)
+					return res.redirect("back")
 				} else {
-					// console.log(req.body.redPanel)
+					console.log(req.body.redPanel)
 					//add section and section id to repanel
 					redpanel.section.id = section._id
 					redpanel.section.name = section.name
@@ -174,7 +168,8 @@ router.get("/sections/:id/redPanels/:redpanel_id/download", function (req, res) 
 			return res.redirect("/redPanel")
 		} else {
 			// let path = __dirname+'/public/' + foundRed
-			res.download(foundRed.issuedReport.path)
+			// res.send(foundRed.issuedReport)
+			res.download(foundRed.issuedReport)
 			// res.render("redPanels/edit", { section_id: req.params.id, redpanel: foundRed })
 		}
 	})

@@ -9,11 +9,11 @@ const redpanelSchema = new mongoose.Schema({
 	reportNumber: String,
 	issueDate: { type: Date },
 	declaredDate: { type: Date },
-	issuedReport: { type: String },
-	// issuedReport: {
-	// 	data: Buffer,
-	// 	contentType: String
-	// },
+	// issuedReport: { type: String },
+	issuedReport: {
+		data: Buffer,
+		contentType: String
+	},
 	created: { type: Date, default: Date.now },
 	section: {
 		id: {

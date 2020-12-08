@@ -42,7 +42,7 @@ const connection = mongoose.connect(dbUrl, {
 	.then(() => console.log("Connected to DB"))
 	.catch(error => {
 		console.log(error.message)
-		throw error
+		// throw new Error("Something wrong with the database")
 	});
 
 const secret = process.env.SECRET || "highSchoolCrush";

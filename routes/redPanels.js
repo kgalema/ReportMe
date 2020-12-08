@@ -86,13 +86,13 @@ router.post("/sections/:id/redPanels", isLoggedIn, upload.single("issuedReport")
 			return res.redirect("/sections")
 		} else {
 			console.log(req.file.path)
-			// const obj = {
-			// 	data: fs.readFileSync(path.join(__dirname + "/uploads/" + req.file.filename)),
-			// 	contentType: "application/pdf"
-			// }
-			// req.body.redPanel.issuedReport = obj
-			req.body.redPanel.issuedReport = req.file.path
-			// console.log(obj)
+			const obj = {
+				data: fs.readFileSync(req.file.path),
+				contentType: "application/pdf"
+			}
+			req.body.redPanel.issuedReport = obj
+			// req.body.redPanel.issuedReport = req.file.path
+			console.log(req.body.redPanel)
 			Redpanel.create(req.body.redPanel, function (err, redpanel) {
 				if (err) {
 					console.log(err)
@@ -168,8 +168,21 @@ router.get("/sections/:id/redPanels/:redpanel_id/download", function (req, res) 
 			return res.redirect("/redPanel")
 		} else {
 			// let path = __dirname+'/public/' + foundRed
-			// res.send(foundRed.issuedReport)
-			res.download(foundRed.issuedReport)
+			let name = foundRed.reportNumber
+			// let name2 = foundRed.reportNumber
+			res.writeHead(200, {
+				'Content-Type': foundRed.issuedReport.contentType,
+				'Content-Disposition': "attachment; filename=" + name + ".pdf"
+			});
+			res.write(foundRed.issuedReport.data)
+			res.end()
+			// res.send(`${name}, ${name2}`)
+			// res.download(paf)
+			// res.download("foundRed.issuedReport")
+
+			// data:image/image.img.contentType;base64,
+			// <image.img.data.toString('base64')
+
 			// res.render("redPanels/edit", { section_id: req.params.id, redpanel: foundRed })
 		}
 	})

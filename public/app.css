@@ -406,3 +406,9 @@ hr{
     width: 70%;
     margin: 1.1rem 0;
 }
+
+.welcome {
+    position: fixed;
+    bottom: 5%;
+    right: 2%;
+}

@@ -30,8 +30,8 @@ const userRoutes = require("./routes/access")
 
 // ==================end here====================
 
-const dbUrl = "mongodb://localhost/reportMe"
-// const dbUrl = process.env.DB_URL || "mongodb://localhost/reportMe";
+// const dbUrl = "mongodb://localhost/reportMe"
+const dbUrl = process.env.DB_URL || "mongodb://localhost/reportMe";
 
 mongoose.set('useFindAndModify', false);
 const connection = mongoose.connect(dbUrl, {

@@ -83,20 +83,24 @@ router.post("/sections/:id/production", isLoggedIn, function (req, res) {
 			req.flash("error", "Oops! Seems like the database is down or section has been deleted")
 			return res.redirect("back");
 		} else {
+			console.log(section.name + new Date().toLocaleDateString() + req.body.production.general[0].shift)
+			let uniqueCode = section.name + new Date().toLocaleDateString() + req.body.production.general[0].shift
 			Production.create(req.body.production, function (err, foundProduction) {
 				if (err) {
 					console.log(err)
+					req.flash("error", "Looks like you are trying to create duplicate report")
 					return res.redirect("back")
 				} else {
 					foundProduction.section.id = section._id;
 					foundProduction.section.name = section.name;
+					foundProduction.uniqueCode = uniqueCode;
 					foundProduction.author = req.user._id
 					foundProduction.save(function (err, savedProduction) {
 						if (err) {
 							console.log(err)
 							res.redirect("back")
 						} else {
-							// console.log(savedProduction)
+							console.log(savedProduction)
 							// section.production.push(foundProduction);
 							section.save(function (err, savedSection) {
 								if (err) {

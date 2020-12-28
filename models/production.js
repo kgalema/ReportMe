@@ -63,7 +63,7 @@ const productionSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
-    unique: { type: String, unique: true },
+    uniqueCode: { type: String, unique: true },
     created: { type: Date, default: Date.now }
 })
 

@@ -591,110 +591,6 @@ function blastFilter(e, prod, roms, feeds) {
                             <th colspan="5">Month to date</th>
                         </tr>
         
-                        <tr>
-                            <th colspan="2"></th>
-                            <th>Budget</th>
-                            <th>Forecast</th>
-                            <th>Actual</th>
-                            <th>Variance</th>
-                            <th></th>
-                            <th>Comments</th>
-                            <th>Budget</th>
-                            <th>Forecast</th>
-                            <th>Actual</th>
-                            <th>Variance</th>
-                            <th></th>
-                        </tr>
-        
-                        <tr>
-                            <th>ROM</th>
-                            <th>t</th>
-                            <td>${budgetROM}</td>
-                            <td>${forecastROM}</td>
-                            <td>${actualROM}</td>
-                            <td class="variance">
-                                ${varianceROM}
-                            </td>
-                            <th>
-                                &#128578
-                            </th>
-                            <td></td>
-                            <td>
-                                ${budegtROMProg}
-                            </td>
-                            <td>
-                                ${forecastROMProg}
-                            </td>
-                            <td>
-                                ${actualROMProg}
-                            </td>
-                            <td class="variance">
-                                ${varianceProgROM}
-                            </td>
-                            <td>&#128577</td>
-                        </tr>
-        
-                        <tr>
-                            <th>Plant feed</th>
-                            <th>t</th>
-                            <td>${budgetFeed}</td>
-                            <td>${forecastFeed}</td>
-                            <td>${actualFeed}</td>
-                            <td class="variance">
-                                ${variancePlantFeed}
-                            </td>
-                            <td>&#128577</td>
-                            <td></td>
-                            <td>
-                                ${budgetFeedProg}
-                            </td>
-                            <td>
-                                ${forecastFeedProg}
-                            </td>
-                            <td>
-                                ${actualFeedProg}
-                            </td>
-                            <td class="variance">
-                                ${varianceProgFeed}
-                            </td>
-                            <td>&#128577</td>
-                        </tr>
-
-                        <tr>
-                            <th>Centares</th>
-                            <th>m<sup>2</sup></th>
-                            <td>
-                                ${actualTotalBudget.toFixed(1)}
-                            </td>
-                            <td>
-                                ${actualTotalForecast.toFixed(1)}
-                            </td>
-                            <td>
-                                ${actualBlastTotal.toFixed(1)}
-                            </td>
-                            <td class="variance">
-                                ${varianceTotals} 
-                            </td>
-                            <td>&#128577</td>
-                            <td></td>
-                            <td>
-                                ${budgetProgTotal.toFixed(1)}
-                            </td>
-                            <td>
-                                ${forecastProgTotal.toFixed(1)}
-                            </td>
-                            <td>
-                                ${squareMetersProgTotal.toFixed(1)}
-                            </td>
-                            <td class="variance">
-                                ${varianceProgTotal}
-                            </td>
-                            <td>&#128577</td>
-                        </tr>
-
-                        <tr>
-                            <td style="height: .5rem;" colspan="14"></td>
-                        </tr>
 
                         <tr>
                             <th colspan="2">Sections</th>
@@ -704,7 +600,7 @@ function blastFilter(e, prod, roms, feeds) {
                             <th>Variance</th>
                             <th></th>
                             <th>Comments</th>
-                            <th rowspan= ${todayProduction.length + 2 }></th>
+                            
                             <th>Budget</th>
                             <th>Forecast</th>
                             <th>Actual</th>

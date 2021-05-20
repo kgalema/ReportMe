@@ -6,16 +6,17 @@
         <legend><strong>Choose Section</strong></legend>
         <hr>
         <% if(!sections){ %>
-        <div>No Sections | <a href="/rom">ROM</a> |
-        <a href="plantFeed">Plant Feed</a>
+        <div>No Sections 
+            <!-- | <a href="/rom">ROM</a> |
+        <a href="plantFeed">Plant Feed</a> -->
         </div>
         <% } else { %>
         <div>
             <% sections.forEach(function(section){ %>
             <a href="/sections/<%= section._id %>"><%= section.name %></a> |
             <% }) %>
-            <a href="/rom">ROM</a> |
-            <a href="/plantFeed">Plant Feed</a>
+            <!-- <a href="/rom">ROM</a> |
+            <a href="/plantFeed">Plant Feed</a> -->
         </div>
         <% } %>
         

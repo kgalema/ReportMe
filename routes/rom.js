@@ -17,19 +17,20 @@ router.get("/rom", function (req, res, next) {
 })
 
 // 2. New Route - for rendering a new ROM form
-router.get("/rom/new", function (req, res) {
+router.get("/rom/new", isLoggedIn, function (req, res) {
     res.render("ROM/new", { title: "production-report" })
 })
 
 
 // 3. Create Route - post captured data into database
-router.post("/rom", function (req, res) {
+router.post("/rom", isLoggedIn, function (req, res) {
     ROM.create(req.body.rom, function (err, createdROM) {
         if (err) {
             // console.log(err)
             req.flash("error", "Looks like you are trying to create duplicate report")
             return res.redirect("back")
         } else {
+            console.log(req.user)
             createdROM.author.id = req.user._id
             createdROM.save(function(err, savedCreatedROM){
                 if(err){
@@ -59,7 +60,7 @@ router.get("/rom/:id", function (req, res) {
 })
 
 // 5. Edit Route - Renders a form for editting
-router.get("/rom/:id/edit", function (req, res) {
+router.get("/rom/:id/edit",isLoggedIn, function (req, res) {
     ROM.findById(req.params.id, function (err, editROM) {
         if(err || !editROM){
             req.flash("error, Something went wrong while fetching ROM")
@@ -72,7 +73,7 @@ router.get("/rom/:id/edit", function (req, res) {
 
 
 // 6. Updated Route - Posts the updated info and overrides what's in the databse
-router.put("/rom/:id", function (req, res) {
+router.put("/rom/:id", isLoggedIn, function (req, res) {
     console.log(req.params)
     ROM.findByIdAndUpdate(req.params.id, req.body.rom, function (err, updatedROM) {
         if (err || !updatedROM) {
@@ -87,7 +88,7 @@ router.put("/rom/:id", function (req, res) {
     })
 })
 // 7. Delete Route - For deleting one specific ROM captured
-router.delete("/rom/:id", function (req, res) {
+router.delete("/rom/:id",isLoggedIn,  function (req, res) {
     ROM.findByIdAndRemove(req.params.id, function (err) {
         if (err) {
             req.flash("error", "Something went wrong while deleting")

@@ -1,0 +1,53 @@
+<%- include("../partials/header") %>
+
+
+    <div class="main-body">
+
+        <div class="element">
+
+            <h3>Edit Red Panel <%= newRedPanel.panel %> of <%= newRedPanel.section.name %>
+            </h3>
+
+            <form action="/sections/<%= newRedPanel.section.id %>/newRedPanel/<%= newRedPanel._id%>?_method=PUT" method="POST">
+                <table class="form-row">
+                    <tr>
+                        <td class="form-row">
+                            <label for="panel-name">Panel name:</label>
+                        </td>
+                        <td class="form-row">
+                            <input type="text" id="panel-name" name="newRedPanel[panel]" value="<%= newRedPanel.panel %>" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="">TARP red trigger(s):</label>
+                        </td>
+                        <td class="form-row">
+                            <input type="text" name=newRedPanel[triggers] value="<%= newRedPanel.triggers %>" required>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="form-row">
+                            <label for="">Date panel declared:</label>
+                        </td>
+                        <td class="form-row">
+                            <input name=newRedPanel[declaredDate] type="date" value="<%= moment(newRedPanel.declaredDate).format('YYYY-MM-DD') %>" required>
+                        </td>
+                    </tr>
+                    
+                    
+                
+                    <tr>
+                        <td class="form-row" colspan="2">
+                            <button style="width: 100%;" type="submit">Update!</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

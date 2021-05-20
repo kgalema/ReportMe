@@ -1,0 +1,80 @@
+ <%- include("../partials/header") %>
+
+
+<div class="main-body">
+
+    <div class="element">
+        <div class="element2">
+        <h2>Rehabilitated Panels</h2>
+        <table>
+            <colgroup>
+                <col style="background-color: grey; width: 20px;" span="<%= 7 %>">
+            </colgroup>
+            <tr>
+                <th colspan="7">
+                    <%= rehabedPanels.length %>  Rehabilitated Panels
+                </th>
+            </tr>
+            <tr>
+                <th>Panel</th>
+                <th>Section</th>
+                <th>Trigger(s)</th>
+                <th>Date Panel Declared</th>
+                <th>Date Report Issued</th>
+                <th>Date Rehabilitated</th>
+            </tr>
+        
+            <% rehabedPanels.forEach(function(rehabed){ %>
+        
+                <tr>
+                    <td>
+                        <a href="/rehabedPanel/<%= rehabed._id %>">
+                            <%= rehabed.panel %>
+                        </a>
+                    </td>
+        
+                    <td>
+                        <%= rehabed.section.name %>
+                    </td>
+        
+                    <td>
+                        <%= rehabed.trigger %>
+                    </td>
+        
+                    <td>
+                        <% if(rehabed.declaredDate) { %>
+                            <%= rehabed.declaredDate.toDateString() %>
+                        <% } else  { %>
+                            <%= "no date" %>
+                        <% } %>
+                    </td>
+        
+                    <td>
+                        <% if(rehabed.issueDate) { %>
+                            <%= rehabed.issueDate.toDateString() %>
+                        <% } else  { %>
+                            <%= "no date" %>
+                        <% } %>
+                    </td>
+
+                    <td>
+                        <% if(rehabed.issueDate) { %>
+                            <%= rehabed.issueDate.toDateString() %>
+                        <% } else  { %>
+                            <%= "no date" %>
+                        <% } %>
+
+                    </td>
+        
+                </tr>
+                <% }) %>
+        </table>
+        <hr>
+        <a href="/redPanel">Back</a>
+        </div>
+    </div>
+</div>
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

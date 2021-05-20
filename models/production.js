@@ -57,7 +57,10 @@ const productionSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Section"
         },
-        name: String
+        name: String,
+        budget: Number,
+        forecast: Number,
+        plannedAdvance: Number
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,

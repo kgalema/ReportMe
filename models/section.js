@@ -10,6 +10,9 @@ const mongoose = require("mongoose")
 const sectionSchema = new mongoose.Schema({
 	name: String,
 	mineOverseer: String,
+	budget: Number,
+	forecast: Number,
+	plannedAdvance: Number,
 	created: { type: Date, default: Date.now },
 	redPanels: [
 		{

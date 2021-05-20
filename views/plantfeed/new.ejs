@@ -1,0 +1,50 @@
+<%- include("../partials/header") %>
+
+    <div class="main-body">
+        <div class="element">
+            <h3>Add New Plant Feed</h3>
+
+            <div class="element2">
+            <form action="/plantFeed" method="POST">
+                <table class="form-row">
+                    <tr>
+                        <td class="form-row">
+                            <label for="plantFeedBudget">Budget (t):</label>
+                        </td>
+                        <td class="form-row">
+                            <input type="number" min="0" id="plantFeedBudget" name="plantFeed[budget]" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="plantFeedForecast">Forecast (t):</label>
+                        </td>
+                        <td class="form-row">
+                            <input type="number" min="0" id="plantFeedForecast" name="plantFeed[forecast]" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="plantFeedActual">Actual (t):</label>
+                        </td>
+                        <td class="form-row">
+                            <input type="number" min="0" id="plantFeedActual" name="plantFeed[actual]" required>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="form-row" colspan="2">
+                            <button style="width: 100%;" type="submit">Submit</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            </div>
+            <a href="/plantFeed">Back</a>
+        </div>
+    </div>
+
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

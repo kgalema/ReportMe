@@ -1,0 +1,49 @@
+<%- include("../partials/header") %>
+
+    <div class="main-body">
+        <div class="element">
+            <h3>Edit ROM: <%= editROM.created.toLocaleDateString() %></h3>
+            <div class="element2">
+                <form action="/rom/<%= editROM._id %>?_method=PUT" method="POST">
+                    <table class="form-row">
+                        <tr>
+                            <td class="form-row">
+                                <label for="romBudget">Budget (t):</label>
+                            </td>
+                            <td class="form-row">
+                                <input type="number" min="0" id="romBudget" name="rom[budget]"  value="<%= editROM.budget %>" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="form-row">
+                                <label for="romForecast">Forecast (t):</label>
+                            </td>
+                            <td class="form-row">
+                                <input type="number" min="0" id="romForecast" name="rom[forecast]" value="<%= editROM.forecast %>" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="form-row">
+                                <label for="romActual">Actual (t):</label>
+                            </td>
+                            <td class="form-row">
+                                <input type="number" min="0" id="romActual" name="rom[actual]" value="<%= editROM.actual %>" required>
+                            </td>
+                        </tr>
+    
+                        <tr>
+                            <td class="form-row" colspan="2">
+                                <button style="width: 100%;" type="submit">Update</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <a href="/rom">Home</a>
+        </div>
+    </div>
+                
+                
+                
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

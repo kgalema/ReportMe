@@ -26,6 +26,33 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="form-row">
+                        <label for="budget">Budget:</label>
+                    </td>
+                    <td class="form-row">
+                        <input id="budget" type="number" step="0.1" min="0" name="section[budget]"
+                            value="<%= section.budget %>">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="form-row">
+                        <label for="forecast">Forecast:</label>
+                    </td>
+                    <td class="form-row">
+                        <input id="forecast" type="number" step="0.1" min="0" name="section[forecast]"
+                            value="<%= section.forecast %>">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="form-row">
+                        <label for="advance">Planned Advance:</label>
+                    </td>
+                    <td class="form-row">
+                        <input id="advance" type="number" step="0.1" min="0" name="section[plannedAdvance]"
+                            value="<%= section.plannedAdvance %>">
+                    </td>
+                </tr>
+                <tr>
                     <td class="form-row" colspan="2">
                         <input style="width: 100%;" type="submit" value="Update!">
                     </td>

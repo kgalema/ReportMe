@@ -8,8 +8,10 @@
 
         <div>
             <p>Mine Overseer - <%= section.mineOverseer %></p>
-            <p>Effective shift duration - (hours)</p>
-            <p>Daily target (Blast) - (metres)</p>
+            <p>Effective shift duration D/S - (6 hours)</p>
+            <p>Effective shift duration N/S - (9 hours)</p>
+            <p>Planned advance - <%= section.plannedAdvance  %> <span>m</span> </p>
+            <p>Daily target (Blast) - <%= section.forecast %> <span>m<sup>2</sup></span>  </p>
             <p>
                 <!-- Active Red Panels: <%= section.redPanels.length %> -->
             </p>
@@ -18,7 +20,7 @@
 
         <div class="show-section">
             <a class="button" href="/sections/<%= section._id %>/production/new">Production Report</a>
-            <a class="button" href="/sections/<%= section._id %>/redPanel/new">Add New Red Panel</a>
+            <a class="button" href="/sections/<%= section._id %>/newReds/new">Add New Red Panel</a>
         </div>
         <% if(currentUser && currentUser.isAdmin){ %>
         <div class="admin">

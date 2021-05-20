@@ -3,15 +3,10 @@
 <div class="main-body">
     <div class="element">
         <div class="element2">
-            <% if(success && success.length) {%>
-            <div class="success"><%= success %></div>
-            <% } %>
-            <% if(error && error.length) {%>
-            <div class="error"><%= error %></div>
-            <% } %>
 
             <h2>TARP Red Panels</h2>
-            <p>Total number of active TARP red panels: <%= redpanels.length %></p>
+            <!-- <p> <strong>Total number of TARP Red panels awaiting visit: <%= newRedPanels.length %></strong></p> -->
+            <p> <strong>Total number of TARP Red Panels: <%= newRedPanels.length + redpanels.length %></strong></p>
 
 
 
@@ -20,12 +15,61 @@
                     <col style="background-color: grey; width: 20px;" span="<%= 6 %>">
                 </colgroup>
                 <tr>
+                    <th colspan="4">
+                        <%= newRedPanels.length %> Red Panels Awaiting Visits
+                    </th>
+                </tr>
+                <tr>
                     <th>Panel</th>
                     <th>Section</th>
-                    <th>Trigger</th>
+                    <th>Trigger(s)</th>
+                    <th>Date Panel Declared</th>
+                </tr>
+
+                <% newRedPanels.forEach(function(red){ %>
+
+                <tr>
+                    <td>
+                        <a href="/newRedPanel/<%= red._id %>"><%= red.panel %></a>
+                    </td>
+
+                    <td>
+                        <%= red.section.name %>
+                    </td>
+
+                    <td>
+                        <%= red.triggers %>
+                    </td>
+
+                    <td>
+                        <%= red.dateDeclared.toDateString() %>
+                    </td>
+
+                </tr>
+                <% }) %>
+
+            </table>
+            <br>
+
+
+
+
+            <table>
+                <colgroup>
+                    <col style="background-color: grey; width: 20px;" span="<%= 6 %>">
+                </colgroup>
+                <tr>
+                    <th colspan="6">
+                        <%= redpanels.length %> Active TARP Red panels
+                    </th>
+                </tr>
+                <tr>
+                    <th>Panel</th>
+                    <th>Section</th>
+                    <th>Trigger(s)</th>
                     <th>Date Panel Declared</th>
                     <th>Date Report Issued</th>
-                    <th>Days Open</th>
+                    <th>Age</th>
                 </tr>
 
                 <% redpanels.forEach(function(red){ %>
@@ -56,11 +100,12 @@
                     </td>
                 </tr>
                 <% }) %>
-
             </table>
 
             <p>
-                <a class="button" href="/sections">Add New Red Panel</a>
+                <a class="button" href="/sections/sectionId/newReds/new">Add New Red Panel</a>
+                <hr>
+                <a href="/rehabedPanels">Rehabilitated Panels</a>
             </p>
         </div>
 

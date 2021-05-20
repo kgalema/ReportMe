@@ -39,13 +39,13 @@ router.post("/register", async function (req, res, next) {
 
 // ++++++++++++++++++++++++++Log in routes++++++++++++++++++++++
 router.get("/login", function (req, res) {
-	// req.flash("success", "Welcome back!")
 	res.render("access/login", { title: "Login" })
 })
+
 router.post("/login", passport.authenticate("local", { failureFlash: true, failureRedirect: "/login" }), function (req, res) {
-	req.flash("success", "Welcome back!");
 	const redirectUrl = req.session.returnTo || "/production";
 	delete req.session.returnTo;
+	req.flash("success", "Welcome back!");
 	res.redirect(redirectUrl)
 })
 

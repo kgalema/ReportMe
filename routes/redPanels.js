@@ -2,50 +2,61 @@ const express = require("express")
 const fs = require("fs")
 const router = express.Router()
 const path = require("path")
+const crypto = require("crypto")
 const moment = require("moment")
 const Section = require("../models/section")
 const Redpanel = require("../models/tarp")
-const { isLoggedIn, isAuthor } = require("../middleware")
+const Rehab = require("../models/rehab")
+const NewRedPanel = require("../models/newRed")
+const { isLoggedIn, isAuthor, isAdmin } = require("../middleware")
+const catchAsync = require("../utils/catchAsync")
+const ExpressError = require("../utils/ExpressError")
+const nodemailer = require("nodemailer")
 
+
+
+const GridFsStorage = require("multer-gridfs-storage")
+const Grid = require("gridfs-stream")
 const multer = require("multer")
-// const toUpload = multer({ dest: "uploads/" })
+const mongoose = require("mongoose")
+
+const exported = require("../app")
+
+
+const dbUrl = exported.dbUrl;
+const connection = exported.connection;
 
 
 
-// ======Saving files on my local machine=======
-
-const storage = multer.diskStorage({
-	destination: function (req, file, callback) {
-		callback(null, 'uploads/');
-	},
-	filename: function (req, file, callback) {
-		// console.log(file);
-		// callback(null, moment(Date.now()).format('YYYY-MM-DD') + "-" + file.originalname);
-		callback(null, Date.now() + "-" + file.originalname);
+// Create storage engine
+const storage2 = new GridFsStorage({
+	url: dbUrl,
+	options: { useNewUrlParser: true, useUnifiedTopology: true },
+	file: (req, file) => {
+		return new Promise((resolve, reject) => {
+			crypto.randomBytes(16, (err, buf) => {
+				if (err) {
+					return reject(err);
+				}
+				const filename = buf.toString("hex") + path.extname(file.originalname);
+				const fileInfo = {
+					filename: filename,
+					bucketName: "reds"
+				}
+				resolve(fileInfo)
+			})
+		})
 	}
-});
+})
 
-// const upload = multer({ storage: storage });
 
-// ++++++++++file filter++++++
-const fileFilter = function (req, file, cb) {
-	// accept pdf files only
-	if (file.mimetype === "application/pdf") {
-		return cb(null, true)
-		// return cb(new Error('Only image files are allowed!'), false);
-	}
-	return cb(new Error("Only pdfs allowed"), false);
-};
+let gfs
+connection.once("open", () => {
+	gfs = new mongoose.mongo.GridFSBucket(connection.db, {bucketName: "reds"})
+})
 
-const upload = multer({ storage: storage, fileFilter: fileFilter })
 
-// const cloudinary = require('cloudinary');
-// cloudinary.config({
-// 	cloud_name: 'dojtbpbwc',
-// 	api_key: process.env.CLOUDINARY_API_KEY,
-// 	api_secret: process.env.CLOUDINARY_API_SECRET
-// });
-
+const upload2 = multer({ storage: storage2 })
 
 
 
@@ -54,14 +65,21 @@ const upload = multer({ storage: storage, fileFilter: fileFilter })
 //======================
 
 // 1. Index routes -renders a list for all red panels
-router.get("/redPanel", function (req, res) {
-	console.log(req.url)
+router.get("/redPanel",  function (req, res) {
 	Redpanel.find({}, function (err, redpanels) {
-		if (err) {
+		if (err || !redpanels) {
 			console.log(err);
+			req.flash("error", "Error occured while fetching data")
 			return res.redirect("back")
 		} else {
-			res.render("redPanels/index", { redpanels: redpanels, title: "TARP-Red" })
+			NewRedPanel.find({}, function(err, newRedPanels){
+				if(err){
+					console.log("error at fetching new reds: "+ err)
+					req.flash("error", "Error occured while fetching data")
+					return res.redirect("back")
+				}
+				res.render("redPanels/index", { redpanels: redpanels, newRedPanels: newRedPanels, title: "TARP-Red" })
+			})
 		}
 	})
 })
@@ -69,90 +87,105 @@ router.get("/redPanel", function (req, res) {
 // 2. New Route - renders a form for red panels
 router.get("/sections/:id/redPanel/new", isLoggedIn, function (req, res) {
 	Section.findById(req.params.id, function (err, foundSection) {
-		if (err) {
+		if (err || !foundSection) {
 			console.log(err);
+			req.flash("error", "Error while fetching section data")
 			return res.redirect("back")
 		} else {
-			res.render("redPanels/new", { section: foundSection, title: "TARP-Red" })
+			NewRedPanel.findById(req.query.q, function(err, foundNewRed){
+				if(err || !foundNewRed){
+					console.log(err)
+					req.flash("error", "Error while fetching red panel data")
+					return res.redirect("back")
+				}
+				res.render("redPanels/new", { queryId: req.query.q, section: foundSection, redPanel: foundNewRed, title: "production-report" })
+			})
 		}
 	})
 })
 
 // 3. Create route - creates a tarp red panel data
-router.post("/sections/:id/redPanels", isLoggedIn, upload.single("issuedReport"), function (req, res) {
+router.post("/sections/:id/redPanels", isLoggedIn, upload2.single("issuedReport"), function (req, res, next) {
 	Section.findById(req.params.id, function (err, section) {
-		if (err) {
-			console.log(err)
-			return res.redirect("/sections")
+		if (err || !section) {
+			req.flash("error", "Error while fetching section information")
+			return res.redirect("back")
 		} else {
-			console.log(req.file.path)
-			const obj = {
-				data: fs.readFileSync(req.file.path),
-				contentType: "application/pdf"
-			}
-			req.body.redPanel.issuedReport = obj
-			// req.body.redPanel.issuedReport = req.file.path
-			console.log(req.body.redPanel)
-			Redpanel.create(req.body.redPanel, function (err, redpanel) {
-				if (err) {
+			Redpanel.create(req.body.redPanel, function (err, createdRedIssued) {
+				if(err){
 					console.log(err)
+					req.flash("error", "Could not create an Active Red Panel")
 					return res.redirect("back")
-				} else {
-					console.log(req.body.redPanel)
-					//add section and section id to repanel
-					redpanel.section.id = section._id
-					redpanel.section.name = section.name
-					redpanel.author = req.user._id
-					//save redpanel
-					redpanel.save(function () {
-						console.log(redpanel)
-						req.flash("success", "Successfully added TARP Red panel")
-						res.redirect("/redPanel")
-					})
-					// section.redPanels.push(redpanel)
-					// section.save()
-					// req.flash("success", "Successfully added TARP Red panel")
-					// res.redirect("/sections/" + req.params.id)
-					// res.redirect("/redPanel")
 				}
+				createdRedIssued.fileID = req.file.id
+				createdRedIssued.section.id = section._id
+				createdRedIssued.section.name = section.name
+				createdRedIssued.author = req.user._id
+				createdRedIssued.save(function (err, doc) {
+					if(err){
+						console.log(err)
+						req.flash("error", "Could not associate created active red panel with section")
+						return res.redirect("back")
+					}
+					NewRedPanel.findByIdAndRemove(req.query.q, function(err){
+						if(err){
+							console.log("Error while removing panel waiting for visit")
+							console.log(err)
+							return req.flash("error", "Could not delete panel from awaiting visit panels: Email not sent")
+						}
+							
+						let mailOptions = {
+							to: "ronny.kgalema@gmail.com",
+							from: "SCO <kdlreports@outlook.com>",
+							subject: `TARP Red Panel ${doc.panel} of ${doc.section.name} Recommendations`,
+							replyTo: "ronny.kgalema@gmail.com",
+							text: 'Good day TARP team\n\n' +
+								'TARP Red recommedations for ' + doc.panel + ' of ' + doc.section.name +' are available. Use the link below to download\n\n' +
+								''+ req.headers.origin + '/sections/' + doc.section.id +'/redPanels/' + doc._id + '/download' + '\n\n' +
+								'Best regards,\n' +
+								'SCO \n\n',
+						};
+
+						let smtpTransport = nodemailer.createTransport({
+							host: "smtp-mail.outlook.com",
+							secureConnection: false,
+							port: 587,
+							tls: {
+								ciphers: "SSLv3"
+							},
+							auth: {
+								user: "kdlreports@outlook.com",
+								pass: process.env.GMAILPW
+							}
+						});
+
+
+						smtpTransport.sendMail(mailOptions, function (err, info) {
+							if (err) {
+								console.log("Error while sending mail")
+								console.log(err)
+								req.flash("error", "Email not sent. Please send the email manually")
+								return res.redirect("back")
+							}
+							smtpTransport.close()
+							console.log(info)
+							console.log("mail sent");
+
+							req.flash("success", "Active Red Panel Created. Report issued");
+							res.redirect("/redPanel");
+						})
+					}) 
+				})
 			})
 		}
-		// })
 	})
-	// lookup section using ID
-	// Section.findById(req.params.id, function(err, section){
-	// 	if(err){
-	// 		console.log(err)
-	// 		res.redirect("/sections")
-	// 	} else {
-	// 		// create new redPanel
-	// 		Redpanel.create(req.body.redPanel, function(err, redpanel){
-	// 			if(err){
-	// 				console.log(err)
-	// 			} else{
-	// 				console.log(req.body.redPanel)
-	// 				//add section and section id to repanel
-	// 				redpanel.section.id = section._id
-	// 				redpanel.section.name = section.name
-	// 				//save redpanel
-	// 				redpanel.save()
-	// 				section.redPanels.push(redpanel)
-	// 				section.save()
-	// 				// connsole.log(section)
-	// 				//redirect to sections show page
-	// 				res.redirect("/sections/" + section._id)
-	// 			}
-	// 		})
-	// 	}
-	// })
 })
 
+
 // 4. Show route - shows info about one specific redpanel
-router.get("/redPanel/:id", function (req, res) {
-	// res.render("redPanels/show")
+router.get("/redPanel/:id", function (req, res, next) {
 	Redpanel.findById(req.params.id, function (err, foundRedPanel) {
 		if (err || !foundRedPanel) {
-			// console.log(err)
 			req.flash("error", "Cannot find requested TARP Red panel")
 			return res.redirect("/redPanel")
 		}
@@ -167,23 +200,27 @@ router.get("/sections/:id/redPanels/:redpanel_id/download", function (req, res) 
 			req.flash("error", "Cannot find requested TARP Red panel")
 			return res.redirect("/redPanel")
 		} else {
-			// let path = __dirname+'/public/' + foundRed
-			let name = foundRed.reportNumber
-			// let name2 = foundRed.reportNumber
-			res.writeHead(200, {
-				'Content-Type': foundRed.issuedReport.contentType,
-				'Content-Disposition': "attachment; filename=" + name + ".pdf"
-			});
-			res.write(foundRed.issuedReport.data)
-			res.end()
-			// res.send(`${name}, ${name2}`)
-			// res.download(paf)
-			// res.download("foundRed.issuedReport")
+			//*****************Get all files*******/
+			// gfs.find().toArray((err, files) => {
+			// 	res.status(200).json({success: true, files})
+			// })
+			//**************Get by id*************/
 
-			// data:image/image.img.contentType;base64,
-			// <image.img.data.toString('base64')
+			let ID = new mongoose.Types.ObjectId(foundRed.fileID)
+			gfs.find({ _id: ID}).toArray((err, file) => {
+				if(err || !file[0]){
+					console.log(err)
+					req.flash("error", "Error while fetching the file")
+					return res.redirect("back")
+				}
+				res.writeHead(200, {
+				'Content-Type': file[0].contentType,
+				'Content-Disposition': "attachment; filename=" + foundRed.reportNumber + ".pdf",
+				});
 
-			// res.render("redPanels/edit", { section_id: req.params.id, redpanel: foundRed })
+				const readstream = gfs.openDownloadStreamByName(file[0].filename)
+				readstream.pipe(res)
+			})
 		}
 	})
 })
@@ -201,47 +238,56 @@ router.get("/sections/:id/redPanels/:redpanel_id/edit", isLoggedIn, isAuthor, fu
 })
 
 // 6. Update route - Puts the supplied info from edit form into the database
-router.put("/sections/:id/redPanels/:redpanel_id", isLoggedIn, isAuthor, upload.single("issuedReport"), function (req, res) {
-	if (req.file) {
-		req.body.redPanel.issuedReport = req.file
-	}
+router.put("/sections/:id/redPanels/:redpanel_id", isLoggedIn, isAuthor, upload2.single("issuedReport"), function (req, res) {
 	Redpanel.findByIdAndUpdate(req.params.redpanel_id, req.body.redPanel, function (err, updatedRedpanel) {
 		if (err || !updatedRedpanel) {
 			req.flash("error", "Cannot find requested TARP Red panel")
 			return res.redirect("/redPanel")
+		} else if(req.file){
+			gfs.delete(new mongoose.Types.ObjectId(updatedRedpanel.fileID), function(err, storage){
+				if(err){
+					req.flash("error", "Error while removing old recommendation")
+					return res.status(404).redirect("/redPanel")
+				}
+				updatedRedpanel.fileID = req.file.id
+				updatedRedpanel.save(function(err, savedUpdated){
+					if(err){
+						req.flash("error", "error while saving updated red panel")
+						return res.status(404).redirect("/redPanel")
+					}
+					req.flash("success", "Successfully updated a TARP Red panel")
+					return res.redirect("/redPanel/" + req.params.redpanel_id)
+				})
+			})
 		} else {
 			req.flash("success", "Successfully updated a TARP Red panel")
-			res.redirect("/redPanel/" + req.params.redpanel_id)
+			return res.redirect("/redPanel/" + req.params.redpanel_id)
 		}
 	})
 })
 // 7. Delete route - Delete particular red panel
-router.delete("/sections/:id/redPanels/:redpanel_id", isLoggedIn, isAuthor, function (req, res) {
-	Redpanel.findByIdAndRemove(req.params.redpanel_id, function (err) {
+router.delete("/sections/:id/redPanels/:redpanel_id", function (req, res) {
+ 		Redpanel.findById(req.params.redpanel_id, function (err, foundRed) {
 		if (err) {
-			req.flash("error", "Oops! Something went wrong :(")
+			req.flash("error", "Oops! Something went wrong or panel is already deleted")
 			return res.redirect("/redPanel")
-		} else {
-			// console.log(req.params.redpanel_id)
-			req.flash("success", "Successfully deleted a TARP red panel")
-			res.redirect("/redPanel")
 		}
+		Redpanel.findByIdAndDelete(req.params.redpanel_id, function(err){
+			if(err){
+				req.flash("error", "Error While Deleting Red Panel Data")
+				return res.redirect("/redPanel")
+			}
+			gfs.delete(new mongoose.Types.ObjectId(foundRed.fileID), function(err, data){
+				if(err){
+					req.flash("error", "Error While Deleting Recommendation. Red Panel Data Deleted")
+					return res.redirect("/redPanel")
+				}
+				console.log(data)
+				req.flash("success", "Successfully deleted a TARP red panel")
+				res.redirect("/redPanel")
+			})
+		})
 	})
-	// Redpanel.findById(req.params.redpanel_id, function(err, found){
-	// 	if(err){
-	// 		res.redirect("back")
-	// 	} else {
-	// 		console.log(found);
-	// 		Rehab.create(found, function(err, rehabed){
-	// 			if(err){
-	// 				console.log(err);
-	// 				res.redirect("back")
-	// 			} else {
-	// 				res.redirect("/redPanel")
-	// 			}
-	// 		} )
-	// 	}
-	// })
 })
 
 

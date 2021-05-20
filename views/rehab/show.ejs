@@ -4,21 +4,26 @@
 
     <div class="element">
         <div>
-            <h1>TARP Red Panel <%= redPanel.panel %> at <%= redPanel.section %></h1>
-            <p>Trigger(s) - <%= redPanel.trigger %></p>
-            <p>Report number - <%= redPanel.reportNumber %></p>
-            <p>Date report issued - <%= redPanel.issueDate.toDateString() %></p>
-            <!-- <p>Download report - <%= redPanel.issuedReport %></p> -->
+            <h1>Rehabilitated Panel <%= rehabedPanel.panel %> of <%= rehabedPanel.section.name %></h1>
+            <p>Trigger(s) - <%= rehabedPanel.trigger %></p>
+            <p>Report number - <%= rehabedPanel.reportNumber %></p>
          </div>
 
-         <a href="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/edit">Edit</a>
-         <br>
-         <form action="/sections/<%= redPanel.sectionid %>/redPanels/<%= redPanel._id %>?_method=DELETE" method="POST">
-            <button type="submit">Delete!</button>
-         </form>
-         <!-- <form action="/sections/<%= redPanel.section.id %>/rehabs/<%= redPanel._id %>/now_rehabed" action="" method="get">
-            <button type="submit">Rehabilitated!</button>
-         </form> -->
+         <p>
+            <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/download" method="get">
+               <button type="submit">Download Recommendation</button>
+            </form>
+            <br>
+
+            <% if( currentUser && rehabedPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+               <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>?_method=DELETE" method="POST">
+                  <button id="delete" type="submit">Delete</button>
+               </form>
+               <p>
+                  <a href="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/edit">Edit</a>
+               </p>
+            <% } %>
+         </p>
          
     </div>  
     

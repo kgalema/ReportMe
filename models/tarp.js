@@ -4,16 +4,20 @@ const mongoose = require("mongoose")
 // Redpanels Schema
 // ================
 const redpanelSchema = new mongoose.Schema({
-	panel: String,
+	panel: { type: String, required: true },
 	trigger: String,
 	reportNumber: String,
 	issueDate: { type: Date },
+	fileID: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "Reds.files"
+	},
 	declaredDate: { type: Date },
 	// issuedReport: { type: String },
-	issuedReport: {
-		data: Buffer,
-		contentType: String
-	},
+	// issuedReport: {
+	// 	data: Buffer,
+	// 	contentType: String
+	// },
 	created: { type: Date, default: Date.now },
 	section: {
 		id: {

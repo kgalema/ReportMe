@@ -12,38 +12,65 @@ const session = require('express-session')
 const flash = require("connect-flash")
 const path = require("path")
 const fs = require("fs")
-const GridFSStorage = require("multer-gridfs-storage")
+const ExpressError = require('./utils/ExpressError');
 const passport = require("passport");
 const LocalStrategy = require("passport-local")
 const User = require("./models/user")
+const crypto = require('crypto')
+
+
+// ****************************Database Setup Start*************************************
+// const dbUrl = "mongodb://localhost/reportMe";
+const dbUrl = process.env.DB_URL || "mongodb://localhost/reportMe";
+const DBoptions = {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+	useCreateIndex: true,
+	useFindAndModify: false
+}
+
+mongoose.connect(dbUrl, DBoptions, function (err) {
+	if (err) {
+		console.log("*******first error*********")
+		console.log(err)
+		console.log("*******first error*********")
+	}
+	console.log("Connected to the database")
+});
+
+
+
+const conn1 = mongoose.connection
+
+
+conn1.on("error", function(err){
+	console.log("******On error*******")
+	console.log(err)
+	console.log("******On error*******")
+})
+
+conn1.on("disconnected", function(err){
+	console.log("*******On disconnected******")
+	console.log(err)
+	console.log("*******On disconnected******")
+})
+
+module.exports.dbUrl = dbUrl
+module.exports.connection = conn1
+//**************************Database Setup End****************************************
 
 const MongoStore = require("connect-mongo")(session)
 
-const redPanelsRoutes = require("./routes/redPanels")
-const sectionsRoutes = require("./routes/sections")
-const productionRoutes = require("./routes/production")
+const redPanelsRoutes = require("./routes/redPanels");
+const newRedPanelsRoutes = require("./routes/newRed");
+const sectionsRoutes = require("./routes/sections");
+const productionRoutes = require("./routes/production");
 const accessRoutes = require("./routes/access")
-const rehabilitated = require("./routes/rehabilitated")
-const userRoutes = require("./routes/access")
+const rehabilitated = require("./routes/rehabilitated");
+const userRoutes = require("./routes/access");
+const romRoutes = require("./routes/rom");
+const plantFeedRoutes = require("./routes/plantFeed");
 
-
-
-// ==================end here====================
-
-// const dbUrl = "mongodb://localhost/reportMe"
-const dbUrl = process.env.DB_URL || "mongodb://localhost/reportMe";
-
-mongoose.set('useFindAndModify', false);
-const connection = mongoose.connect(dbUrl, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-	useCreateIndex: true
-})
-	.then(() => console.log("Connected to DB"))
-	.catch(error => {
-		console.log(error.message)
-		// throw new Error("Something wrong with the database")
-	});
 
 const secret = process.env.SECRET || "highSchoolCrush";
 
@@ -70,6 +97,12 @@ const sessionConfig = {
 		maxAge: 1000 * 60 * 60 * 24 * 7
 	}
 }
+
+
+
+
+
+
 app.use(session(sessionConfig))
 app.use(flash())
 app.use(passport.initialize())
@@ -78,10 +111,13 @@ passport.use(new LocalStrategy(User.authenticate()))
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
 
+// ***Parse application/x-www-form-urlencoded***
+// app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.urlencoded({extended: true}))
 
-app.use(bodyParser.urlencoded({ extended: true }))
-
+// ***Parse application/json***
 // app.use(bodyParser.json())
+app.use(express.json()) 
 
 app.use(express.static("public"))
 // app.use(express.static("uploads"))
@@ -100,12 +136,31 @@ app.use((req, res, next) => {
 })
 
 
+
 app.use(userRoutes)
 app.use(redPanelsRoutes)
+app.use(newRedPanelsRoutes)
 app.use(sectionsRoutes)
 app.use(productionRoutes)
 app.use(accessRoutes)
 app.use(rehabilitated)
+app.use(romRoutes)
+app.use(plantFeedRoutes)
+
+
+app.all("*", (req, res, next) => {
+	console.log("Resource not found")
+	return next(new ExpressError("Page Not Found", 404))
+})
+
+app.use((err, req, res, next) => {
+	// console.log(req)
+	console.log("from express error middleware")
+	const { statusCode = 500 } = err
+	if (!err.message) err.message = "Oh No, Something Went Wrong!";
+	res.status(statusCode).render('error', { title: "title", err })
+	// res.status(statusCode).send(err.message)
+})
 
 const port = process.env.PORT || 4000;
 // if (port == null || port == "") {

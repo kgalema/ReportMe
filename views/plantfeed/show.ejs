@@ -1,0 +1,50 @@
+<%- include("../partials/header") %>
+
+    <div class="main-body">
+        <div class="element">
+            <h3>Plant Feed entry for: <%= foundPlantFeed.created.toLocaleDateString() %> </h3>
+
+            <div class="element2">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Budget</th>
+                            <th>Forecast</th>
+                            <th>Actual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <td>
+                            <%= foundPlantFeed.created.toLocaleDateString() %>
+                        </td>
+                        <td>
+                            <%= foundPlantFeed.budget %>
+                        </td>
+                        <td>
+                            <%= foundPlantFeed.forecast %>
+                        </td>
+                        <td>
+                            <%= foundPlantFeed.actual %>
+                        </td>
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <a href="/plantFeed">Back</a>
+            <br>
+            <% if(currentUser && currentUser.isAdmin){ %>
+                <div class="admin">
+                    <a href="/plantFeed/<%= foundPlantFeed._id %>/edit">Edit</a>
+                    <form action="/plantFeed/<%= foundPlantFeed._id %>?_method=DELETE" method="post">
+                        <button id="delete" type="submit">Delete</button>
+                    </form>
+                </div>
+            <%}%>
+        </div>
+    </div>
+
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

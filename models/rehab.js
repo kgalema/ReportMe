@@ -11,16 +11,32 @@ const rehabSchema = new mongoose.Schema({
 	declaredDate: {type: Date},
 	created: {type: Date, default: Date.now},
 	rehabDate: {type: Date},
-	section: String,
-	sectionid: {type: mongoose.Schema.Types.ObjectId},
-	sectionid: String
-	// section: {
+	section: {
+		id: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Section"
+		},
+		name: String
+	},
+	author: {
+		id: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User"
+		}
+	},
+	authorRed: {
+		id: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User"
+		}
+	},
+	// fileID: {
 	// 	id: {
 	// 		type: mongoose.Schema.Types.ObjectId,
-	// 		ref: "Section"
-	// 	},
-	// 	name: String
-	// }
+	// 		ref: "Reds.files"
+	// 		}
+	// },
+	fileID: { type: mongoose.Schema.Types.ObjectId}
 })
 
 const Rehab = mongoose.model("Rehab", rehabSchema)

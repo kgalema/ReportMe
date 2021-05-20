@@ -1,0 +1,20 @@
+<%- include("./partials/header") %>
+
+    <div class="main-body">
+        <div class="element">
+            <div class="error" style="display: flex; align-items: center; flex-direction: column;">
+                <h4>
+                    <%= err.message %>
+                </h4>
+                <% if(process.env.NODE_ENV !=="production" ){ %>
+                    <p>
+                        <%= err.stack %>
+                    </p>
+                    <% } %>
+            </div>
+        </div>
+    </div>
+
+
+<%- include("./partials/sidebar") %>
+<%- include("./partials/footer") %>

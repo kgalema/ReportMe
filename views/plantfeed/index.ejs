@@ -1,0 +1,62 @@
+<%- include("../partials/header") %>
+
+    <div class="main-body">
+        <div class="element">
+            <h3>Plant Feed Index</h3>
+            <div class="element2">
+                <% if(feeds && feeds.length){ %>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Budget</th>
+                                <th>Forecast</th>
+                                <th>Actual</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% feeds.forEach(e=> { %>
+                                <tr>
+                                    <td>
+                                        <a href="plantFeed/<%= e._id %>">
+                                            <%= e.created.toLocaleDateString() %>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <%= e.budget %>
+                                    </td>
+                                    <td>
+                                        <%= e.forecast %>
+                                    </td>
+                                    <td>
+                                        <%= e.actual %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                                    <tr>
+                                        <th>Total</th>
+                                        <th>
+                                            <%= feeds.map(a=> a.budget).reduce((a, b) => (a + b), 0)%>
+                                        </th>
+                                        <th>
+                                            <%= feeds.map(a=> a.forecast).reduce((a, b) => (a + b), 0)%>
+                                        </th>
+                                        <th>
+                                            <%= feeds.map(a=> a.actual).reduce((a, b) => (a + b), 0)%>
+                                        </th>
+                                    </tr>
+                        </tbody>
+                    </table>
+                    <% } else{ %>
+                        <p>Nothing to show</p>
+                    <% } %>
+            <hr>
+            </div>
+            <a class="button" href="/plantFeed/new">Add C5 reading</a>
+        </div>
+    </div>
+
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

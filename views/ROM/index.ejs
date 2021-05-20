@@ -1,0 +1,62 @@
+<%- include("../partials/header") %>
+
+    <div class="main-body">
+        <div class="element">
+            <h3>ROM Index</h3>
+            <div class="element2">
+                <% if(roms && roms.length){ %>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Budget</th>
+                                    <th>Forecast</th>
+                                    <th>Actual</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <% roms.forEach(e=> { %>
+                                <tr>
+                                    <td>
+                                        <a href="rom/<%= e._id %>">
+                                            <%= e.created.toLocaleDateString() %>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <%= e.budget %>
+                                    </td>
+                                    <td>
+                                        <%= e.forecast %>
+                                    </td>
+                                    <td>
+                                        <%= e.actual %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                            <tr>
+                                <th>Total</th>
+                                <th>
+                                    <%= roms.map(a => a.budget).reduce((a, b) => (a + b), 0)%>
+                                </th>
+                                <th>
+                                    <%= roms.map(a=> a.forecast).reduce((a, b) => (a + b), 0)%>
+                                </th>
+                                <th>
+                                    <%= roms.map(a=> a.actual).reduce((a, b) => (a + b), 0)%>
+                                </th>
+                            </tr>
+                            </tbody>
+                        </table>
+                <% } else{ %>
+                    <p>Nothing to show</p>
+                <% } %>
+            </div>
+            <hr>
+            <a class="button" href="/rom/new">Add C1 reading</a>
+        </div>
+    </div>
+
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

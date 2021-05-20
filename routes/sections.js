@@ -12,10 +12,8 @@ const { isLoggedIn, isSectionAuthor } = require("../middleware")
 router.get("/sections", function (req, res) {
 	Section.find({}, function (err, allSections) {
 		if (err || !allSections) {
-			console.log(err);
 			return res.redirect("/")
 		} else {
-			// console.log(req)
 			res.render("sections/index", { sections: allSections, title: "sections" })
 		}
 	})
@@ -29,10 +27,8 @@ router.get("/sections/new", isLoggedIn, function (req, res) {
 router.post("/sections", isLoggedIn, function (req, res) {
 	Section.create(req.body.section, function (err, newSection) {
 		if (err) {
-			console.log(err)
 			return res.render("sections/new", { title: "section" })
 		} else {
-			console.log(req.body)
 			newSection.author = req.user._id
 			newSection.save(function (err, savedSection) {
 				if (err) {
@@ -42,18 +38,28 @@ router.post("/sections", isLoggedIn, function (req, res) {
 				req.flash("success", "Successfully added new section")
 				res.redirect("/sections")
 			})
-			// then redirect to the index route
 		}
 	});
 })
 // 4. Show route - shows/get info about one specific section
 router.get("/sections/:id", function (req, res) {
-	Section.findById(req.params.id).populate("redPanels").exec(function (err, foundSection) {
+	// Section.findById(req.params.id).populate("redPanels").exec(function (err, foundSection) {
+	Section.findById(req.params.id, function (err, foundSection) {
 		if (err || !foundSection) {
-			console.log(err)
+			req.flash("error", "Invalid Section ID")
 			return res.redirect("back")
+		} else if (req.session.returnTo) {
+			switch (req.session.returnTo) {
+				case "/sections/sectionId/production/new":
+					redirect = "/production/new";
+					break;
+				case "/sections/sectionId/newReds/new":
+					redirect = "/newReds/new";
+					break;
+				}
+			delete req.session.returnTo;
+			return res.redirect("/sections/"+ foundSection._id + redirect)
 		} else {
-			// console.log(foundSection)
 			res.render("sections/show", { section: foundSection, title: "sections" })
 		}
 	});
@@ -75,6 +81,7 @@ router.put("/sections/:id", isLoggedIn, isSectionAuthor, function (req, res) {
 		if (err) {
 			return res.redirect("back")
 		} else {
+			req.flash("success", "Successfully updated section")
 			res.redirect("/sections/" + req.params.id)
 		}
 	})
@@ -85,6 +92,7 @@ router.delete("/sections/:id", isLoggedIn, isSectionAuthor, function (req, res) 
 		if (err) {
 			return res.redirect("back")
 		} else {
+			req.flash("success", "Successfully deleted section")
 			res.redirect("/sections")
 		}
 	})

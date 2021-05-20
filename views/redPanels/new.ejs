@@ -1,77 +1,73 @@
 <%- include("../partials/header") %>
 
 
-<div class="main-body">
+    <div class="main-body">
 
-    <div class="element">
+        <div class="element">
 
-        <h3>Add New Red Panel for <%= section.name %></h3>
+            <h3>Issue TARP Red Recommendation for <%= section.name %>'s <%= redPanel.panel %> Panel </h3>
 
-        <form action="/sections/<%= section._id %>/redPanels" enctype="multipart/form-data" method="POST">
-            <table class="form-row">
-                <tr>
-                    <td class="form-row">
-                        <label for="Panel">Panel:</label>
-                    </td>
-                    <td class="form-row">
-                        <select name="redPanel[panel]" id="Panel" required>
-                            <option value="">Select</option>
-                            <option value="58E">58E</option>
-                            <option value="59E">59E</option>
-                            <option value="60E">60E</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="form-row">
-                        <label for="">TARP red trigger(s):</label>
-                    </td>
-                    <td class="form-row">
-                        <input type="text" name="redPanel[trigger]" required>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="form-row">
-                        <label for="">Report number:</label>
-                    </td>
-                    <td class="form-row">
-                        <input name="redPanel[reportNumber]" type="text" required>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="form-row">
-                        <label for="">Date panel declared:</label>
-                    </td>
-                    <td class="form-row">
-                        <input name="redPanel[declaredDate]" type="datetime-local" required>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="form-row">
-                        <label for="">Date report issued:</label>
-                    </td>
-                    <td class="form-row">
-                        <input name="redPanel[issueDate]" type="datetime-local" required>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="form-row">
-                        <label for="">Attach report:</label>
-                    </td>
-                    <td class="form-row">
-                        <input name="issuedReport" type="file" accept=".pdf" required>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="form-row" colspan="2">
-                        <button style="width: 100%;" type="submit">Submit</button>
-                    </td>
-                </tr>
-            </table>
-        </form>
+            <form action="/sections/<%= section._id %>/redPanels?q=<%= queryId %>" enctype="multipart/form-data" method="POST">
+                <table class="form-row">
+                    <tr>
+                        <td class="form-row">
+                            <label for="panel-name">Panel:</label>
+                        </td>
+                        <td class="form-row">
+                            <input type="text" id="panel-name" name="redPanel[panel]"  value="<%= redPanel.panel %>" readonly required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="triggers">TARP Red Trigger(s):</label>
+                        </td>
+                        <td class="form-row">
+                            <input type="text" id="triggers" name="redPanel[trigger]" value="<%= redPanel.triggers %>" readonly required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="report-number">Report Number:</label>
+                        </td>
+                        <td class="form-row">
+                            <input name="redPanel[reportNumber]" id="report-number" type="text" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="date-declared">Date Panel Declared:</label>
+                        </td>
+                        <td class="form-row">
+                            <input name="redPanel[declaredDate]" id="date-declared" type="date" value="<%= moment(redPanel.dateDeclared).format('YYYY-MM-DD')%>" readonly required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="">Date Report Issued:</label>
+                        </td>
+                        <td class="form-row">
+                            <input name="redPanel[issueDate]" type="datetime-local" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="">Attach report:</label>
+                        </td>
+                        <td class="form-row">
+                            <input name="issuedReport" type="file" accept=".pdf" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row" colspan="2">
+                            <button style="width: 100%;" type="submit">Submit</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
     </div>
-</div>
-
 
 <%- include("../partials/sidebar") %>
+
+
 <%- include("../partials/footer") %>

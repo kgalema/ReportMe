@@ -1,8 +1,7 @@
 # Project Description
 
-ReportMe! is a reporting web application designed to consolidate data from different mining sections/teams at an underground mine in Rustenburg, North West. The data is stored in a MongoDB database within a local machine.
+ReportMe! is a full stack web application designed to consolidate data from different teams of an organisation and stored the data in a non-relational MongoDB database.
 
-The Front-End part of the app is 90% complete while the back-End is 70% completed 
 
 ## Technologies used
     1. HTML5/CSS3

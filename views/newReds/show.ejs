@@ -4,27 +4,15 @@
 
         <div class="element">
 
-            <% if(success && success.length) {%>
-                <div class="success">
-                    <%= success %>
-                </div>
-            <% } %>
+            <div>
+                <h1>TARP Red Panel <%= newRedPanel.panel %> of: <%= newRedPanel.section.name %></h1>
+                <p>Trigger(s) - <%= newRedPanel.triggers %></p>
+                <p>Date declared - <%= newRedPanel.dateDeclared.toDateString() %> </p>
+            </div>
 
-            <% if(error && error.length) {%>
-                <div class="error">
-                    <%= error %>
-                </div>
-            <% } %>
-
-                <div>
-                    <h1>TARP Red Panel <%= newRedPanel.panel %> of: <%= newRedPanel.section.name %></h1>
-                    <p>Trigger(s) - <%= newRedPanel.triggers %></p>
-                    <p>Date declared - <%= newRedPanel.dateDeclared.toDateString() %> </p>
-                </div>
-
-                <div>
-                    <a href="/sections/<%= newRedPanel.section.id %>/redPanel/new?q=<%= newRedPanel._id %>">Issue Recommendation</a>
-                </div>
+            <div>
+                <a href="/sections/<%= newRedPanel.section.id %>/redPanel/new?q=<%= newRedPanel._id %>">Issue Recommendation</a>
+            </div>
 
             <% if( currentUser && newRedPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
                     <form action="/sections/<%= newRedPanel.section.id %>/newRedPanel/<%= newRedPanel._id %>?_method=DELETE" method="POST">

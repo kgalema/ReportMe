@@ -20,8 +20,8 @@ const crypto = require('crypto')
 
 
 // ****************************Database Setup Start*************************************
-// const dbUrl = "mongodb://localhost/reportMe";
-const dbUrl = process.env.DB_URL || "mongodb://localhost/reportMe";
+const dbUrl = "mongodb://localhost/reportMe";
+// const dbUrl = process.env.DB_URL || "mongodb://localhost/reportMe";
 const DBoptions = {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,

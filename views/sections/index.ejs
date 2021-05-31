@@ -2,21 +2,17 @@
 
 <div class="main-body">
     <div class="element">
-        <!-- <h4>Select A Section</h4> -->
         <legend><strong>Choose Section</strong></legend>
         <hr>
         <% if(!sections){ %>
         <div>No Sections 
-            <!-- | <a href="/rom">ROM</a> |
-        <a href="plantFeed">Plant Feed</a> -->
+            
         </div>
         <% } else { %>
         <div>
             <% sections.forEach(function(section){ %>
             <a href="/sections/<%= section._id %>"><%= section.name %></a> |
             <% }) %>
-            <!-- <a href="/rom">ROM</a> |
-            <a href="/plantFeed">Plant Feed</a> -->
         </div>
         <% } %>
         

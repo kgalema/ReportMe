@@ -4,23 +4,11 @@
     <div class="main-body">
         <div class="element">
             <div class="element2">
-                <div>
-                    <% if(success && success.length) {%>
-                        <div class="success">
-                            <%= success %>
-                        </div>
-                        <% } %>
-                        <% if(error && error.length) {%>
-                        <div class="error">
-                            <%= error %>
-                        </div>
-                        <% } %>
-                </div>
-
 
                 <form class="new-production" action="/sections/<%= section._id %>/production" method="post">
-                    <h2><span>
-                            <%= section.name %>'s Production Report</h2>
+                    <h2>
+                        <%= section.name %>'s Production Report
+                    </h2>
                     <h3>
                         <%= new Date().toDateString() %>
                     </h3>
@@ -31,7 +19,6 @@
                             required>
                         <label for="afternoon">Back Shift</label>
                     </div>
-                    <!-- <input type="text" id="unique" name="production[general][1][unique]" value=""> -->
 
                     <br>
 
@@ -97,10 +84,6 @@
                                         <input type="number" id="length" name="production[support][1][length]"
                                             placeholder="metres" required>
                                     </td>
-                                    <!-- <td class="form-row">
-                                    <input type="number" id="length" name="production[support][1][length]"
-                                        placeholder="holes" required>
-                                </td> -->
                                     <td class="form-row">
                                         <input type="button" id="add"
                                             onClick="addAnotherSupport(parentNode.parentNode.parentNode.parentNode.parentNode)"
@@ -133,8 +116,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <button type="button" class="collapsible" id="prepared-report">Prepared Panels
-                        (Marked)</button>
+                    <button type="button" class="collapsible" id="prepared-report">Prepared Panels (Marked)</button>
                     <div class="content">
                         <table class="form-row">
                             <tbody>
@@ -156,9 +138,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <button type="button" class="collapsible" id="notClean-report">Not Cleaned Report
-                        (Including
-                        Backlash)</button>
+                    <button type="button" class="collapsible" id="notClean-report">Not Cleaned Report (Including Backlash)</button>
                     <div class="content">
                         <table class="form-row">
                             <tbody>
@@ -186,17 +166,13 @@
                             <tbody>
                                 <tr class="form-row">
                                     <td class="form-row">
-                                        <input type="number" id="coyNumber" name="production[LHD][1][coyNumber]"
-                                            placeholder="operator_coy_number" required>
+                                        <input type="number" id="coyNumber" name="production[LHD][1][coyNumber]" placeholder="operator_coy_number" required>
                                     </td>
                                     <td class="form-row">
-                                        <input type="text" id="LHDnumber" name="production[LHD][1][LHDnumber]"
-                                            placeholder="LHD_number" required>
+                                        <input type="text" id="LHDnumber" name="production[LHD][1][LHDnumber]" placeholder="LHD_number" required>
                                     </td>
                                     <td class="form-row">
-                                        <input type="button" id="add"
-                                            onClick="addAnotherLHD(parentNode.parentNode.parentNode.parentNode.parentNode)"
-                                            value="+ LHD">
+                                        <input type="button" id="add" onClick="addAnotherLHD(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ LHD">
                                     </td>
                                 </tr>
                             </tbody>

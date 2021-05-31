@@ -4,7 +4,6 @@
         <div class="element2">
             <h2>Reported Production: <%= reported.section.name %></h2>
             <p>
-                <!-- <input type="date" name="" id="" value="2020-10-11"> -->
                 <%= reported.created.toDateString() %>
             </p>
             <table>
@@ -143,35 +142,13 @@
             </p>
             <div class="admin">
                 <a href="/sections/<%= reported.section.id %>/production/<%= reported._id %>/edit">Edit</a>
-                <form action="/sections/<%= reported.section.id %>/production/<%= reported._id %>?_method=DELETE"
-                    method="POST">
+                <form action="/sections/<%= reported.section.id %>/production/<%= reported._id %>?_method=DELETE" method="POST">
                     <button id="delete" type="submit">Delete!</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-<!-- <div>
-    <table style="display: flex;">
-        <tr>
-            <td>1</td>
-            <td rowspan="3">2</td>
-            <td>3</td>
-        </tr>
-        <tr>
-            <td>4</td>
-            <td>5</td>
-            <td>6</td>
-            <td>7</td>
-        </tr>
-        <tr>
-            <td>8</td>
-            <td>9</td>
-            <td>10</td>
-            <td>11</td>
-        </tr>
-    </table>
-</div> -->
 
 
 

@@ -2,7 +2,6 @@
 
 <div class="main-body">
     <div class="element">
-        <!-- <h4><%= section.name %></h4> -->
         <legend><strong><%= section.name %></strong></legend>
         <hr>
 
@@ -12,9 +11,6 @@
             <p>Effective shift duration N/S - (9 hours)</p>
             <p>Planned advance - <%= section.plannedAdvance  %> <span>m</span> </p>
             <p>Daily target (Blast) - <%= section.forecast %> <span>m<sup>2</sup></span>  </p>
-            <p>
-                <!-- Active Red Panels: <%= section.redPanels.length %> -->
-            </p>
         </div>
 
 
@@ -37,4 +33,4 @@
 
 
 <%- include("../partials/sidebar") %>
-        <%- include("../partials/footer") %>
+<%- include("../partials/footer") %>

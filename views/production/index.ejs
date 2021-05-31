@@ -18,7 +18,7 @@
                             <button class="btn" onclick="filter('day')">Morning Shift</button>
                             <button class="btn" onclick="filter('night')">Back Shift</button>
                             <button class="btn" onclick="filter('blast-progs', <%= JSON.stringify(production) %>)">Progressive Blast</button>
-                            <input type="date" id="dateFilter" oninput="dateChange(this, <%= JSON.stringify(production) %>)" %>">
+                            <input type="date" id="dateFilter" oninput="dateChange(this, <%= JSON.stringify(production) %>)" >
                     </div>
 
                 </div>
@@ -45,7 +45,7 @@
                                 <tr>
                                     <td>
                                         <a
-                                            href=" /sections/<%= e.section.id %>/production/<%= e._id %>">
+                                            href="/sections/<%= e.section.id %>/production/<%= e._id %>">
                                             <%= e.section.name %>
                                         </a>
                                     </td>

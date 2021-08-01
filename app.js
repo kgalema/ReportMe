@@ -54,8 +54,8 @@ const nodemailer = require("nodemailer");
 
 
 // ****************************Database Setup Start*************************************
-// const dbUrl = "mongodb://localhost/reportMe";
-const dbUrl = process.env.DB_URL
+const dbUrl = "mongodb://localhost/reportMe";
+// const dbUrl = process.env.DB_URL
 const DBoptions = {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,

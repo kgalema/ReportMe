@@ -24,9 +24,11 @@
                 <li class="side-item  <% if (title === 'sections') { %>selected <% } %>">
                     <a <% if (title === 'sections') { %>id='select'<% } %> href="/sections">Sections</a>
                 </li>
-                <li class="side-item  <% if (title === 'users') { %>selected <% } %>">
-                    <a <% if (title === 'users') { %>id='select'<% } %> href="/users">Users</a>
-                </li>
+                <% if(currentUser && currentUser.isAdmin){ %>
+                    <li class="side-item  <% if (title === 'users') { %>selected <% } %>">
+                        <a <% if (title === 'users') { %>id='select'<% } %> href="/users">Users</a>
+                    </li>
+                <% } %>
                 <% if(!currentUser){ %>
                     <li class="side-item  <% if (title === 'Login') { %>selected <% } %>">
                         <a <% if (title === 'Login') { %>id='select'<% } %> href="/login">Log In</a>

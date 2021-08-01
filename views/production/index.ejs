@@ -14,7 +14,7 @@
 
                     <div class="myBtnContainer" id="myBtnContainer">
                             <button class="btn" id="all" onclick="filter('all')">All</button>
-                            <button class="btn selected" id="combine" onclick="filter('combine')">Morning + Night</button>
+                            <button class="btn selected" id="combine" onclick="filter('combine')" style="display: none;">Morning + Night</button>
                             <button class="btn" onclick="filter('day')">Morning Shift</button>
                             <button class="btn" onclick="filter('night')">Back Shift</button>
                             <button class="btn" onclick="filter('blast-progs', <%= JSON.stringify(production) %>)">Progressive Blast</button>
@@ -24,7 +24,7 @@
                 </div>
 
                 <div id="tables">
-                    <table id="all-shift" class="filterDiv all combine">
+                    <table id="all-shift" class="filterDiv all combine" style="display: none;">
                         <thead>
                             <tr>
 

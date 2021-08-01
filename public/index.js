@@ -373,7 +373,7 @@ function dateChange(e, f) {
     let dayshift = prodFiltered.filter(prod => prod.general[0].shift === "morning")
     let backshift = prodFiltered.filter(prod => prod.general[0].shift === "backshift")
     let content = `
-                    <table id="all-shift" class="filterDiv all combine">
+                    <table id="all-shift" class="filterDiv all combine" style="display: none">
                         <thead>
                             <tr>
 
@@ -519,7 +519,8 @@ function dateChange(e, f) {
 `
 
     let all = document.createElement("section");
-    all.innerHTML = content
+    all.innerHTML = content;
+    all.setAttribute("id", "wrapper");
     main.appendChild(all)
     document.getElementById('all').click()
 }

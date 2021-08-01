@@ -88,6 +88,11 @@ conn1.on("disconnected", function(err){
 	console.log("*******On disconnected******")
 	console.log(err)
 	console.log("*******On disconnected******")
+	app.all("*", (req, res, next) => {
+    	console.log("Resource not found");
+    	return next(new ExpressError("Page Not Found", 404));
+  	});
+	// throw new ExpressError("Database disconnected. Contact Admin", 404);
 })
 
 module.exports.dbUrl = dbUrl

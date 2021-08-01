@@ -151,7 +151,7 @@ router.put("/sections/:id/redPanels/:redpanel_id", isLoggedIn, isAuthor, functio
 	// 		return res.redirect("/redPanel/" + req.params.redpanel_id)
 	// 	}
 	// })
-	req.flash("error", "Cannot Updated Rehabilitated Panel")
+	req.flash("error", "Cannot Update Rehabilitated Panel")
 	res.redirect("/rehabedPanels")
 })
 // 7. Delete route - Delete particular red panel

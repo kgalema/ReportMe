@@ -5,7 +5,7 @@ const ROM = require("../models/ROM")
 const PlantFeed = require("../models/plantFeed")
 const Production = require("../models/production")
 const moment = require("moment")
-const { isLoggedIn, isProductionAuthor, isSectionSelected } = require("../middleware")
+const { isLoggedIn, isProductionAuthor, isSectionSelected, isAdmin } = require("../middleware")
 
 
 
@@ -60,16 +60,7 @@ router.get("/api/production", function (req, res) {
 	})
 })
 
-// 2. **New route - renders production report form**
-// router.get("/sections/:id/production/new", function (req, res) {
-// 	Section.findById(req.params.id, function (err, foundSection) {
-// 		if (err) {
-// 			console.log(err);
-// 		} else {
-// 			res.render("production/new", { section: foundSection });
-// 		}
-// 	})
-// })
+
 
 // 2. ***New route: Renders production report form***
 router.get("/sections/:id/production/new", isLoggedIn, isSectionSelected, function (req, res) {
@@ -78,7 +69,7 @@ router.get("/sections/:id/production/new", isLoggedIn, isSectionSelected, functi
 			req.flash("error", "Oops! Invalid Section ID. Section Not Found")
 			return res.redirect("back")
 		} else {
-			res.render("production/new", { section: foundSection, title: "production-report" });
+			res.render("production/new", { section: foundSection, title: "production-dash" });
 		}
 	})
 })
@@ -89,6 +80,7 @@ router.post("/sections/:id/production", isLoggedIn, function (req, res) {
 	Section.findById(req.params.id, function (err, section) {
 		if (err || !section) {
 			req.flash("error", "Oops! Seems like the database is down or section has been deleted")
+			console.log(err)
 			return res.redirect("back");
 		} else {
 			let uniqueCode = section.name + new Date().toLocaleDateString() + req.body.production.general[0].shift
@@ -112,6 +104,7 @@ router.post("/sections/:id/production", isLoggedIn, function (req, res) {
 							console.log(err)
 							return res.redirect("back")
 						} else {
+							console.log(savedProduction)
 							// section.production.push(foundProduction);
 							section.save(function (err, savedSection) {
 								if (err) {
@@ -123,10 +116,6 @@ router.post("/sections/:id/production", isLoggedIn, function (req, res) {
 							});
 						}
 					});
-					// section.production.push(foundProduction);
-					// section.save();
-					// req.flash("success", "Successfully Added Production Report")
-					// res.redirect("/production");
 				}
 			})
 		}
@@ -161,8 +150,10 @@ router.get("/sections/:id/production/:production_id/edit", isLoggedIn, isProduct
 })
 // 6. Update - takes info from edit form and PUTs it into existing data in the database
 router.put("/sections/:id/production/:production_id", isLoggedIn, isProductionAuthor, function (req, res) {
+	console.log(req.body.production)
 	Production.findByIdAndUpdate(req.params.production_id, req.body.production, function (err, updatedProduction) {
 		if (err || !updatedProduction) {
+			console.log(err)
 			req.flash("error", "Something went wrong with the database")
 			return res.redirect("back")
 		} else {

@@ -6,18 +6,18 @@ const passportLocalMongoose = require("passport-local-mongoose")
 // UserSchema Schema
 // ====================
 const userSchema = new mongoose.Schema({
-    // username: {
-    //     type: String,
-    //     required: [true, "Username cannot be blank"]
-    // },
-    // password: {
-    //     type: String,
-    //     required: [true, "Password cannot be blank"]
-    // },
+    occupation: {
+        type: String,
+        required: [true, "Occupation not defined"]
+    },
+    department: {
+        type: String,
+        required: [true, "Department not defined"]
+    },
     email: {
         type: String,
         unique: true,
-        required: [true, "email cannot be blank"]
+        required: [true, "Email cannot be blank"]
     },
     isAdmin: { type: Boolean, default: false },
     resetPasswordToken: { type: String },

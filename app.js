@@ -4,24 +4,58 @@ if (process.env.NODE_ENV !== "production") {
 
 const express = require("express")
 const app = express()
-const bodyParser = require("body-parser")
 const mongoose = require("mongoose")
 const expressSanitizer = require("express-sanitizer")
 const methodOverride = require('method-override')
 const session = require('express-session')
 const flash = require("connect-flash")
-const path = require("path")
-const fs = require("fs")
+console.log(flash)
 const ExpressError = require('./utils/ExpressError');
 const passport = require("passport");
 const LocalStrategy = require("passport-local")
 const User = require("./models/user")
-const crypto = require('crypto')
+const nodemailer = require("nodemailer");
+
+// ****************************Testing Starts Here*******************************
+
+// console.log("With host")
+// let smtpTransporter = nodemailer.createTransport({
+//   service: "outlook",
+//   host: "smtp.live.com",
+//   auth: {
+//     user: "kdlreports@outlook.com",
+//     pass: process.env.GMAILPW
+//   },
+// });
+
+// let mailOptions = {
+// 	to: "ronny.kgalema@gmail.com",
+// 	from: "KDL Test <KDLReports@outlook.com>",
+// 	subject: "HTML",
+// 	html: "<h1>Hello World</h1>"
+// };
+
+// smtpTransporter.sendMail(mailOptions, function (err, info) {
+// 	console.log(info)
+// })
+
+// smtpTransporter.verify(function (error, success) {
+//   	if (error) {
+//     	console.log(error);
+// 		return
+//   	} 
+// 	console.log(success)
+// 	console.log("Server is ready to take our messages");
+// });
+
+// console.log(smtpTransporter.transporter)
+
+// ********************************Testing Ends Here***********************
 
 
 // ****************************Database Setup Start*************************************
 // const dbUrl = "mongodb://localhost/reportMe";
-const dbUrl = process.env.DB_URL || "mongodb://localhost/reportMe";
+const dbUrl = process.env.DB_URL
 const DBoptions = {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
@@ -34,6 +68,7 @@ mongoose.connect(dbUrl, DBoptions, function (err) {
 		console.log("*******first error*********")
 		console.log(err)
 		console.log("*******first error*********")
+		return
 	}
 	console.log("Connected to the database")
 });
@@ -67,9 +102,10 @@ const sectionsRoutes = require("./routes/sections");
 const productionRoutes = require("./routes/production");
 const accessRoutes = require("./routes/access")
 const rehabilitated = require("./routes/rehabilitated");
-const userRoutes = require("./routes/access");
+const usersRoutes = require("./routes/users");
 const romRoutes = require("./routes/rom");
 const plantFeedRoutes = require("./routes/plantFeed");
+const newReportsRoutes = require("./routes/newReport");
 
 
 const secret = process.env.SECRET || "highSchoolCrush";
@@ -137,7 +173,7 @@ app.use((req, res, next) => {
 
 
 
-app.use(userRoutes)
+app.use(usersRoutes)
 app.use(redPanelsRoutes)
 app.use(newRedPanelsRoutes)
 app.use(sectionsRoutes)
@@ -146,6 +182,7 @@ app.use(accessRoutes)
 app.use(rehabilitated)
 app.use(romRoutes)
 app.use(plantFeedRoutes)
+app.use(newReportsRoutes)
 
 
 app.all("*", (req, res, next) => {
@@ -163,8 +200,5 @@ app.use((err, req, res, next) => {
 })
 
 const port = process.env.PORT || 4000;
-// if (port == null || port == "") {
-// 	port = 4000;
-// };
 
 app.listen(port, () => console.log(`ReportMe server is running on port ${port}`));

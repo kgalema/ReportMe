@@ -1,50 +1,46 @@
 <%- include("../partials/header") %>
 
-
     <div class="main-body">
         <div class="element">
             <div class="element2">
+                <form class="new-production" id="new-production" action="/sections/<%= section._id %>/production" method="post">
 
-                <form class="new-production" action="/sections/<%= section._id %>/production" method="post">
-                    <h2>
-                        <%= section.name %>'s Production Report
-                    </h2>
+                    <h2> <%= section.name %>'s Production Report </h2>
+                    <p id="call">
+                        <%= section.forecast/section.plannedAdvance %>
+                    </p>
                     <h3>
                         <%= new Date().toDateString() %>
                     </h3>
                     <div class="shift">
-                        <input type="radio" name="production[general][1][shift]" id="morning" value="morning">
+                        <input type="radio" name="production[general][1][shift]" id="morning" value="morning" onchange="shiftSelector(event)" checked>
                         <label for="morning">Morning Shift</label>
-                        <input type="radio" name="production[general][1][shift]" id="backshift" value="backshift"
-                            required>
-                        <label for="afternoon">Back Shift</label>
+                        <input type="radio" name="production[general][1][shift]" id="backshift" value="backshift" onchange="shiftSelector(event)" required>
+                        <label for="backshift">Back Shift</label>
                     </div>
 
                     <br>
 
-                    <button type="button" class="collapsible">Blasted Panels Report</button>
+                    <button id="blast-report-heading" type="button" class="collapsible">Blasted Panels Report</button>
                     <div class="content" id="blast-report">
                         <table class="form-row">
                             <tbody>
                                 <tr id="inputs" class="form-row">
                                     <td class="form-row">
-                                        <input type="text" id="panel" name="production[blast][1][panel]"
-                                            placeholder="panel_name" required>
+                                        <input type="text" id="panel" name="production[blast][1][panel]" placeholder="panel_name" required>
                                     </td>
                                     <td class="form-row">
-                                        <input type="number" id="length" name="production[blast][1][length]"
-                                            placeholder="metres" required>
+                                        <input type="number" min="0" id="length" name="production[blast][1][length]" placeholder="metres" oninput="checkCallAchieved(event)" required>
                                     </td>
                                     <td class="form-row">
-                                        <input type="button" id="addPanel" value="+ panel"
-                                            onClick="addAnotherField(parentNode.parentNode.parentNode.parentNode.parentNode)">
+                                        <input type="button" id="addPanel" value="+ panel" onClick="addAnotherField(parentNode.parentNode.parentNode.parentNode.parentNode)">
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <button type="button" class="collapsible" id="clean-report">Cleaned Panels
-                        Report</button>
+                    <!-- </div> -->
+                    <button type="button" class="collapsible" id="clean-report">Cleaned Panels Report</button>
                     <div class="content">
                         <table class="form-row">
                             <tbody>
@@ -54,11 +50,11 @@
                                             placeholder="panel_name" required>
                                     </td>
                                     <td class="form-row">
-                                        <input type="number" id="length" name="production[clean][1][length]"
+                                        <input type="number" min="0" id="length" name="production[clean][1][length]"
                                             placeholder="metres" required>
                                     </td>
                                     <td class="form-row">
-                                        <input type="number" id="advance" name="production[clean][1][advance]"
+                                        <input type="number" min="0" id="advance" name="production[clean][1][advance]"
                                             placeholder="advance" step="0.1" required>
                                     </td>
                                     <td class="form-row">
@@ -81,20 +77,40 @@
                                             placeholder="panel_name" required>
                                     </td>
                                     <td class="form-row">
-                                        <input type="number" id="length" name="production[support][1][length]"
+                                        <input type="number" id="length" min="0" name="production[support][1][length]"
                                             placeholder="metres" required>
                                     </td>
+                                    <!--  -->
                                     <td class="form-row">
-                                        <input type="button" id="add"
-                                            onClick="addAnotherSupport(parentNode.parentNode.parentNode.parentNode.parentNode)"
-                                            value="+ panel">
+                                        <input type="number" id="bolts" min="0" name="production[support][1][bolts]"
+                                            placeholder="bolts" required>
+                                    </td>
+                                    <td class="form-row">
+                                        <input type="number" min="0" id="anchors" name="production[support][1][anchors]"
+                                            placeholder="anchors" required>
+                                    </td>
+                                    <td class="form-row">
+                                        <label style="display: block;" for="bolter">Bolter/RDO</label>
+                                            <select name="production[support][1][machine]" id="bolter" required>
+                                                <option value=""></option>
+                                                <option value="RB01">RB01</option>
+                                                <option value="RB02">RB02</option>
+                                                <option value="RB03">RB03</option>
+                                                <option value="RB04">RB04</option>
+                                                <option value="RB05">RB05</option>
+                                                <option value="RB06">RB06</option>
+                                                <option value="RB07">RB07</option>
+                                                <option value="RDO">RDO</option>
+                                            </select>
+                                    </td>
+                                    <td class="form-row">
+                                        <input type="button" id="add" onClick="addAnotherSupport(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ panel">
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <button type="button" class="collapsible" id="drill-report">Drilled Panels
-                        Report</button>
+                    <button type="button" class="collapsible" id="drill-report">Drilled Panels Report</button>
                     <div class="content">
                         <table class="form-row">
                             <tbody>
@@ -104,9 +120,29 @@
                                             placeholder="panel_name" required>
                                     </td>
                                     <td class="form-row">
-                                        <input type="number" id="length" name="production[drill][1][length]"
+                                        <input type="number" min="0" id="length" name="production[drill][1][length]"
                                             placeholder="metres" required>
                                     </td>
+                                    <td class="form-row">
+                                        <input type="number" id="holes" name="production[drill][1][holes]" min="0"
+                                            placeholder="#holes" required>
+                                    </td>
+
+                                    <td class="form-row">
+                                        <label style="display: block;" for="drillRig">Drill Rig</label>
+                                        <select name="production[drill][1][drillRig]" id="drillRig" required>
+                                            <option value=""></option>
+                                            <option value="TDR01">TDR01</option>
+                                            <option value="TDR02">TDR02</option>
+                                            <option value="TDR03">TDR03</option>
+                                            <option value="TDR04">TDR04</option>
+                                            <option value="TDR05">TDR05</option>
+                                            <option value="TDR06">TDR06</option>
+                                            <option value="TDR07">TDR07</option>
+                                            <option value="TDR104">TDR104</option>
+                                        </select>
+                                    </td>
+
                                     <td class="form-row">
                                         <input type="button" id="add"
                                             onClick="addAnotherDrilled(parentNode.parentNode.parentNode.parentNode.parentNode)"
@@ -126,7 +162,7 @@
                                             placeholder="panel_name" required>
                                     </td>
                                     <td class="form-row">
-                                        <input type="number" id="length" name="production[prep][1][length]"
+                                        <input type="number" min="0" id="length" name="production[prep][1][length]"
                                             placeholder="metres" required>
                                     </td>
                                     <td class="form-row">
@@ -148,7 +184,7 @@
                                             placeholder="panel_name" required>
                                     </td>
                                     <td class="form-row">
-                                        <input type="number" id="length" name="production[notClean][1][length]"
+                                        <input type="number" min="0" id="length" name="production[notClean][1][length]"
                                             placeholder="metres" required>
                                     </td>
                                     <td class="form-row">
@@ -166,10 +202,27 @@
                             <tbody>
                                 <tr class="form-row">
                                     <td class="form-row">
-                                        <input type="number" id="coyNumber" name="production[LHD][1][coyNumber]" placeholder="operator_coy_number" required>
+                                        <input type="number" min="0" id="coyNumber" name="production[LHD][1][coyNumber]" placeholder="operator_#" required>
                                     </td>
+                                    <!-- <td class="form-row">
+                                        <input type="text" id="LHDnumber" name="production[LHD][1][LHDnumber]" placeholder="GL_#" required>
+                                    </td> -->
+
                                     <td class="form-row">
-                                        <input type="text" id="LHDnumber" name="production[LHD][1][LHDnumber]" placeholder="LHD_number" required>
+                                        <label style="display: block;" for="LHDnumber">LHD</label>
+                                        <select name="production[LHD][1][LHDnumber]" id="LHDnumber" required>
+                                            <option value="" selected disabled>GL#</option>
+                                            <option value="GL11">GL11</option>
+                                            <option value="GL02">GL02</option>
+                                            <option value="GL03">GL03</option>
+                                            <option value="GL04">GL04</option>
+                                            <option value="GL05">GL05</option>
+                                            <option value="RR1">RR1</option>
+                                        </select>
+                                    </td>
+
+                                    <td class="form-row">
+                                        <input type="number" min="0" id="LHDbuckets" name="production[LHD][1][buckets]" placeholder="buckets">
                                     </td>
                                     <td class="form-row">
                                         <input type="button" id="add" onClick="addAnotherLHD(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ LHD">
@@ -178,10 +231,10 @@
                             </tbody>
                         </table>
                     </div>
-                    <button type="button" class="collapsible" id="comments">Comments</button>
+                    <button type="button" class="collapsible" id="comments">Target Not Achieved. Why?</button>
                     <div class="content">
                         <br>
-                        <textarea name="production[general][1][comments]" id="" cols="60" rows="10"></textarea>
+                        <textarea name="production[general][1][comments]" id="comments-box" cols="60" rows="10" placeholder="Be brief. Please do not write all breakdowns unless they contributed a lost blast." required></textarea>
                     </div>
 
                     <br>
@@ -189,9 +242,13 @@
                     <button type="submit" id="submit">Submit</button>
 
                 </form>
+                <br>
+                <div>
+                    <a href="/production">Dashboard</a> |
+                    <a href="/sections">Sections</a> |
+                    <a href="/sections/<%= section._id %>"> <%= section.name %> </a>
+                </div>
             </div>
-
-
         </div>
     </div>
 

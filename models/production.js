@@ -25,13 +25,18 @@ const productionSchema = new mongoose.Schema({
     support: [
         {
             panel: String,
-            length: Number
+            length: Number,
+            bolts: Number,
+            anchors: Number,
+            machine: String
         }
     ],
     drill: [
         {
             panel: String,
-            length: Number
+            length: Number,
+            holes: Number,
+            drillRig: String
         }
     ],
     prep: [
@@ -50,6 +55,7 @@ const productionSchema = new mongoose.Schema({
         {
             coyNumber: Number,
             LHDnumber: String,
+            buckets: Number
         }
     ],
     section: {
@@ -70,14 +76,6 @@ const productionSchema = new mongoose.Schema({
     created: { type: Date, default: Date.now }
 })
 
-// productionSchema.index({
-//     "general.shift": 1,
-//     section: 1
-// }, {
-//     unique: true,
-// });
-
-// productionSchema.index({ "general.shift": 1, section: 1, created: 1 }, { unique: true, dropDups: true })
 
 const Production = mongoose.model("Production", productionSchema)
 module.exports = Production

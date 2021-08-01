@@ -11,19 +11,19 @@
                 <table class="form-row">
                     <tr>
                         <td class="form-row">
-                            <label for="panel-name">Panel:</label>
+                            <label for="panel">Panel:</label>
                         </td>
                         
                         <td class="form-row">
-                            <input type="text" id="panel-name" name="newRed[panel]" required>
+                            <input type="text" id="panel" name="newRed[panel]" required onkeyup="validatePanelName(event)">
                         </td>
                     </tr>
                     <tr>
                         <td class="form-row">
-                            <label for="">TARP Red Trigger(s):</label>
+                            <label for="TARP-triggers">TARP Red Trigger(s):</label>
                         </td>
                         <td class="form-row">
-                            <input type="text" name="newRed[triggers]" required>
+                            <textarea name="newRed[triggers]" id="TARP-triggers" cols="30" rows="5" required></textarea>
                         </td>
                     </tr>
                     
@@ -44,7 +44,8 @@
                 </table>
             </form>
             <div>
-                <a href="/sections/<%= section._id %>">Back</a>
+                <a href="/redPanel">Dashboard</a> |
+                <a href="/sections/<%= section._id %>"><%= section.name %></a>
             </div>
         </div>
     </div>

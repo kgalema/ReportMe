@@ -1,0 +1,43 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <table>
+            <tbody>
+                <tr>
+                    <td>Name</td>
+                    <td><%= foundUser.username %></td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td><%= foundUser.email %></td>
+                </tr>
+                <tr>
+                    <td>Occupation</td>
+                    <td><%= foundUser.occupation %></td>
+                </tr>
+                <tr>
+                    <td>Department</td>
+                    <td><%= foundUser.department %></td>
+                </tr>
+            </tbody>
+        </table>
+        <hr>
+        <div>
+            <a href="/users">Dashboard</a>
+        </div>
+
+        <% if(currentUser && currentUser.isAdmin){ %>
+            <p>
+                <a href="/user/<%= foundUser._id %>/edit">Edit</a>
+            </p>
+            <form action="/user/<%= foundUser._id %>?_method=DELETE" method="POST">
+                <button id="delete" type="submit">Delete</button>
+            </form>
+      <% } %>
+    </div>
+</div>
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

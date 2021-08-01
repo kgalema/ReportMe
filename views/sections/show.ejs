@@ -18,6 +18,10 @@
             <a class="button" href="/sections/<%= section._id %>/production/new">Production Report</a>
             <a class="button" href="/sections/<%= section._id %>/newReds/new">Add New Red Panel</a>
         </div>
+        <div>
+            <a href="/sections">Sections</a>
+        </div>
+        
         <% if(currentUser && currentUser.isAdmin){ %>
         <div class="admin">
             <a href="/sections/<%= section._id %>/edit">Edit</a>

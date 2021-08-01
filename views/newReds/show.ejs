@@ -13,14 +13,17 @@
             <div>
                 <a href="/sections/<%= newRedPanel.section.id %>/redPanel/new?q=<%= newRedPanel._id %>">Issue Recommendation</a>
             </div>
-
+            <hr>
+            <div>
+                <a href="/redPanel">Dashboard</a>
+            </div>
             <% if( currentUser && newRedPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
-                    <form action="/sections/<%= newRedPanel.section.id %>/newRedPanel/<%= newRedPanel._id %>?_method=DELETE" method="POST">
-                        <button id="delete" type="submit">Delete</button>
-                    </form>
-                    <p>
-                        <a href="/sections/<%= newRedPanel.section.id %>/newRedPanel/<%= newRedPanel._id %>/edit">Edit</a>
-                    </p>
+                <p>
+                    <a href="/sections/<%= newRedPanel.section.id %>/newRedPanel/<%= newRedPanel._id %>/edit">Edit</a>
+                </p>
+                <form action="/sections/<%= newRedPanel.section.id %>/newRedPanel/<%= newRedPanel._id %>?_method=DELETE" method="POST">
+                    <button id="delete" type="submit">Delete</button>
+                </form>
             <% } %>
 
         </div>

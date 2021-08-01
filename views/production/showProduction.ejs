@@ -5,140 +5,243 @@
             <h2>Reported Production: <%= reported.section.name %></h2>
             <p>
                 <%= reported.created.toDateString() %>
+                <br>
+                <% const blastSum = reported.blast.map(b => b.length).reduce((i, j)=> i+j, 0) %>
+                <% const cleanedSum = reported.clean.map(b => b.length).reduce((i, j)=> i+j, 0) %>
+                <% const supportSum = reported.support.map(b => b.length).reduce((i, j)=> i+j, 0) %>
+                <% const drillSum = reported.drill.map(b => b.length).reduce((i, j)=> i+j, 0) %>
+                <% const prepSum = reported.prep.map(b => b.length).reduce((i, j)=> i+j, 0) %>
+                <% const notCleanSum = reported.notClean.map(b => b.length).reduce((i, j)=> i+j, 0) %>
+                <% const LHDSum = reported.LHD.length %>
+
             </p>
-            <table>
-                <thead>
-                    <tr>
-                        <th colspan="2">Blasted</th>
-                    </tr>
-                    <th>Panels</th>
-                    <th>Length (m)</th>
-                </thead>
-                <tbody>
-                    <% reported.blast.forEach(function(e){ %>
-                    <tr>
-                        <td>
-                            <%= e.panel %>
-                        </td>
-                        <td>
-                            <%= e.length %>
-                        </td>
-                    </tr>
-                    <% }) %>
+            <section id="production-groups">
+                <% if (reported.general[0].shift === "morning") { %>
+                   
+                    <table id="blast-group" class="prod-group-item">
+                        <thead>
+                            <tr>
+                                <th colspan="2">Blasted (<%= blastSum %>m)</th>
+                            </tr>
+                            <tr>
+                                <th>Panels</th>
+                                <th>Length (m)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% reported.blast.forEach(function(e){ %>
+                                <tr>
+                                    <td>
+                                        <%= e.panel %>
+                                    </td>
+                                    <td>
+                                        <%= e.length %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
 
-                    <tr>
-                        <td style="background-color: aliceblue;" colspan="2"></td>
-                    </tr>
+                <% } %>
 
-                    <tr>
-                        <th colspan="3">Cleaned</th>
-                    </tr>
+                <table id="prep-group" class="prod-group-item">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Prep'd (<%= prepSum %>m)</th>
+                        </tr>
+                        <tr>
+                            <th>Panels</th>
+                            <th>Length (m)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reported.prep.forEach(function(e){ %>
+                            <tr>
+                                <td>
+                                    <%= e.panel %>
+                                </td>
+                                <td>
+                                    <%= e.length %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
 
-                    <% reported.clean.forEach(function(e){ %>
-                    <tr>
-                        <td>
-                            <%= e.panel %>
-                        </td>
-                        <td>
-                            <%= e.length %>
-                        </td>
-                    </tr>
-                    <% }) %>
-                    <tr>
-                        <td style="background-color: aliceblue;" colspan="2"></td>
-                    </tr>
-                    <tr>
-                        <th colspan="2">Supported</th>
-                    </tr>
+                <table id="notClean-group" class="prod-group-item">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Not Clean (<%= notCleanSum %>m)</th>
+                        </tr>
+                        <tr>
+                            <th>Panels</th>
+                            <th>Length (m)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reported.notClean.forEach(function(e){ %>
+                            <tr>
+                                <td>
+                                    <%= e.panel %>
+                                </td>
+                                <td>
+                                    <%= e.length %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
 
-                    <% reported.support.forEach(function(e){ %>
-                    <tr>
-                        <td>
-                            <%= e.panel %>
-                        </td>
-                        <td>
-                            <%= e.length %>
-                        </td>
-                    </tr>
-                    <% }) %>
-                    <tr>
-                        <td style="background-color: aliceblue;" colspan="2"></td>
-                    </tr>
-                    <tr>
-                        <th colspan="2">Prep'd</th>
-                    </tr>
+                <table id="clean-group" class="prod-group-item">
+                    <thead>
+                        <tr>
+                            <th colspan="3">Cleaned (<%= cleanedSum %>m)</th>
+                        </tr>
+                        <tr>
+                            <th>Panels</th>
+                            <th>Length (m)</th>
+                            <th>Advance (m)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reported.clean.forEach(function(e){ %>
+                            <tr>
+                                <td>
+                                    <%= e.panel %>
+                                </td>
+                                <td>
+                                    <%= e.length %>
+                                </td>
+                                <td>
+                                    <%= e.advance %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
 
-                    <% reported.prep.forEach(function(e){ %>
-                    <tr>
-                        <td>
-                            <%= e.panel %>
-                        </td>
-                        <td>
-                            <%= e.length %>
-                        </td>
-                    </tr>
-                    <% }) %>
-                    <tr>
-                        <td style="background-color: aliceblue;" colspan="2"></td>
-                    </tr>
-                    <tr>
-                        <th colspan="2">Drilled</th>
-                    </tr>
+                <table id="LHD-group" class="prod-group-item">
+                    <thead>
+                        <tr>
+                            <th colspan="3">LHDs (<%= LHDSum %>)</th>
+                        </tr>
+                        <tr>
+                            <th>Operator</th>
+                            <th>LHD #</th>
+                            <th>Buckets</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reported.LHD.forEach(function(e){ %>
+                            <tr>
+                                <td>
+                                    <%= e.coyNumber %>
+                                </td>
+                                <td>
+                                    <%= e.LHDnumber %>
+                                </td>
+                                <td>
+                                    <%= e.buckets %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+                <table id="drilled-group" class="prod-group-item">
+                    <thead>
+                        <tr>
+                            <th colspan="4">Drilled (<%= drillSum %>m)</th>
+                        </tr>
+                        <tr>
+                            <th>Panels</th>
+                            <th>Length (m)</th>
+                            <th># Holes</th>
+                            <th>Drill Rig</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reported.drill.forEach(function(e){ %>
+                            <tr>
+                                <td>
+                                    <%= e.panel %>
+                                </td>
+                                <td>
+                                    <%= e.length %>
+                                </td>
+                                <td>
+                                    <%= e.holes %>
+                                </td>
+                                <td>
+                                    <%= e.drillRig %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
 
-                    <% reported.drill.forEach(function(e){ %>
-                    <tr>
-                        <td>
-                            <%= e.panel %>
-                        </td>
-                        <td>
-                            <%= e.length %>
-                        </td>
-                    </tr>
-                    <% }) %>
-                    <tr>
-                        <td style="background-color: aliceblue;" colspan="2"></td>
-                    </tr>
-                    <tr>
-                        <th colspan="2">Not Clean</th>
-                    </tr>
-
-                    <% reported.notClean.forEach(function(e){ %>
-                    <tr>
-                        <td>
-                            <%= e.panel %>
-                        </td>
-                        <td>
-                            <%= e.length %>
-                        </td>
-                    </tr>
-                    <% }) %>
-                    <tr>
-                        <td style="background-color: aliceblue;" colspan="2"></td>
-                    </tr>
-                    <tr>
-                        <th colspan="2">LHDs</th>
-                    </tr>
-
-                    <tr>
-                        <th>Operator</th>
-                        <th>LHD Number</th>
-                    </tr>
-
-                    <% reported.LHD.forEach(function(e){ %>
-                    <tr>
-                        <td>
-                            <%= e.coyNumber %>
-                        </td>
-                        <td>
-                            <%= e.LHDnumber %>
-                        </td>
-                    </tr>
-                    <% }) %>
-                </tbody>
-            </table>
+                <table id="support-group" class="prod-group-item">
+                    <thead>
+                        <tr>
+                            <th colspan="5">Supported (<%= supportSum %>m)</th>
+                        </tr>
+                        <tr>
+                            <th>Panels</th>
+                            <th>Length (m)</th>
+                            <th>Bolts</th>
+                            <th>Anchors</th>
+                            <th>Machine</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reported.support.forEach(function(e){ %>
+                            <tr>
+                                <td>
+                                    <%= e.panel %>
+                                </td>
+                                <td>
+                                    <%= e.length %>
+                                </td>
+                                <td>
+                                    <%= e.bolts %>
+                                </td>
+                                <td>
+                                    <%= e.anchors %>
+                                </td>
+                                <td>
+                                    <%= e.machine %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+                
+                <% if (reported.general[0].comments ) { %>
+                    <table id="general-group" class="prod-group-item">
+                        <thead>
+                            <tr>
+                                <th>Comments</th>
+                            </tr>
+                            <tr>
+                                <th> <%= reported.general[0].shift %> shift</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <p>
+                                        <%= reported.general[0].comments %>
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                <% } %>
+                
+            </section>
+          
             <br>
             <p>
-                <a href="/production">Back</a>
+                <a href="/production">Dashboard</a>
             </p>
             <div class="admin">
                 <a href="/sections/<%= reported.section.id %>/production/<%= reported._id %>/edit">Edit</a>

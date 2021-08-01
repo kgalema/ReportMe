@@ -1,6 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const Section = require("../models/section")
+const User = require("../models/user")
 const { isLoggedIn, isSectionAuthor } = require("../middleware")
 
 
@@ -12,6 +13,7 @@ const { isLoggedIn, isSectionAuthor } = require("../middleware")
 router.get("/sections", function (req, res) {
 	Section.find({}, function (err, allSections) {
 		if (err || !allSections) {
+			req.flash("error", "Error occured while fetching all sections")
 			return res.redirect("/")
 		} else {
 			res.render("sections/index", { sections: allSections, title: "sections" })
@@ -21,7 +23,13 @@ router.get("/sections", function (req, res) {
 
 // 2. New route - renders a for creating new section
 router.get("/sections/new", isLoggedIn, function (req, res) {
-	res.render("sections/new", { title: "sections" })
+	User.find({ occupation: "Mine_Overseer" }, function (err, allMOs) {
+    	if (err || !allMOs) {
+      		req.flash("error", "Error occured while fetching MOs");
+      		return res.redirect("/sections");
+    	}
+    	res.render("sections/new", { title: "sections", mineOverseers: allMOs });
+  });
 })
 // 3. Create route - post a new section into the database then redirect elsewhere
 router.post("/sections", isLoggedIn, function (req, res) {
@@ -43,7 +51,7 @@ router.post("/sections", isLoggedIn, function (req, res) {
 })
 // 4. Show route - shows/get info about one specific section
 router.get("/sections/:id", function (req, res) {
-	// Section.findById(req.params.id).populate("redPanels").exec(function (err, foundSection) {
+	let redirect = "/"
 	Section.findById(req.params.id, function (err, foundSection) {
 		if (err || !foundSection) {
 			req.flash("error", "Invalid Section ID")
@@ -60,6 +68,7 @@ router.get("/sections/:id", function (req, res) {
 			delete req.session.returnTo;
 			return res.redirect("/sections/"+ foundSection._id + redirect)
 		} else {
+			console.log("Show Rendered")
 			res.render("sections/show", { section: foundSection, title: "sections" })
 		}
 	});
@@ -70,9 +79,14 @@ router.get("/sections/:id/edit", isLoggedIn, isSectionAuthor, function (req, res
 	Section.findById(req.params.id, function (err, section) {
 		if (err) {
 			return res.redirect("back")
-		} else {
-			res.render("sections/edit", { section: section, title: "sections" })
-		}
+		} 
+		User.find({ occupation: "Mine_Overseer" }, function (err, allMOs) {
+      		if (err || !allMOs) {
+        		req.flash("error", "Error occured while fetching MOs");
+        		return res.redirect("/sections");
+      		}
+			res.render("sections/edit", { section: section, title: "sections", mineOverseers: allMOs })
+    	});
 	})
 })
 // 6. Update route - Puts edited info about one particular section in the database

@@ -5,66 +5,40 @@
         <h3>Add A New Section</h3>
         <form action="/sections" method="post">
 
-            <table class="form-row">
-                <tr>
-                    <td class="form-row">
-                        <label for="section">Section:</label>
-                    </td>
-                    <td class="form-row">
-                        <select class="form-row" style="width: 100%;" name="section[name]" id="section" required>
-                            <option value=""></option>
-                            <option value="Section_1">Section_1</option>
-                            <option value="Section_2">Section_2</option>
-                            <option value="Section_3">Section_3</option>
-                            <option value="Section_4">Section_4</option>
-                            <option value="Section_5">Section_5</option>
-                            <option value="Section_6">Section_6</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="form-row">
-                        <label for="mineOverseer">Mine Overseer:</label>
-                    </td>
-                    <td class="form-row">
-                        <select style="width: 100%;" name="section[mineOverseer]" id="mineOverseer" required>
-                            <option value=""></option>
-                            <option value="MO_1">MO_1</option>
-                            <option value="MO_2">MO_2</option>
-                            <option value="MO_3">MO_3</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="form-row">
-                        <label for="budget">Budget (m<sup>2</sup>):</label>
-                    </td>
-                    <td class="form-row">
-                        <input id="budget" type="number" step="0.1" min="0" name="section[budget]" required>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="form-row">
-                        <label for="forecast">Forecast (m<sup>2</sup>):</label>
-                    </td>
-                    <td class="form-row">
-                        <input id="forecast" type="number" step="0.1" min="0" name="section[forecast]" required>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="form-row">
-                        <label for="advance">Planned Advance (m):</label>
-                    </td>
-                    <td class="form-row">
-                        <input id="advance" type="number" step="0.1" min="0" name="section[plannedAdvance]" required>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="form-row" colspan="2">
-                        <input style="width: 100%;" type="submit" value="Add Section!">
-                    </td>
-                </tr>
-            </table>
+            <div class="flex-form">
+                <div class="flex-row">
+                    <label for="section">Section:</label>
+                    <input id="section" type="text" name="section[name]" placeholder="section_name"  onkeyup="validatePanelName(event)"  required>
+                </div>
+                <div class="flex-row">
+                    <label for="mineOverseer">Mine Overseer:</label>
+                    <select name="section[mineOverseer]" id="mineOverseer">
+                        <option value="" selected disabled>Select M/O</option>
+                        <!-- <% mineOverseers.forEach(mo => { %>
+                            <option value="<%= mo.username %>"><%= mo.username %></option>
+                        <% }) %> -->
+                        <option value="MO_1">MO_1</option>
+                        <option value="MO_2">MO_2</option>
+                        <option value="MO_2">MO_3</option>
+                        <option value="MO_2">MO_4</option>
+                    </select>
+                </div>
+                <div class="flex-row">
+                    <label for="budget">Budget (m<sup>2</sup> ):</label>
+                    <input id="budget" type="number" min="0" step="0.1" name="section[budget]" placeholder="budget/shift" required>
+                </div>
+                <div class="flex-row">
+                    <label for="forecast">Forecast (m<sup>2</sup> ):</label>
+                    <input id="forecast" type="number" min="0" step="0.1" name="section[forecast]" placeholder="forecast/shift" required>
+                </div>
+                <div class="flex-row">
+                    <label for="advance">Planned Advance (m):</label>
+                    <input id="advance" type="number" step="0.1" min="0"  name="section[plannedAdvance]" placeholder="advance/blast" required>
+                </div>
+                <div class="flex-row">
+                    <input type="submit" value="Add Section">
+                </div>
+            </div>
         </form>
 
     </div>

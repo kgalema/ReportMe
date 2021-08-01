@@ -1,0 +1,36 @@
+<%- include("../partials/header") %>
+
+    <div class="main-body">
+        <div class="element">
+            <form action="/newReport" method="post">
+                <div class="flex-form">
+                    <div class="flex-row">
+                        <label for="section">Section:</label>
+                        <select name="newReport[section]" id="section" required>
+                            <option value="" selected disabled>select section</option>
+                            <% sections.forEach(section => { %>
+                                <option value="<%= section._id %>"><%= section.name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="flex-row">
+                        <label for="report">Report:</label>
+                        <select name="newReport[report]" id="report" required>
+                            <option value="" selected disabled>select report</option>
+                            <option value="production">Production Report</option>
+                            <option value="TARP">TARP Red Panel</option>
+                        </select>
+                    </div>
+                    <div class="flex-row">
+                        <input type="submit" value="Submit">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

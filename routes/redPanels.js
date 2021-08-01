@@ -1,9 +1,7 @@
 const express = require("express")
-const fs = require("fs")
 const router = express.Router()
 const path = require("path")
 const crypto = require("crypto")
-const moment = require("moment")
 const Section = require("../models/section")
 const Redpanel = require("../models/tarp")
 const Rehab = require("../models/rehab")
@@ -16,7 +14,6 @@ const nodemailer = require("nodemailer")
 
 
 const GridFsStorage = require("multer-gridfs-storage")
-const Grid = require("gridfs-stream")
 const multer = require("multer")
 const mongoose = require("mongoose")
 
@@ -68,7 +65,6 @@ const upload2 = multer({ storage: storage2 })
 router.get("/redPanel",  function (req, res) {
 	Redpanel.find({}, function (err, redpanels) {
 		if (err || !redpanels) {
-			console.log(err);
 			req.flash("error", "Error occured while fetching data")
 			return res.redirect("back")
 		} else {
@@ -165,7 +161,7 @@ router.post("/sections/:id/redPanels", isLoggedIn, upload2.single("issuedReport"
 								console.log("Error while sending mail")
 								console.log(err)
 								req.flash("error", "Email not sent. Please send the email manually")
-								return res.redirect("back")
+								return res.redirect("redPanel")
 							}
 							smtpTransport.close()
 							console.log(info)
@@ -200,11 +196,6 @@ router.get("/sections/:id/redPanels/:redpanel_id/download", function (req, res) 
 			req.flash("error", "Cannot find requested TARP Red panel")
 			return res.redirect("/redPanel")
 		} else {
-			//*****************Get all files*******/
-			// gfs.find().toArray((err, files) => {
-			// 	res.status(200).json({success: true, files})
-			// })
-			//**************Get by id*************/
 
 			let ID = new mongoose.Types.ObjectId(foundRed.fileID)
 			gfs.find({ _id: ID}).toArray((err, file) => {
@@ -282,7 +273,6 @@ router.delete("/sections/:id/redPanels/:redpanel_id", function (req, res) {
 					req.flash("error", "Error While Deleting Recommendation. Red Panel Data Deleted")
 					return res.redirect("/redPanel")
 				}
-				console.log(data)
 				req.flash("success", "Successfully deleted a TARP red panel")
 				res.redirect("/redPanel")
 			})

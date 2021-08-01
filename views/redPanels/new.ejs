@@ -19,10 +19,11 @@
                     </tr>
                     <tr>
                         <td class="form-row">
-                            <label for="triggers">TARP Red Trigger(s):</label>
+                            <label for="TARP-triggers">TARP Red Trigger(s):</label>
                         </td>
+                        
                         <td class="form-row">
-                            <input type="text" id="triggers" name="redPanel[trigger]" value="<%= redPanel.triggers %>" readonly required>
+                            <textarea name="redPanel[trigger]" id="TARP-triggers" cols="30" rows="5" required readonly><%= redPanel.triggers %></textarea>
                         </td>
                     </tr>
                     <tr>
@@ -35,26 +36,26 @@
                     </tr>
                     <tr>
                         <td class="form-row">
-                            <label for="date-declared">Date Panel Declared:</label>
+                            <label for="declaredDate">Date Panel Declared:</label>
                         </td>
                         <td class="form-row">
-                            <input name="redPanel[declaredDate]" id="date-declared" type="date" value="<%= moment(redPanel.dateDeclared).format('YYYY-MM-DD')%>" readonly required>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="form-row">
-                            <label for="">Date Report Issued:</label>
-                        </td>
-                        <td class="form-row">
-                            <input name="redPanel[issueDate]" type="datetime-local" required>
+                            <input name="redPanel[declaredDate]" id="declaredDate" type="date" value="<%= moment(redPanel.dateDeclared).format('YYYY-MM-DD')%>" readonly required>
                         </td>
                     </tr>
                     <tr>
                         <td class="form-row">
-                            <label for="">Attach report:</label>
+                            <label for="reportDate">Date Report Issued:</label>
                         </td>
                         <td class="form-row">
-                            <input name="issuedReport" type="file" accept=".pdf" required>
+                            <input id="reportDate" name="redPanel[issueDate]" min="<%= moment(redPanel.dateDeclared).format('YYYY-MM-DD') %>" type="datetime-local" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="reportAttachment">Attach report:</label>
+                        </td>
+                        <td class="form-row">
+                            <input id="reportAttachment" name="issuedReport" type="file" accept=".pdf" required>
                         </td>
                     </tr>
                     <tr>
@@ -64,6 +65,9 @@
                     </tr>
                 </table>
             </form>
+            <div>
+                <a href="/newRedPanel/<%= queryId %>"">&#11013 Back</a>
+            </div>
         </div>
     </div>
 

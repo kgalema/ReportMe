@@ -11,27 +11,27 @@
                 <table class="form-row">
                     <tr>
                         <td class="form-row">
-                            <label for="panel-name">Panel name:</label>
+                            <label for="panel">Panel name:</label>
                         </td>
                         <td class="form-row">
-                            <input type="text" id="panel-name" name="newRedPanel[panel]" value="<%= newRedPanel.panel %>" required>
+                            <input type="text" id="panel" name="newRedPanel[panel]" value="<%= newRedPanel.panel %>" required onkeyup="validatePanelName(event)">
                         </td>
                     </tr>
                     <tr>
                         <td class="form-row">
-                            <label for="">TARP red trigger(s):</label>
+                            <label for="TARP-triggers">TARP red trigger(s):</label>
                         </td>
                         <td class="form-row">
-                            <input type="text" name=newRedPanel[triggers] value="<%= newRedPanel.triggers %>" required>
+                            <textarea name="newRedPanel[triggers]" id="TARP-triggers" cols="30" rows="5" required><%= newRedPanel.triggers %></textarea>
                         </td>
                     </tr>
                     
                     <tr>
                         <td class="form-row">
-                            <label for="">Date panel declared:</label>
+                            <label for="declaredDate">Date panel declared:</label>
                         </td>
                         <td class="form-row">
-                            <input name=newRedPanel[declaredDate] type="date" value="<%= moment(newRedPanel.declaredDate).format('YYYY-MM-DD') %>" required>
+                            <input id="declaredDate" name=newRedPanel[declaredDate] type="date" value="<%= moment(newRedPanel.declaredDate).format('YYYY-MM-DD') %>" required>
                         </td>
                     </tr>
                     
@@ -44,6 +44,9 @@
                     </tr>
                 </table>
             </form>
+            <div>
+                <a href="/newRedPanel/<%= newRedPanel._id %>">&#11013 Back</a>
+            </div>
         </div>
     </div>
 

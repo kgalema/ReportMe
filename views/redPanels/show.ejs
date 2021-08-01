@@ -21,13 +21,18 @@
 
       </div>
 
+      <hr>
+      <div>
+            <a href="/redPanel">Dashboard</a>
+      </div>
+
       <% if( currentUser && redPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
-      <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>?_method=DELETE" method="POST">
-         <button id="delete" type="submit">Delete</button>
-      </form>
-      <p>
-         <a href="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/edit">Edit</a>
-      </p>
+         <p>
+            <a href="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/edit">Edit</a>
+         </p>
+         <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>?_method=DELETE" method="POST">
+            <button id="delete" type="submit">Delete</button>
+         </form>
       <% } %>
 
    </div>

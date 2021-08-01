@@ -2,7 +2,11 @@
 let fieldNumber = 1;
 let panelInput = document.querySelector("#panel");
 let quantityInput = document.querySelector("#length");
+let boltsInput = document.querySelector("#bolts");
+let anchorsInput = document.querySelector("#anchors");
+let holesInput = document.querySelector("#holes");
 let coyNumber = document.querySelector("#coyNumber");
+let buckets = document.querySelector("#LHDbuckets");
 let gl = document.querySelector("#LHDnumber");
 let tbody = document.querySelector("tbody");
 
@@ -25,46 +29,53 @@ function out(e) {
 };
 
 function addAnotherField(e) {
-    fieldNumber = fieldNumber + 1;
-    let num = fieldNumber;
-    let body = (e.childNodes[1].childNodes[1]);
+    // let inputsCount = document.getElementById("blast-report").querySelectorAll("tr").length 
+    // fieldNumber = fieldNumber + 1;
+    // console.log(inputsCount)
+    // let num = fieldNumber;
+    let inputsCount = e.querySelectorAll("tr").length
+    inputsCount = inputsCount + 1
+    let num = inputsCount;
+    let body = e.childNodes[1].childNodes[1];
 
+    let newField = `<td class="form-row removeToggle">
+                        <input type="text" id="panel" name="production[blast][${num}][panel]" placeholder=${panelInput.placeholder} required onkeyup="validatePanelName(event)">
+                        </td>
 
-    let newField = `<td class="form-row">
-                      <input type="text" id="panel" name="production[blast][${num}][panel]" placeholder=${panelInput.placeholder} required>
-                    </td>
+                        <td class="form-row removeToggle">
+                        <input type="number" min="0" id="length" name="production[blast][${num}][length]" placeholder=${quantityInput.placeholder} oninput="checkCallAchieved(event)" required>
+                        </td>
 
-                    <td class="form-row">
-                      <input type="number" id="length" name="production[blast][${num}][length]" placeholder=${quantityInput.placeholder} required>
-                    </td>
-
-                    <td class="form-row">
-                    <a href="#" onclick="out(this.parentNode.parentNode)" id="out">Delete</a>
-                    </td>`;
+                        <td class="form-row removeToggle">
+                        <a href="#" onclick="out(this.parentNode.parentNode)" id="out">Delete</a>
+                        </td>`;
 
     let tr = document.createElement("tr");
+    tr.className = "removedToggle";
     tr.innerHTML = newField;
-
 
     body.appendChild(tr);
     e.style.maxHeight = e.scrollHeight + "px";
 }
 
 function addAnotherClean(e) {
-    fieldNumber = fieldNumber + 1;
-    let num = fieldNumber;
+    let inputsCount = e.querySelectorAll("tr").length;
+    inputsCount = inputsCount + 1;
+    let num = inputsCount;
+    // fieldNumber = fieldNumber + 1;
+    // let num = fieldNumber;
     let body = (e.childNodes[1].childNodes[1]);
 
     let newField = `<td class="form-row">
-                        <input type="text" id="panel" name="production[clean][${num}][panel]" placeholder=${panelInput.placeholder} required>
+                        <input type="text" id="panel" name="production[clean][${num}][panel]" placeholder=${panelInput.placeholder} required onkeyup="validatePanelName(event)">
                     </td>
 
                     <td class="form-row">
-                        <input type="number" id="length" name="production[clean][${num}][length]" placeholder=${quantityInput.placeholder} required>
+                        <input type="number" min="0" id="length" name="production[clean][${num}][length]" placeholder=${quantityInput.placeholder} required>
                     </td>
 
                     <td class="form-row">
-                        <input type="number" id="advance" name="production[clean][${num}][advance]" placeholder="advance" step="0.1" required>
+                        <input type="number" min="0" id="advance" name="production[clean][${num}][advance]" placeholder="advance" step="0.1" required>
                     </td>
 
                     <td class="form-row">
@@ -80,21 +91,46 @@ function addAnotherClean(e) {
 }
 
 function addAnotherSupport(e) {
-    fieldNumber = fieldNumber + 1;
-    let num = fieldNumber;
+    let inputsCount = e.querySelectorAll("tr").length;
+    inputsCount = inputsCount + 1;
+    let num = inputsCount;
+    // fieldNumber = fieldNumber + 1;
+    // let num = fieldNumber;
     let body = (e.childNodes[1].childNodes[1]);
 
     let newField = `<td class="form-row">
-                        <input type="text" id="panel" name="production[support][${num}][panel]" placeholder=${panelInput.placeholder} required>
+                        <input type="text" id="panel" name="production[support][${num}][panel]" placeholder=${panelInput.placeholder} required onkeyup="validatePanelName(event)">
                     </td>
 
                     <td class="form-row">
-                        <input type="number" id="length" name="production[support][${num}][length]" placeholder=${quantityInput.placeholder} required>
+                        <input type="number" min="0" id="length" name="production[support][${num}][length]" placeholder=${quantityInput.placeholder} required>
+                    </td>
+
+                    <td class="form-row">
+                        <input type="number" min="0" id="bolts" name="production[support][${num}][bolts]" placeholder=${boltsInput.placeholder} required>
+                    </td>
+
+                    <td class="form-row">
+                        <input type="number" min="0" id="anchors" name="production[support][${num}][anchors]" placeholder=${anchorsInput.placeholder} required>
+                    </td>
+
+                    <td class="form-row">
+                        <select name="production[support][${num}][machine]" id="bolter">
+                            <option value=""></option>
+                            <option value="RB01">RB01</option>
+                            <option value="RB02">RB02</option>
+                            <option value="RB03">RB03</option>
+                            <option value="RB04">RB04</option>
+                            <option value="RB05">RB05</option>
+                            <option value="RB06">RB06</option>
+                            <option value="RB07">RB07</option>
+                            <option value="RDO">RDO</option>
+                        </select>
                     </td>
 
                     <td class="form-row">
                         <a href="#" onclick="out(this.parentNode.parentNode)" id="out">Delete</a>
-                    </td>`
+                    </td>`;
 
     let tr = document.createElement("tr");
     tr.innerHTML = newField;
@@ -104,21 +140,42 @@ function addAnotherSupport(e) {
 }
 
 function addAnotherDrilled(e) {
-    fieldNumber = fieldNumber + 1;
-    let num = fieldNumber;
+    let inputsCount = e.querySelectorAll("tr").length;
+    inputsCount = inputsCount + 1;
+    let num = inputsCount;
+    // fieldNumber = fieldNumber + 1;
+    // let num = fieldNumber;
     let body = (e.childNodes[1].childNodes[1]);
 
     let newField = `<td class="form-row">
-                        <input type="text" id="panel" name="production[drill][${num}][panel]" placeholder=${panelInput.placeholder} required>
+                        <input type="text" id="panel" name="production[drill][${num}][panel]" placeholder=${panelInput.placeholder} required onkeyup="validatePanelName(event)">
                     </td>
 
                     <td class="form-row">
-                        <input type="number" id="length" name="production[drill][${num}][length]" placeholder=${quantityInput.placeholder} required>
+                        <input type="number" min="0" id="length" name="production[drill][${num}][length]" placeholder=${quantityInput.placeholder} required>
+                    </td>
+
+                    <td class="form-row">
+                        <input type="number" min="0" id="holes" name="production[drill][${num}][holes]" placeholder=${holesInput.placeholder} required>
+                    </td>
+
+                    <td class="form-row">
+                        <select name="production[drill][${num}][drillRig]" id="drillRig" required>
+                            <option value=""></option>
+                            <option value="TDR01">TDR01</option>
+                            <option value="TDR02">TDR02</option>
+                            <option value="TDR03">TDR03</option>
+                            <option value="TDR04">TDR04</option>
+                            <option value="TDR05">TDR05</option>
+                            <option value="TDR06">TDR06</option>
+                            <option value="TDR07">TDR07</option>
+                            <option value="TDR104">TDR104</option>
+                        </select>
                     </td>
 
                     <td class="form-row">
                         <a href="#" onclick="out(this.parentNode.parentNode)" id="out">Delete</a>
-                    </td>`
+                    </td>`;
 
     let tr = document.createElement("tr");
     tr.innerHTML = newField;
@@ -128,21 +185,24 @@ function addAnotherDrilled(e) {
 }
 
 function addAnotherPrepared(e) {
-    fieldNumber = fieldNumber + 1;
-    let num = fieldNumber;
+    let inputsCount = e.querySelectorAll("tr").length;
+    inputsCount = inputsCount + 1;
+    let num = inputsCount;
+    // fieldNumber = fieldNumber + 1;
+    // let num = fieldNumber;
     let body = (e.childNodes[1].childNodes[1]);
 
     let newField = `<td class="form-row">
-                        <input type="text" id="panel" name="production[prep][${num}][panel]" placeholder=${panelInput.placeholder} required>
+                        <input type="text" id="panel" name="production[prep][${num}][panel]" placeholder=${panelInput.placeholder} required onkeyup="validatePanelName(event)">
                     </td>
 
                     <td class="form-row">
-                        <input type="number" id="length" name="production[prep][${num}][length]" placeholder=${quantityInput.placeholder} required>
+                        <input type="number" min="0" id="length" name="production[prep][${num}][length]" placeholder=${quantityInput.placeholder} required>
                     </td>
 
                     <td class="form-row">
                         <a href="#" onclick="out(this.parentNode.parentNode)" id="out">Delete</a>
-                    </td>`
+                    </td>`;
 
     let tr = document.createElement("tr");
     tr.innerHTML = newField;
@@ -153,21 +213,24 @@ function addAnotherPrepared(e) {
 
 
 function addAnotherNC(e) {
-    fieldNumber = fieldNumber + 1;
-    let num = fieldNumber;
+    let inputsCount = e.querySelectorAll("tr").length;
+    inputsCount = inputsCount + 1;
+    let num = inputsCount;
+    // fieldNumber = fieldNumber + 1;
+    // let num = fieldNumber;
     let body = (e.childNodes[1].childNodes[1]);
 
     let newField = `<td class="form-row">
-                        <input type="text" id="panel" name="production[notClean][${num}][panel]" placeholder=${panelInput.placeholder} required>
+                        <input type="text" id="panel" name="production[notClean][${num}][panel]" placeholder=${panelInput.placeholder} required onkeyup="validatePanelName(event)">
                     </td>
 
                     <td class="form-row">
-                        <input type="number" id="length" name="production[notClean][${num}][length]" placeholder=${quantityInput.placeholder} required>
+                        <input type="number" min="0" id="length" name="production[notClean][${num}][length]" placeholder=${quantityInput.placeholder} required>
                     </td>
 
                     <td class="form-row">
                         <a href="#" onclick="out(this.parentNode.parentNode)" id="out">Delete</a>
-                    </td>`
+                    </td>`;
 
     let tr = document.createElement("tr");
     tr.innerHTML = newField;
@@ -178,21 +241,36 @@ function addAnotherNC(e) {
 
 
 function addAnotherLHD(e) {
-    fieldNumber = fieldNumber + 1;
-    let num = fieldNumber;
+    let inputsCount = e.querySelectorAll("tr").length;
+    inputsCount = inputsCount + 1;
+    let num = inputsCount;
+    // fieldNumber = fieldNumber + 1;
+    // let num = fieldNumber;
     let body = (e.childNodes[1].childNodes[1]);
 
     let newField = `<td class="form-row">
-                        <input type="text" id="coyNumber" name="production[LHD][${num}][coyNumber]" placeholder=${coyNumber.placeholder} required>
+                        <input type="number" min="0" id="coyNumber" name="production[LHD][${num}][coyNumber]" placeholder=${coyNumber.placeholder} required>
                     </td>
 
                     <td class="form-row">
-                        <input type="text" id="LHDnumber" name="production[LHD][${num}][LHDnumber]" placeholder=${gl.placeholder} required>
+                        <select name="production[LHD][${num}][LHDnumber]" id="LHDnumber" required>
+                            <option value="" selected disabled>GL#</option>
+                            <option value="GL11">GL11</option>
+                            <option value="GL02">GL02</option>
+                            <option value="GL03">GL03</option>
+                            <option value="GL04">GL04</option>
+                            <option value="GL05">GL05</option>
+                            <option value="RR1">RR1</option>
+                        </select>
+                    </td>
+
+                    <td class="form-row">
+                        <input type="number" min="0" id="LHDbuckets" name="production[LHD][${num}][buckets]" placeholder=${buckets.placeholder} required>
                     </td>
 
                     <td class="form-row">
                         <a href="#" onclick="out(this.parentNode.parentNode)" id="out">Delete</a>
-                    </td>`
+                    </td>`;
 
     let tr = document.createElement("tr");
     tr.innerHTML = newField;
@@ -202,6 +280,22 @@ function addAnotherLHD(e) {
 }
 
 
+
+
+//======Making sure that panel name is all upper case and no spaces exist in between======
+const newForm = document.getElementById("new-production")
+if(newForm){
+    console.log(true)
+    const allPanels = newForm.querySelectorAll("#panel")
+    allPanels.forEach(p => p.setAttribute("onkeyup", "validatePanelName(event)"))
+} else {
+    console.log(false)
+}
+
+function validatePanelName(e) {
+  const newValue = e.target.value.toUpperCase().replace(/\s+/g, "");
+  e.target.value = newValue;
+}
 
 // ================solution Showing Infomation selectively=======
 filter("combine")
@@ -384,7 +478,6 @@ function dateChange(e, f) {
                         </tr>
                         <tr>
                             <th>Night</th>
-                            <th>Blasted (m)</th>
                             <th>Cleaned (m)</th>
                             <th>Supported (m)</th>
                             <th>Drilled (m)</th>
@@ -395,15 +488,13 @@ function dateChange(e, f) {
                     </thead>
                     <tbody>
                     ${backshift.map(function (e) {
-        return "<tr><td><a href='/sections/" + e.section.id + "/production/" + e._id + "'>" + e.section.name + "</a></td><td>" + e.blast.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.clean.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.support.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.drill.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.prep.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.notClean.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.LHD.length + "</td></tr>"
+        return "<tr><td><a href='/sections/" + e.section.id + "/production/" + e._id + "'>" + e.section.name + "</a></td><td>" + e.clean.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.support.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.drill.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.prep.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.notClean.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.LHD.length + "</td></tr>"
     }).join("")}
 
 
                         <tr>
                             <th>Totals</th>
-                            <td>
-                                ${backshift.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j)).reduce((x, y) => x + y, 0)}
-                            </td>
+                            
                             <td>
                                 ${backshift.map(b => b.clean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
                             </td>
@@ -467,7 +558,7 @@ if(document.getElementById("dateFilter")){
 
 
 if(document.getElementById("declaredDate")){
-    document.getElementById("declaredDate").max = htmlDate + "T00:00:00"
+    document.getElementById("declaredDate").max = htmlDate + "T23:59:59"
 }
 
 
@@ -575,7 +666,7 @@ function blastFilter(e, prod, roms, feeds) {
         varianceProgTotal = varianceProgTotal.toFixed(1)
     }
 
-
+    let numRows = todayProduction.length + 3
 
     // let mapped = filteredByDate.map(prod => prod.blast)
     document.getElementById("progressives").innerHTML = "";
@@ -587,7 +678,7 @@ function blastFilter(e, prod, roms, feeds) {
                         <tr>
                             <th colspan="2"><span id="tableDate" >18-Jan</span></th>
                             <th colspan="6">Daily</th>
-                            <th rowspan="5"></th>
+                            <th rowspan="${numRows}"></th>
                             <th colspan="5">Month to date</th>
                         </tr>
         
@@ -621,12 +712,13 @@ function blastFilter(e, prod, roms, feeds) {
                             forecastProg = sections.map(b2 => b2.section.forecast).reduce((b3, b4) => b3 + b4, 0)
 
                             let actual2 = sections.map(b5 => b5.blast.map(sub1 => sub1.length).reduce((i, j) => i + j, 0)).reduce((b6, b7) => b6 + b7, 0).toFixed(1)
+                            let actual21 = sections.map(b5 => b5.blast.map(sub1 => sub1.length).reduce((i, j) => i + j, 0)*b5.section.plannedAdvance).reduce((b6, b7) => b6 + b7, 0).toFixed(1)
                             let advances = sections.map(b => b.section.plannedAdvance)
                             
                             
                             let blasts = sections.map(b5 => b5.blast.map(sub1 => sub1.length).reduce((i, j) => i+j, 0))
                             
-                            varianceProg = Number(actual2) - forecastProg
+                            varianceProg = Number(actual21) - forecastProg
 
                             if (Math.sign(varianceProg) === -1) {
                                 varianceProg = `(${(varianceProg * -1).toFixed(1)})`
@@ -635,40 +727,40 @@ function blastFilter(e, prod, roms, feeds) {
                             }
 
 
-                            return "<tr><th>" + b.section.name + "</th>" + "<th>m<sup>2</sup></th>" + "<td>" + b.section.budget.toFixed(1) + "</td>" + "<td>" + b.section.forecast.toFixed(1) + "</td>" + "<td>" + actual + "</td>" + "<td class=\"variance\" >" + variance + "</td>" + "<td class=\"smiley\">&#128577</td>" + "<td>" + b.general[0].comments + "</td>" + "<td>" + budgetProg.toFixed(1) + "</td>" + "<td>"+ forecastProg.toFixed(1) +"</td>" + "<td>" + actual2 +"</td>" + "<td class=\"variance\">"+ varianceProg +"</td>" + "<td>&#128577</td>" + "</tr>"
+                            return "<tr><th>" + b.section.name + "</th>" + "<th>m<sup>2</sup></th>" + "<td>" + b.section.budget.toFixed(1) + "</td>" + "<td>" + b.section.forecast.toFixed(1) + "</td>" + "<td>" + actual + "</td>" + "<td class=\"variance\" >" + variance + "</td>" + "<td class=\"smiley\">&#128577</td>" + "<td class=\"comments_cell\">" + b.general[0].comments + "</td>" + "<td>" + budgetProg.toFixed(1) + "</td>" + "<td>"+ forecastProg.toFixed(1) +"</td>" + "<td>" + actual21 +"</td>" + "<td class=\"variance\">"+ varianceProg +"</td>" + "<td>&#128577</td>" + "</tr>"
                         }).join("")}
 
 
                         <tr>
                             <th>Totals</th>
                             <th>m<sup>2</sup></th>
-                            <td>
+                            <th>
                                 ${actualTotalBudget.toFixed(1)}
-                            </td>
-                            <td>
+                            </th>
+                            <th>
                                 ${actualTotalForecast.toFixed(1)}
-                            </td>
-                            <td>
+                            </th>
+                            <th>
                                 ${actualBlastTotal.toFixed(1)}
-                            </td>
-                            <td class="variance">
+                            </th>
+                            <th class="variance">
                                 ${varianceTotals}
-                            </td>
+                            </th>
                             <td>&#128577</td>
-                            <td>
-                            </td>
-                            <td>
+                            <th>
+                            </th>
+                            <th>
                                 ${budgetProgTotal.toFixed(1)}
-                            </td>
-                            <td>
+                            </th>
+                            <th>
                                 ${forecastProgTotal.toFixed(1)}
-                            </td>
-                            <td>
+                            </th>
+                            <th>
                                 ${squareMetersProgTotal.toFixed(1)}
-                            </td>
-                            <td class="variance">
+                            </th>
+                            <th class="variance">
                                 ${varianceProgTotal}
-                            </td>
+                            </th>
                             <td>&#128577</td>
                         </tr>
                     </tbody>
@@ -701,9 +793,110 @@ if(document.getElementById("endDate")){
     document.getElementById("endDate").oninput()
 }
 
-//Making flash message disappear after few seconds
+// Making flash message disappear after few seconds
 
 if(document.getElementById("flash")){
     setTimeout(()=> document.getElementById("flash").innerHTML = "", 10000)
 }
+
+// Changing the blast block based on which shift is selected
+function shiftSelector(e) {
+    const selectedShift = e.srcElement
+    const comments = document.getElementById("comments")
+    const commentsBox = document.getElementById("comments-box")
+    const blastHeading = document.getElementById("blast-report-heading")
+    const blastBody = document.getElementById("blast-report")
+    const blastPanel = blastBody.querySelector("#panel")
+    const blastLength = blastBody.querySelector("#length")
+
+    const toBeRemoved = blastBody.getElementsByClassName("removedToggle")
+    const count = toBeRemoved.length
+
+    
+    
+
+    if(selectedShift.checked && selectedShift.id === "backshift"){
+        blastPanel.required = false;
+        blastPanel.value = null;
+        blastLength.required = false;
+        blastLength.value = null;
+        comments.innerText = "Comments";
+        commentsBox.required = false;
+
+
+        if (toBeRemoved.length > 0) {
+            for (let j = 0; j < count; j++) {
+                console.log("Ronny")
+                blastBody.querySelector(".removedToggle").remove();
+           }
+        }
+         
+
+        blastBody.style.display = "none";
+        blastHeading.style.display = "none";
+    }
+
+    if(selectedShift.checked && selectedShift.id === "morning"){
+        blastPanel.required = true;
+        blastPanel.value = null;
+        blastLength.required = true;
+        blastLength.value = null;
+        comments.innerText = "Target Not Achieved. Why?";
+        commentsBox.required = true;
+        
+        if (toBeRemoved.length > 0) {
+            for (let i = 0; i < count; i++) {
+                blastBody.querySelector(".removedToggle").remove();
+          }
+        }
+
+        blastBody.style.display = "block";
+        blastHeading.style.display = "block";
+    }
+}
+
+
+
+// Checking if whether target is achieved
+let diva;
+if(document.getElementById("blast-report")){
+    diva = document.getElementById("blast-report")
+    diva.addEventListener("click", checkCallAchieved)
+}
+
+function checkCallAchieved (e) {
+    const faceLengths = diva.querySelectorAll("#length");
+    const panelsBlastedLength = faceLengths.length;
+    const target = Number(document.getElementById("call").innerText)
+
+    let actual = 0;
+    for (i = 0; i < panelsBlastedLength; i++) {
+        actual = actual + Number(faceLengths[i].value)
+    }
+
+    if(actual >= target){
+        document.getElementById("comments").innerText = "Comments"
+        document.getElementById("comments-box").required = false
+        return;
+    }
+    if(actual <= target){
+        document.getElementById("comments").innerText = "Target Not Achieved. Why?"
+        document.getElementById("comments-box").required = true
+        return;
+    }
+}
+
+const productionForm = document.querySelector(".new-production")
+// const heading = document.querySelector("h2").innerText.includes("Edit")
+// console.log(heading)
+
+// if(heading && productionForm){
+//     checkCallAchieved()
+// }
+if(productionForm){
+    console.log("Success");
+    checkCallAchieved();
+}
+
+console.log("ENd");
 

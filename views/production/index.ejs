@@ -4,7 +4,7 @@
         <div class="element">
             <div class="element2">
                 <div class="heading">
-                    <h2>KDL Production Report</h2>
+                    <h2>Production Report</h2>
                     <div id="fromDB">
                         <% let newProduction = production.filter(prod => moment(prod.created).format('YYYY-MM-DD') === moment(new Date()).format('YYYY-MM-DD')) %>
                         <% let recentProduction = production.filter(prod => moment(prod.created).format('YYYY-MM-DD') === moment(new Date()).format('YYYY-MM-DD')) %>
@@ -57,31 +57,26 @@
                                     </td>
                                     <td>
                                         <a href="#">
-                                            <!-- <%= e.clean.length %> -->
                                             <%= e.clean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
                                         </a>
                                     </td>
                                     <td>
                                         <a href="#">
-                                            <!-- <%= e.support.length %> -->
                                             <%= e.support.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
                                         </a>
                                     </td>
                                     <td>
                                         <a href="#">
-                                            <!-- <%= e.drill.length %> -->
                                             <%= e.drill.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
                                         </a>
                                     </td>
                                     <td>
                                         <a href="#">
-                                            <!-- <%= e.prep.length %> -->
                                             <%= e.prep.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
                                         </a>
                                     </td>
                                     <td>
                                         <a href="#">
-                                            <!-- <%= e.notClean.length %> -->
                                             <%= e.notClean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
                                         </a>
                                     </td>
@@ -103,23 +98,18 @@
 
                                     </td>
                                     <td>
-                                        <!-- <%= production.map(b => b.clean).map(sub1 => sub1.length).reduce((i, j) => i+j, 0) %> -->
                                         <%= newProduction.map(b=> b.clean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
                                     </td>
                                     <td>
-                                        <!-- <%= production.map(b => b.support).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
                                         <%= newProduction.map(b=> b.support).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
                                     </td>
                                     <td>
-                                        <!-- <%= production.map(b => b.drill).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
                                         <%= newProduction.map(b=> b.drill).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
                                     </td>
                                     <td>
-                                        <!-- <%= production.map(b => b.prep).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
                                         <%= newProduction.map(b=> b.prep).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
                                     </td>
                                     <td>
-                                        <!-- <%= production.map(b => b.notClean).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
                                         <%= newProduction.map(b=> b.notClean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
                                     </td>
                                     <td>
@@ -163,32 +153,27 @@
                                     </td>
                                     <td>
                                         <a href="#">
-                                            <!-- <%= e.clean.length %> -->
                                             <%= e.clean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
                                         </a>
                                     </td>
                                     <td>
                                         <a href="#">
-                                            <!-- <%= e.support.length %> -->
                                             <%= e.support.map(sub1 => sub1.length).reduce((i, j) => i+j)
                                                 %>
                                         </a>
                                     </td>
                                     <td>
                                         <a href="#">
-                                            <!-- <%= e.drill.length %> -->
                                             <%= e.drill.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
                                         </a>
                                     </td>
                                     <td>
                                         <a href="#">
-                                            <!-- <%= e.prep.length %> -->
                                             <%= e.prep.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
                                         </a> 
                                     </td>
                                     <td>
                                         <a href="#">
-                                            <!-- <%= e.notClean.length %> -->
                                             <%= e.notClean.map(sub1 => sub1.length).reduce((i, j) => i+j)
                                                 %>
                                         </a>
@@ -203,32 +188,25 @@
 
                                     <tr>
                                         <th>Totals</th>
-                                        <td>
+                                        <th>
 
-                                            <!-- <% let placeholderA = production.map(b => b.blast) %> -->
 
-                                            <!-- <%= production.map(b => b.blast).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
                                             <%= dayshift.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
-                                        </td>
+                                        </th>
                                         <td>
-                                            <!-- <%= production.map(b => b.clean).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
                                             <%= dayshift.map(b => b.clean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
                                         </td>
                                         <td>
-                                            <!-- <%= production.map(b => b.support).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
                                             <%= dayshift.map(b => b.support).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j)).reduce((x,y)=>x+y,0) %>
                                         </td>
                                         <td>
-                                            <!-- <%= production.map(b => b.drill).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
                                             <%= dayshift.map(b => b.drill).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j)).reduce((x,y) => x+y,0)
                                                 %>
                                         </td>
                                         <td>
-                                            <!-- <%= production.map(b => b.prep).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
                                             <%= dayshift.map(b => b.prep).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
                                         </td>
                                         <td>
-                                            <!-- <%= production.map(b => b.notClean).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
                                             <%= dayshift.map(b => b.notClean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
                                         </td>
                                         <td>
@@ -246,7 +224,7 @@
                             </tr>
                             <tr>
                                 <th>Night</th>
-                                <th>Blasted (m)</th>
+                                <!-- <th>Blasted (m)</th> -->
                                 <th>Cleaned (m)</th>
                                 <th>Supported (m)</th>
                                 <th>Drilled (m)</th>
@@ -272,31 +250,26 @@
                                     </td>
                                     <td>
                                         <a href="#">
-                                            <!-- <%= e.clean.length %> -->
                                             <%= e.clean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
                                         </a>
                                     </td>
                                     <td>
                                         <a href="#">
-                                            <!-- <%= e.support.length %> -->
                                             <%= e.support.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
                                         </a>
                                     </td>
                                     <td>
                                         <a href="#">
-                                            <!-- <%= e.drill.length %> -->
                                             <%= e.drill.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
                                         </a>
                                     </td>
                                     <td>
                                         <a href="#">
-                                            <!-- <%= e.prep.length %> -->
                                             <%= e.prep.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
                                         </a>
                                     </td>
                                     <td>
                                         <a href="#">
-                                            <!-- <%= e.notClean.length %> -->
                                             <%= e.notClean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
                                         </a>
                                     </td>
@@ -310,37 +283,30 @@
 
                                     <tr>
                                         <th>Totals</th>
-                                        <td>
+                                        <th>
 
-                                            <!-- <% let placeholderB = production.map(b => b.blast) %> -->
 
-                                            <!-- <%= production.map(b => b.blast).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
                                             <%= backshift.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
 
-                                        </td>
-                                        <td>
-                                            <!-- <%= production.map(b => b.clean).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                        </th>
+                                        <th>
                                             <%= backshift.map(b=> b.clean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
-                                        </td>
-                                        <td>
-                                            <!-- <%= production.map(b => b.support).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                        </th>
+                                        <th>
                                             <%= backshift.map(b => b.support).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
-                                        </td>
-                                        <td>
-                                            <!-- <%= production.map(b => b.drill).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                        </th>
+                                        <th>
                                             <%= backshift.map(b => b.drill).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
-                                        </td>
-                                        <td>
-                                            <!-- <%= production.map(b => b.prep).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                        </th>
+                                        <th>
                                             <%= backshift.map(b => b.prep).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
-                                        </td>
-                                        <td>
-                                            <!-- <%= production.map(b => b.notClean).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %> -->
+                                        </th>
+                                        <th>
                                             <%= backshift.map(b => b.notClean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
-                                        </td>
-                                        <td>
+                                        </th>
+                                        <th>
                                             <%= backshift.map(b => b.LHD).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %>
-                                        </td>
+                                        </th>
                                     </tr>
                         </tbody>
                     </table>
@@ -379,56 +345,7 @@
                                     <th colspan="5">Month to date</th>
                                 </tr>
                 
-                                <!-- <tr>
-                                    <th colspan="2"></th>
-                                    <th>Budget</th>
-                                    <th>Forecast</th>
-                                    <th>Actual</th>
-                                    <th>Variance</th>
-                                    <th></th>
-                                    <th>Comments</th>
-                                    <th>Budget</th>
-                                    <th>Forecast</th>
-                                    <th>Actual</th>
-                                    <th>Variance</th>
-                                    <th></th>
-                                </tr> -->
-                
-                                <!-- <tr>
-                                    <th>ROM</th>
-                                    <th>t</th>
-                                    <td>
-                                        <%=  %> 
-                                    </td>
-                                    <td>6000</td>
-                                    <td>5176</td>
-                                    <td class="variance">(824)</td>
-                                    <th>
-                                        &#128578
-                                    </th>
-                                    <td></td>
-                                    <td>60,350</td>
-                                    <td>80,950</td>
-                                    <td>76,492</td>
-                                    <td class="variance">(4,458)</td>
-                                    <td>&#128577</td>
-                                </tr> -->
-                
-                                <!-- <tr>
-                                    <th>Plant feed</th>
-                                    <th>t</th>
-                                    <td>5520</td>
-                                    <td>5520</td>
-                                    <td>5538</td>
-                                    <td class="variance">18</td>
-                                    <td>&#128577</td>
-                                    <td></td>
-                                    <td>114 980</td>
-                                    <td>121,000</td>
-                                    <td>126,548</td>
-                                    <td class="variance">5548</td>
-                                    <td>&#128577</td>
-                                </tr> -->
+                               
                                     <!-- Sections square meters start from here -->
                                 <tr>
                                     <th>Centares</th>

@@ -27,7 +27,7 @@ router.get("/sections/:id/newReds/new", isLoggedIn, isSectionSelected, function 
             console.log(err);
             return res.redirect("back")
         } else {
-            res.render("newReds/new", { section: foundSection, title: "production-report" })
+            res.render("newReds/new", { section: foundSection, title: "TARP-Red" })
         }
     })
 })
@@ -41,7 +41,6 @@ router.post("/sections/:id/newRedPanels", isLoggedIn, function (req, res, next) 
         } else {
             NewRedPanel.create(req.body.newRed, function(err, createdRed){
                 if(err){
-                    console.log(err)
                     return next(err)
                 }
                 createdRed.section.id = section._id
@@ -49,13 +48,13 @@ router.post("/sections/:id/newRedPanels", isLoggedIn, function (req, res, next) 
                 createdRed.author.id = req.user._id
                 createdRed.save(function (err, savedRed) {
                     if(err){
-                        console.log(err)
                         return next(err)
                     }
 
                     let mailOptions = {
                         to: "ronny.kgalema@gmail.com",
                         from: "User <kdlreports@outlook.com>",
+                        priority: "high",
                         subject: "TARP Visit Request",
                         replyTo: "ronny.kgalema@gmail.com",
                         text: 'Good day, TARP team\n\n' +
@@ -66,13 +65,10 @@ router.post("/sections/:id/newRedPanels", isLoggedIn, function (req, res, next) 
                     };
 
                     let smtpTransport = nodemailer.createTransport({
-                        // service: "outlook",
-                        host: "smtp-mail.outlook.com",
-                        secureConnection: false,
-                        port: 587,
-                        tls: {
-                            ciphers: "SSLv3"
-                        },
+                        service: "outlook",
+                        host: "smtp.live.com",
+                        // secure: false,
+                        // port: 587,
                         auth: {
                             user: "kdlreports@outlook.com",
                             pass: process.env.GMAILPW
@@ -81,14 +77,12 @@ router.post("/sections/:id/newRedPanels", isLoggedIn, function (req, res, next) 
 
                     smtpTransport.sendMail(mailOptions, function (err, info) {
                         if(err){
-                            console.log("Error while sending mail")
                             console.log(err)
                             smtpTransport.close()
                             req.flash("error", "Email not sent. Please send the email manually and notify admin")
-                            return res.redirect("back")
+                            return res.redirect("/redPanel")
                         }
                         smtpTransport.close()
-                        console.log("mail sent");
                         req.flash("success", `An email has been sent to TARP team`)
                         res.redirect("/redPanel")
                     });
@@ -123,13 +117,11 @@ router.get("/sections/:id/newRedPanel/:newRedPanel_id/edit", isLoggedIn, isNewRe
 
 // 6. Update route - Puts the supplied info from edit form into the database
 router.put("/sections/:id/newRedPanel/:newRedPanel_id", isLoggedIn, isNewRedAuthor, function (req, res) {
-    console.log(req.body)
     NewRedPanel.findByIdAndUpdate(req.params.newRedPanel_id, req.body.newRedPanel, function (err, updatedNewRedPanel) {
         if (err || !updatedNewRedPanel) {
             req.flash("error", "Cannot find requested TARP Red panel")
             return res.redirect("/redPanel")
         } else {
-            console.log(updatedNewRedPanel)
             req.flash("success", "Successfully updated a TARP Red panel")
             res.redirect("/newRedPanel/" + req.params.newRedPanel_id)
         }

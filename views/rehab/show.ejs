@@ -7,6 +7,9 @@
             <h1>Rehabilitated Panel <%= rehabedPanel.panel %> of <%= rehabedPanel.section.name %></h1>
             <p>Trigger(s) - <%= rehabedPanel.trigger %></p>
             <p>Report number - <%= rehabedPanel.reportNumber %></p>
+            <p>Date Declared - <%= rehabedPanel.declaredDate.toDateString() %></p>
+            <p>Date Report Issued - <%= rehabedPanel.issueDate.toDateString() %></p>
+            <p>Date Rehabilitated - <%= rehabedPanel.rehabDate.toDateString() %></p>
          </div>
 
          <p>
@@ -14,14 +17,18 @@
                <button type="submit">Download Recommendation</button>
             </form>
             <br>
+            <hr>
+            <div>
+                  <a href="/rehabedPanels">Dashboard</a>
+            </div>
 
             <% if( currentUser && rehabedPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
-               <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>?_method=DELETE" method="POST">
-                  <button id="delete" type="submit">Delete</button>
-               </form>
                <p>
                   <a href="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/edit">Edit</a>
                </p>
+               <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>?_method=DELETE" method="POST">
+                  <button id="delete" type="submit">Delete</button>
+               </form>
             <% } %>
          </p>
          

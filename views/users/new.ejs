@@ -1,0 +1,65 @@
+<%- include("../partials/header") %>
+
+
+<div class="main-body">
+    <div class="element">
+        <h3>Register New User</h3>
+
+        <form method="POST" action="/users">
+
+            <div class="flex-form">
+                <div class="flex-row">
+                    <label for="username">Username:</label>
+                    <input id="username" type="text" name="username" placeholder="my_preferred_name" required>
+                </div>
+                <div class="flex-row">
+                    <label for="email_address">Email Address:</label>
+                    <input id="email_address" type="email" name="email" placeholder="my_email_address" required>
+                </div>
+                <div class="flex-row">
+                    <label for="password">Password:</label>
+                    <input id="password" type="password" name="password" placeholder="my_password" required>
+                </div>
+                <div class="flex-row">
+                    <label for="occupation">Occupation:</label>
+                    <select name="occupation" id="occupation" required>
+                        <option value="" disabled selected>Select Occupation</option>
+                        <option value="Manager(Mine)">General Manager</option>
+                        <option value="Manager(Mine)">Mine Manager</option>
+                        <option value="Manager(MRM)">MRM Manager</option>
+                        <option value="Engineer(Mine)">Engineer (Mine)</option>
+                        <option value="Manager(Rock_Eng)">Rock Engineer</option>
+                        <option value="Manager(Production)">Production Manager</option>
+                        <option value="Geologist(Chief)">Geologist (Chief)</option>
+                        <option value="Mine_Overseer">Mine Overseer</option>
+                        <option value="GES">GES</option>
+                        <option value="Geologist(Snr)">Geologist (Snr)</option>
+                        <option value="Geologist">Geologist</option>
+                        <option value="SCO">SCO</option>
+                        <option value="Supervisor(Shift)">Shift Supervisor</option>
+                        <option value="Miner">Miner</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="flex-row">
+                    <label for="department">Department:</label>
+                    <select name="department" id="department">
+                        <option value="" disabled selected>Select Department</option>
+                        <option value="Safety">Safety</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="MRM">MRM</option>
+                        <option value="Mining">Mining</option>
+                        <option value="Ventilation">Ventilation</option>
+                        <option value="Ventilation">HR</option>
+                    </select>
+                </div>
+                <div class="flex-row">
+                    <input type="submit" value="Register!">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

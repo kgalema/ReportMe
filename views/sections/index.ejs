@@ -2,23 +2,33 @@
 
 <div class="main-body">
     <div class="element">
-        <legend><strong>Choose Section</strong></legend>
+        <h3>Sections: <%= sections.length %></h3>
         <hr>
         <% if(!sections){ %>
-        <div>No Sections 
-            
-        </div>
+            <div>
+                <p>
+                    No Sections 
+                </p>
+            </div>
         <% } else { %>
-        <div>
-            <% sections.forEach(function(section){ %>
-            <a href="/sections/<%= section._id %>"><%= section.name %></a> |
-            <% }) %>
-        </div>
+            <div>
+                <% sections.forEach(function(section, index, array){ %>
+
+                    <% if (index === 0) { %>
+                        <a href="/sections/<%= section._id %>"><%= section.name%></a>
+                    <% } %>
+
+                    <% if (index !== 0) { %>
+                        | <a href="/sections/<%= section._id %>"><%= section.name%></a>
+                    <% } %>
+
+                <% }) %>
+            </div>
         <% } %>
         
 
-        <br>
         <% if(currentUser && currentUser.isAdmin){ %>
+        <br>
         <a class="button" href="/sections/new">Add New Section</a>
         <%} %>
     </div>

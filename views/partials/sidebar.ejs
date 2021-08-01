@@ -4,32 +4,36 @@
 
         <div class="sidebar-items" id="sidebar-items">
             <div class="logo">
-                <!-- <a href="/"><img src="/pictures/LOGO.png" alt="kwena"></a> -->
-                <a href="/"><img style="height: 25vh;" src="/pictures/Subtract.svg" alt="logo"></a>
+                <!-- <a href="/"><img style="height: 15vh;" src="/pictures/LOGO.png" alt="kwena"></a> -->
+                <a href="/"><img style="height: 20vh;" src="/pictures/Group2.svg" alt="declaration"></a>
+                <!-- <a href="/"><img style="height: 25vh;" src="/pictures/Subtract.svg" alt="logo"></a> -->
             </div>
             <ul id="side-list">
                 <li class="side-item <% if (title === 'home') { %>selected <% } %>">
-                    <a href="/">Home</a>
+                    <a <% if (title === 'home') { %>id='select'<% } %> href="/">Home</a>
                 </li>
-                <li class="side-item <% if (title === 'production-report') { %>selected <% } %> ">
-                    <a href="/sections">Add Report</a>
+                <li class="side-item <% if (title === 'new-reports') { %>selected <% } %> ">
+                    <a <% if (title === 'new-reports') { %>id='select'<% } %> href="/newReport">New Report</a>
                 </li>
                 <li class="side-item <% if (title === 'production-dash') { %>selected <% } %>">
-                    <a href="/production">Production Dashboard</a>
+                    <a <% if (title === 'production-dash') { %>id='select'<% } %> href="/production">Production Dashboard</a>
                 </li>
                 <li class="side-item <% if (title === 'TARP-Red') { %>selected <% } %> ">
-                    <a href="/redPanel">TARP Red tracker</a>
+                    <a <% if (title === 'TARP-Red') { %>id='select'<% } %> href="/redPanel">TARP Reds Dashboard</a>
                 </li>
                 <li class="side-item  <% if (title === 'sections') { %>selected <% } %>">
-                    <a href="/sections">Sections</a>
+                    <a <% if (title === 'sections') { %>id='select'<% } %> href="/sections">Sections</a>
+                </li>
+                <li class="side-item  <% if (title === 'users') { %>selected <% } %>">
+                    <a <% if (title === 'users') { %>id='select'<% } %> href="/users">Users</a>
                 </li>
                 <% if(!currentUser){ %>
-                <li class="side-item  <% if (title === 'Login') { %>selected <% } %>">
-                    <a href="/login">Log In</a>
-                </li>
-                <li class="side-item <% if (title === 'Register') { %>selected <% } %>">
-                    <a href="/register">Register</a>
-                </li>
+                    <li class="side-item  <% if (title === 'Login') { %>selected <% } %>">
+                        <a <% if (title === 'Login') { %>id='select'<% } %> href="/login">Log In</a>
+                    </li>
+                    <li class="side-item <% if (title === 'Register') { %>selected <% } %>">
+                        <a <% if (title === 'Register') { %>id='select'<% } %> href="/users/new">Register</a>
+                    </li>
                 <% } else { %>
                 <li class="side-item">
                     <a href="/logout">Log Out</a>
@@ -50,7 +54,6 @@
         <h5>You're an admin</h5>
         <% } %>
         </p>
-        <!-- <p>v1.0.0</p> -->
     </div>
 
 </div>

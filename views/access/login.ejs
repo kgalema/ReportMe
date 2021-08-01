@@ -5,37 +5,20 @@
     <div class="element">
         <h3>Gain Access!</h3>
         <form method="POST" action="/login">
-            <table class="form-row">
-                <tr>
-                    <td class="form-row">
-                        <label for="username">Username:</label>
-                    </td>
-                    <td class="form-row">
-                        <input id="username" type="text" name="username" placeholder="my_username" required>
-                    </td>
-                </tr>
-                <!-- <tr>
-                    <td class="form-row">
-                        <label for="email_address">Email Address:</label>
-                    </td>
-                    <td class="form-row">
-                        <input id="email_address" type="email" name="email" placeholder="my_email_address">
-                    </td>
-                </tr> -->
-                <tr>
-                    <td class="form-row">
-                        <label for="password">Password:</label>
-                    </td>
-                    <td class="form-row">
-                        <input id="password" type="password" name="password" placeholder="my_password" required>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="form-row" colspan="2">
-                        <input style="width: 100%;" type="submit" value="Log In!">
-                    </td>
-                </tr>
-            </table>
+            <div class="flex-form">
+                <div class="flex-row">
+                    <label for="username">Username:</label>
+                    <input id="username" type="text" name="username" placeholder="my_username" required>
+                </div>
+                <div class="flex-row">
+                    <label for="password">Password:</label>
+                    <input id="password" type="password" name="password" placeholder="my_password" required>
+                </div>
+                <div class="flex-row">
+                    <input type="submit" value="Log In!">
+                </div>
+            </div>
+            
             <a href="/register">Register New Account</a>
             <a href="/forgot">Forgotten password?</a>
         </form>

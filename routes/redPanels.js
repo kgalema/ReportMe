@@ -7,7 +7,6 @@ const Redpanel = require("../models/tarp")
 const Rehab = require("../models/rehab")
 const NewRedPanel = require("../models/newRed")
 const { isLoggedIn, isAuthor, isAdmin } = require("../middleware")
-const catchAsync = require("../utils/catchAsync")
 const ExpressError = require("../utils/ExpressError")
 const nodemailer = require("nodemailer")
 

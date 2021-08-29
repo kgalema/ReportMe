@@ -1,0 +1,42 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <div class="element2">
+            <form action="/tmm/<%= tmm._id %>?_method=PUT" method="post">
+            <div class="flex-form">
+                <div class="flex-row">
+                    <label for="tmm-cat">Category</label>
+                    <select name="TMM[category]" id="tmm-cat" required>
+                        <option value="<%= tmm.category %>" selected><%= tmm.category %></option>
+                        <option value="roofBolter">Roof Bolter</option>
+                        <option value="drillRig">Drill Rig</option>
+                        <option value="LHD">LHD</option>
+                        <option value="UV">UV</option>
+                        <option value="LDV">LDV</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="flex-row">
+                    <label for="tmm-name">Name</label>
+                    <input type="text" name="TMM[name]" id="tmm-name" onkeyup="validatePanelName(event)" size="7" value="<%= tmm.name %>" required>
+                </div>
+                <div class="flex-row">
+                    <input type="submit" value="Update">
+                </div>
+            </div>
+
+        </form>
+
+        <div>
+            <p>
+                <a href="/tmm/<%= tmm._id%>">&#11013 Back</a>
+            </p>
+        </div>
+        </div>
+    </div>
+</div>
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

@@ -1,0 +1,96 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <div class="element2">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Catergory</th>
+                        <th>ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th rowspan="<%= bolters.length + 1 %>">Roof Bolters</th>
+                        <% bolters.forEach(element => { %>
+                            <tr>
+                                <td>
+                                    <a href="/tmm/<%= element._id %>">
+                                        <%= element.name %>
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tr>
+                    <tr>
+                        <th rowspan="<%= drillRigs.length + 1 %>">Drill Rigs</th>
+                        <% drillRigs.forEach(element => { %>
+                            <tr>
+                                <td>
+                                    <a href="/tmm/<%= element._id %>">
+                                        <%= element.name %> 
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tr>
+                    <tr>
+                        <th rowspan="<%= LHDs.length + 1 %>">LHDs</th>
+                        <% LHDs.forEach(element => { %>
+                            <tr>
+                                <td>
+                                    <a href="/tmm/<%= element._id %>">
+                                        <%= element.name %> 
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tr>
+                    <tr>
+                        <th rowspan="<%= UVs.length + 1 %>">UVs</th>
+                        <% UVs.forEach(element => { %>
+                            <tr>
+                                <td>
+                                    <a href="/tmm/<%= element._id %>">
+                                        <%= element.name %> 
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tr>
+                    <tr>
+                        <th rowspan="<%= LDVs.length + 1 %>">LDVs</th>
+                        <% LDVs.forEach(element => { %>
+                            <tr>
+                                <td>
+                                    <a href="/tmm/<%= element._id %>">
+                                        <%= element.name %> 
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tr>
+                    <tr>
+                        <th rowspan="<%= otherTMMs.length + 1 %>">Other TMMs</th>
+                        <% otherTMMs.forEach(element => { %>
+                            <tr>
+                                <td>
+                                    <a href="/tmm/<%= element._id %>">
+                                        <%= element.name %> 
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tr>
+                </tbody>
+            </table>
+            <hr>
+            <a class="button" href="tmms/new">Add New TMM</a>
+        </div>
+    </div>
+</div>
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

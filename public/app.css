@@ -401,7 +401,7 @@ button.collapsible {
 
 hr {
     width: 70%;
-    margin: 1.1rem 0;
+    margin: 0.5rem 0;
 }
 
 .welcome {
@@ -479,4 +479,8 @@ hr {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.rotate-text {
+    transform: rotate(-90deg);
 }

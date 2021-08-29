@@ -1,0 +1,35 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <h2>Add New TMM</h2>
+        <form action="/tmms" method="post">
+            <div class="flex-form">
+                <div class="flex-row">
+                    <label for="tmm-cat">Category</label>
+                    <select name="TMM[category]" id="tmm-cat" required>
+                        <option value="" selected disabled>Select TMM Cat</option>
+                        <option value="roofBolter">Roof Bolter</option>
+                        <option value="drillRig">Drill Rig</option>
+                        <option value="LHD">LHD</option>
+                        <option value="UV">UV</option>
+                        <option value="LDV">LDV</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="flex-row">
+                    <label for="">Name</label>
+                    <input type="text" name="TMM[name]" onkeyup="validatePanelName(event)" size="7" required>
+                </div>
+            </div>
+
+            <div class="flex-row">
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

@@ -1,7 +1,9 @@
+const process = require("process")
 if (process.env.NODE_ENV !== "production") {
 	require('dotenv').config();
 }
 
+const http = require("http");
 const express = require("express")
 const app = express()
 const mongoose = require("mongoose")
@@ -9,51 +11,14 @@ const expressSanitizer = require("express-sanitizer")
 const methodOverride = require('method-override')
 const session = require('express-session')
 const flash = require("connect-flash")
-console.log(flash)
 const ExpressError = require('./utils/ExpressError');
 const passport = require("passport");
 const LocalStrategy = require("passport-local")
 const User = require("./models/user")
-const nodemailer = require("nodemailer");
-
-// ****************************Testing Starts Here*******************************
-
-// console.log("With host")
-// let smtpTransporter = nodemailer.createTransport({
-//   service: "outlook",
-//   host: "smtp.live.com",
-//   auth: {
-//     user: "kdlreports@outlook.com",
-//     pass: process.env.GMAILPW
-//   },
-// });
-
-// let mailOptions = {
-// 	to: "ronny.kgalema@gmail.com",
-// 	from: "KDL Test <KDLReports@outlook.com>",
-// 	subject: "HTML",
-// 	html: "<h1>Hello World</h1>"
-// };
-
-// smtpTransporter.sendMail(mailOptions, function (err, info) {
-// 	console.log(info)
-// })
-
-// smtpTransporter.verify(function (error, success) {
-//   	if (error) {
-//     	console.log(error);
-// 		return
-//   	} 
-// 	console.log(success)
-// 	console.log("Server is ready to take our messages");
-// });
-
-// console.log(smtpTransporter.transporter)
-
-// ********************************Testing Ends Here***********************
 
 
-// ****************************Database Setup Start*************************************
+const port = process.env.PORT || 4000;
+
 // const dbUrl = "mongodb://localhost/reportMe";
 const dbUrl = process.env.DB_URL
 const DBoptions = {
@@ -63,54 +28,89 @@ const DBoptions = {
 	useFindAndModify: false
 }
 
-mongoose.connect(dbUrl, DBoptions, function (err) {
-	if (err) {
-		console.log("*******first error*********")
-		console.log(err)
-		console.log("*******first error*********")
-		return
+
+const options = {
+  hostname: "localhost",
+  port: port,
+  path: "/database-problem",
+  method: "GET"
+};
+
+
+//**************Database problem handling***********
+
+
+// app.get("/database-problem", (req, res) => {
+// 	console.log("********************Inside A Route*****************************")
+// 	res.send("You've hit database problem route")
+// })
+
+
+// const req = http.request(options, (res) => {
+//   	console.log(`statusCode: ${res.statusCode}`);
+// 	res.on("data", (d) => {
+// 		process.stdout.write(d);
+// 	});
+// });
+
+// req.on("error", (error) => {
+//   	console.error(error);
+// });
+
+// req.end();
+
+
+//******************************************************************************
+let database = async function () {
+	try {
+		console.log("connecting to database using connect to Database function...........");
+  		let connectionInside = await mongoose.connect(dbUrl, DBoptions);
+		console.log("Connected to database")
+		return connectionInside;
+	
+	} catch (error) {
+		console.log(error)
+		console.log("Error is caught")
+  		process.exit()
 	}
-	console.log("Connected to the database")
-});
+}
 
-
+database()
 
 const conn1 = mongoose.connection
 
 
-conn1.on("error", function(err){
+conn1.once("open", function(){
+	console.log("******connection open*******")
+})
+conn1.on("error", function(){
 	console.log("******On error*******")
-	console.log(err)
-	console.log("******On error*******")
+	process.exit()
 })
 
-conn1.on("disconnected", function(err){
+conn1.on("disconnected", function(){
 	console.log("*******On disconnected******")
-	console.log(err)
-	console.log("*******On disconnected******")
-	app.all("*", (req, res, next) => {
-    	console.log("Resource not found");
-    	return next(new ExpressError("Page Not Found", 404));
-  	});
-	// throw new ExpressError("Database disconnected. Contact Admin", 404);
+	database()
 })
 
 module.exports.dbUrl = dbUrl
 module.exports.connection = conn1
 //**************************Database Setup End****************************************
 
-const MongoStore = require("connect-mongo")(session)
+const MongoStore = require("connect-mongo")(session);
 
 const redPanelsRoutes = require("./routes/redPanels");
 const newRedPanelsRoutes = require("./routes/newRed");
 const sectionsRoutes = require("./routes/sections");
 const productionRoutes = require("./routes/production");
-const accessRoutes = require("./routes/access")
+const accessRoutes = require("./routes/access");
 const rehabilitated = require("./routes/rehabilitated");
 const usersRoutes = require("./routes/users");
 const romRoutes = require("./routes/rom");
 const plantFeedRoutes = require("./routes/plantFeed");
 const newReportsRoutes = require("./routes/newReport");
+const tmms = require("./routes/tmms");
+
 
 
 const secret = process.env.SECRET || "highSchoolCrush";
@@ -188,11 +188,18 @@ app.use(rehabilitated)
 app.use(romRoutes)
 app.use(plantFeedRoutes)
 app.use(newReportsRoutes)
+app.use(tmms)
 
 
 app.all("*", (req, res, next) => {
 	console.log("Resource not found")
 	return next(new ExpressError("Page Not Found", 404))
+})
+
+app.use((err, req, res,next) => {
+	console.log("hey there")
+	console.log(err.name);
+	next(err)
 })
 
 app.use((err, req, res, next) => {
@@ -204,6 +211,6 @@ app.use((err, req, res, next) => {
 	// res.status(statusCode).send(err.message)
 })
 
-const port = process.env.PORT || 4000;
+// const port = process.env.PORT || 4000;
 
 app.listen(port, () => console.log(`ReportMe server is running on port ${port}`));

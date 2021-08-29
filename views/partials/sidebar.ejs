@@ -25,6 +25,11 @@
                     <a <% if (title === 'sections') { %>id='select'<% } %> href="/sections">Sections</a>
                 </li>
                 <% if(currentUser && currentUser.isAdmin){ %>
+                    <li class="side-item  <% if (title === 'tmms') { %>selected <% } %>">
+                        <a <% if (title === 'tmms') { %>id='select'<% } %> href="/tmms">TMMs</a>
+                    </li>
+                <% } %>
+                <% if(currentUser && currentUser.isAdmin){ %>
                     <li class="side-item  <% if (title === 'users') { %>selected <% } %>">
                         <a <% if (title === 'users') { %>id='select'<% } %> href="/users">Users</a>
                     </li>

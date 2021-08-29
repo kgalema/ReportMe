@@ -1,0 +1,24 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <div class="element2">
+            <h2><%= tmm.name %></h2>
+
+            <br>
+            <p>
+                <a href="/tmms">Dashboard</a>
+            </p>
+            <div class="admin">
+                <a href="/tmm/<%= tmm._id %>/edit">Edit</a>
+                <form action="/tmm/<%= tmm._id %>/?_method=DELETE" method="POST">
+                    <button id="delete" type="submit">Delete!</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

@@ -2,7 +2,9 @@ const Section = require("./models/section")
 const Redpanel = require("./models/tarp")
 const Production = require("./models/production")
 const NewRedPanel = require("./models/newRed")
+const Rehab = require("./models/rehab")
 const User = require("./models/user")
+const Breakdown = require("./models/breakdown")
 
 
 
@@ -17,7 +19,7 @@ module.exports.isLoggedIn = (req, res, next) => {
 
 module.exports.isAuthor = (req, res, next) => {
     Redpanel.findById(req.params.redpanel_id, function (err, foundRed) {
-        if (err) {
+        if (err || foundRed === null) {
             req.flash("error", "Something went wrong")
             return res.redirect(`/redPanel/${req.params.redpanel_id}`)
         }
@@ -25,14 +27,27 @@ module.exports.isAuthor = (req, res, next) => {
             req.flash("error", "You do not have permission to do that")
             return res.redirect(`/redPanel/${req.params.redpanel_id}`)
         }
-        next()
+        next();
+    })
+}
+module.exports.isRehabAuthor = (req, res, next) => {
+    Rehab.findById(req.params.rehabedPanel_id, function (err, foundRed) {
+        if (err || foundRed === null) {
+            req.flash("error", "Something went wrong")
+            return res.redirect(`/redPanel`);
+        }
+        if (!foundRed.author.equals(req.user._id) && !(req.user.isAdmin)) {
+            req.flash("error", "You do not have permission to do that")
+            return res.redirect(`/redPanel`);
+        }
+        next();
     })
 }
 
 
 module.exports.isSectionAuthor = (req, res, next) => {
     Section.findById(req.params.id, function (err, foundSection) {
-        if (err) {
+        if (err || !foundSection) {
             req.flash("error", "Something went wrong")
             return res.redirect(`/sections/${req.params.redpanel_id}`)
         }
@@ -44,6 +59,22 @@ module.exports.isSectionAuthor = (req, res, next) => {
         next()
     })
 }
+
+module.exports.isBreakdownAuthor = (req, res, next) => {
+    Breakdown.findById(req.params.id, function (err, foundBreakdown) {
+        if (err) {
+            req.flash("error", "Something went wrong")
+            return res.redirect(`/breakdowns/${req.params.id}`)
+        }
+        
+        if (!foundBreakdown.author.equals(req.user._id) && !req.user.isAdmin) {
+            req.flash("error", "You do not have permission to do that")
+            return res.redirect(`/breakdowns/${req.params.id}`)
+        }
+        next()
+    })
+}
+
 module.exports.isProductionAuthor = (req, res, next) => {
     Production.findById(req.params.production_id, function (err, foundProduction) {
         if (err) {
@@ -90,9 +121,20 @@ module.exports.isSectionSelected = (req, res, next) => {
     Section.findById(req.params.id, function (err, foundSection) {
         if (err || !foundSection ) {
             req.session.returnTo = req.originalUrl
-            req.flash("error", "Please select a section to proceed")
+            req.flash("warning", "Please select a section to proceed")
             return res.redirect("/sections")
         }
         next()
     })
 }
+
+// module.exports.areUserExist = (req, res, next) => {
+//     User.findById(req.params.id, function (err, foundSection) {
+//         if (err || !foundSection ) {
+//             req.session.returnTo = req.originalUrl
+//             req.flash("warning", "Please select a section to proceed")
+//             return res.redirect("/sections")
+//         }
+//         next();
+//     })
+// }

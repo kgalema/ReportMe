@@ -2,7 +2,7 @@
 
 <div class="main-body">
     <div class="element">
-        <h2>Add New TMM</h2>
+        <h2>Add New Asset</h2>
         <form action="/tmms" method="post">
             <div class="flex-form">
                 <div class="flex-row">
@@ -14,20 +14,25 @@
                         <option value="LHD">LHD</option>
                         <option value="UV">UV</option>
                         <option value="LDV">LDV</option>
-                        <option value="Other">Other</option>
+                        <option value="electrical">Electrical</option>
+                        <option value="mechanical">Mechanical</option>
+                        <option value="ug_belts">UG Belts</option>
+                        <option value="other">Other</option>
                     </select>
                 </div>
                 <div class="flex-row">
-                    <label for="">Name</label>
-                    <input type="text" name="TMM[name]" onkeyup="validatePanelName(event)" size="7" required>
+                    <label for="asset_id">Name/ID</label>
+                    <input type="text" id="asset_id" name="TMM[name]" onkeyup="validatePanelName(event)" size="7" required>
+                </div>
+                <div class="flex-row">
+                    <input type="submit" value="Submit">
                 </div>
             </div>
-
-            <div class="flex-row">
-                <input type="submit" value="Submit">
-            </div>
         </form>
-
+        <br>
+        <div>
+            <a href="/tmms">Dashboard</a>
+        </div>
     </div>
 </div>
 

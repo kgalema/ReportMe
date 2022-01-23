@@ -6,11 +6,11 @@
             <tbody>
                 <tr>
                     <td>Name</td>
-                    <td><%= foundUser.username %></td>
+                    <td><%= foundUser.preferredName %></td>
                 </tr>
                 <tr>
                     <td>Email</td>
-                    <td><%= foundUser.email %></td>
+                    <td><%= foundUser.username %></td>
                 </tr>
                 <tr>
                     <td>Occupation</td>
@@ -19,6 +19,10 @@
                 <tr>
                     <td>Department</td>
                     <td><%= foundUser.department %></td>
+                </tr>
+                <tr>
+                    <td>Admin</td>
+                    <td><%= foundUser.isAdmin %></td>
                 </tr>
             </tbody>
         </table>

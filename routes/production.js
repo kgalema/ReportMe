@@ -1,10 +1,9 @@
 const express = require("express")
 const router = express.Router()
 const Section = require("../models/section")
-const ROM = require("../models/ROM")
-const PlantFeed = require("../models/plantFeed")
 const Production = require("../models/production")
-const moment = require("moment")
+const TMM = require("../models/tmms")
+const User = require("../models/user")
 const { isLoggedIn, isProductionAuthor, isSectionSelected, isAdmin } = require("../middleware")
 
 
@@ -17,45 +16,34 @@ const { isLoggedIn, isProductionAuthor, isSectionSelected, isAdmin } = require("
 // 1. Landing Route
 router.get("/", function (req, res) {
 	res.redirect("/production")
-	// res.render("welcomePage", { title: "home" })
 })
 
 
 // 1. ***Index route: Shows you all captured reports***
 router.get("/production", function (req, res) {
 	Production.find({}, function (err, allProduction) {
-		if (err) {
-			req.flash("error", "Oops! Error occured while fetching Production data")
-			return res.redirect("back")
-		} else {
-			ROM.find({}, function(err, roms){
-				if(err){
-					req.flash("error", "Oops! Error occured while fetching ROM data")
-					return res.redirect("back")
-				} else {
-					PlantFeed.find({}, function(err, feeds){
-						if(err){
-							req.flash("error", "Oops! Error occured while fetching Plant Feed data")
-							return res.redirect("back")
-						} else {
-							res.render("production/index", { production: allProduction, roms: roms, feeds: feeds, title: "production-dash" })
-						}
-					})
-				}
-			})
+		if (err || !allProduction) {
+			req.flash("error", "Oops! Error occured while fetching production reports");
+			return res.redirect("back");
 		}
-	})
-})
+		Section.find({}, {name: 1},  function(err, sections){
+			if (err || !sections) {
+				req.flash("error", "Error occured while fetching sections");
+				return res.redirect("back");
+			}
+			res.render("production/index", { production: allProduction, sections, title: "production-dash" });
+		})
+	});
+});
+
 router.get("/api/production", function (req, res) {
 	Production.find({}, function (err, allProduction) {
 		if (err) {
 			console.log(err);
-			req.flash("error", "Oops! Seems like the database is down. Please contact admin")
-			return res.redirect("back")
+			req.flash("error", "Oops! Seems like the database is down. Please contact admin");
+			return res.redirect("back");
 		} else {
-			// console.log(allProduction)
-			// res.render("production/index", { production: allProduction })
-			res.send(allProduction)
+			res.send(allProduction);
 		}
 	})
 })
@@ -66,11 +54,27 @@ router.get("/api/production", function (req, res) {
 router.get("/sections/:id/production/new", isLoggedIn, isSectionSelected, function (req, res) {
 	Section.findById(req.params.id, function (err, foundSection) {
 		if (err || !foundSection) {
-			req.flash("error", "Oops! Invalid Section ID. Section Not Found")
-			return res.redirect("back")
-		} else {
-			res.render("production/new", { section: foundSection, title: "production-dash" });
+			req.flash("error", "Oops! Invalid Section ID. Section Not Found");
+			return res.redirect("/production");
 		}
+		TMM.find({category: {$in: ["LHD", "drillRig", "roofBolter"]}}, function(err, foundTMMs){
+			if(err || !foundTMMs){
+				req.flash("error", "Error occured while fetching TMMs");
+				return res.redirect("/production")
+			}
+			const collator = new Intl.Collator(undefined, {
+				numeric: true,
+				sensitivity: "base",
+			});
+
+			const sorted = foundTMMs.sort(function (a, b) {
+				return collator.compare(a.name, b.name);
+			});
+			const drillRigs = sorted.filter((dR) => dR.category === "drillRig");
+			const LHDs = sorted.filter((LHD) => LHD.category === "LHD");
+			const bolters = sorted.filter((LHD) => LHD.category === "roofBolter");
+			res.render("production/new", { section: foundSection, drillRigs, LHDs, bolters, title: "production-dash" });
+		}).sort() 
 	})
 })
 
@@ -80,47 +84,37 @@ router.post("/sections/:id/production", isLoggedIn, function (req, res) {
 	Section.findById(req.params.id, function (err, section) {
 		if (err || !section) {
 			req.flash("error", "Oops! Seems like the database is down or section has been deleted")
-			console.log(err)
 			return res.redirect("back");
-		} else {
-			let uniqueCode = section.name + new Date().toLocaleDateString() + req.body.production.general[0].shift
-			req.body.production.uniqueCode = uniqueCode;
-			// console.log(req.body.production)
-			Production.create(req.body.production, function (err, foundProduction) {
-				if (err) {
-					// console.log(err)
-					req.flash("error", "Looks like you are trying to create duplicate report")
-					return res.redirect("back")
-				} else {
-					foundProduction.section.id = section._id;
-					foundProduction.section.name = section.name;
-					foundProduction.section.budget = section.budget;
-					foundProduction.section.forecast = section.forecast;
-					foundProduction.section.plannedAdvance = section.plannedAdvance;
-					// foundProduction.uniqueCode = uniqueCode;
-					foundProduction.author = req.user._id
-					foundProduction.save(function (err, savedProduction) {
-						if (err) {
-							console.log(err)
-							return res.redirect("back")
-						} else {
-							console.log(savedProduction)
-							// section.production.push(foundProduction);
-							section.save(function (err, savedSection) {
-								if (err) {
-									return res.redirect("back")
-								} else {
-									req.flash("success", "Successfully Added Production Report")
-									res.redirect("/production");
-								}
-							});
-						}
-					});
-				}
-			})
 		}
-	})
-})
+		let dateNow = new Date().toLocaleDateString();
+
+		if(req.body.production.created){
+			dateNow = new Date(req.body.production.created).toLocaleDateString();
+		}
+		const uniqueCode = section.name + dateNow + req.body.production.general[0].shift
+		req.body.production.uniqueCode = uniqueCode;
+		Production.create(req.body.production, function (err, foundProduction) {
+			if (err || !foundProduction) {
+				req.flash("error", "Looks like you are trying to create duplicate report")
+				return res.redirect("/production")
+			}
+			foundProduction.section.id = section._id;
+			foundProduction.section.name = section.name;
+			foundProduction.section.budget = section.budget;
+			foundProduction.section.forecast = section.forecast;
+			foundProduction.section.plannedAdvance = section.plannedAdvance;
+			foundProduction.author = req.user._id
+			foundProduction.save(function (err, savedProduction) {
+				if (err || !savedProduction) {
+					req.flash("error", "Error while saving report")
+					return res.redirect("back")
+				}
+				req.flash("success", "Successfully Added Production Report")
+				res.redirect("/production");
+			});
+		});
+	});
+});
 
 
 
@@ -131,9 +125,14 @@ router.get("/sections/:id/production/:production_id", function (req, res) {
 		if (err || !foundProduction) {
 			req.flash("error", "Oops! Seems like what you are looking for has vanished from the database")
 			return res.redirect("back")
-		} else {
-			res.render("production/showProduction", { reported: foundProduction, title: "production-dash" });
 		}
+		User.findById(foundProduction.author, {preferredName: 1}, function(err, user){
+			if(err || !user){
+				req.flash("error", "Looks like the report does not have author");
+				return res.redirect("back");
+			}
+			res.render("production/showProduction", { reported: foundProduction, reportedUser: user, title: "production-dash" });
+		})
 	});
 })
 
@@ -150,16 +149,13 @@ router.get("/sections/:id/production/:production_id/edit", isLoggedIn, isProduct
 })
 // 6. Update - takes info from edit form and PUTs it into existing data in the database
 router.put("/sections/:id/production/:production_id", isLoggedIn, isProductionAuthor, function (req, res) {
-	console.log(req.body.production)
 	Production.findByIdAndUpdate(req.params.production_id, req.body.production, function (err, updatedProduction) {
 		if (err || !updatedProduction) {
-			console.log(err)
 			req.flash("error", "Something went wrong with the database")
 			return res.redirect("back")
-		} else {
-			req.flash("success", "Successfully Updated Production Report")
-			res.redirect("/sections/" + req.params.id + "/production/" + req.params.production_id)
-		}
+		} 
+		req.flash("success", "Successfully Updated Production Report")
+		res.redirect("/sections/" + req.params.id + "/production/" + req.params.production_id)
 	})
 })
 

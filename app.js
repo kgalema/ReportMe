@@ -19,8 +19,8 @@ const User = require("./models/user")
 
 const port = process.env.PORT || 4000;
 
-// const dbUrl = "mongodb://localhost/reportMe";
-const dbUrl = process.env.DB_URL
+const dbUrl = "mongodb://localhost/reportMe";
+// const dbUrl = process.env.DB_URL
 const DBoptions = {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
@@ -61,7 +61,7 @@ const options = {
 
 
 //******************************************************************************
-let database = async function () {
+const database = async function () {
 	try {
 		console.log("connecting to database using connect to Database function...........");
   		let connectionInside = await mongoose.connect(dbUrl, DBoptions);
@@ -110,6 +110,8 @@ const romRoutes = require("./routes/rom");
 const plantFeedRoutes = require("./routes/plantFeed");
 const newReportsRoutes = require("./routes/newReport");
 const tmms = require("./routes/tmms");
+const breakdowns = require("./routes/breakdowns");
+const closedBreakdowns = require("./routes/closedBreakdown");
 
 
 
@@ -170,11 +172,12 @@ app.use(methodOverride("_method"));
 
 app.locals.moment = require("moment");
 app.use((req, res, next) => {
-	res.locals.currentUser = req.user
-	res.locals.success = req.flash('success')
-	res.locals.error = req.flash('error')
-	next()
-})
+	res.locals.currentUser = req.user;
+	res.locals.success = req.flash('success');
+	res.locals.error = req.flash('error');
+	res.locals.warning = req.flash('warning');
+	next();
+});
 
 
 
@@ -189,6 +192,8 @@ app.use(romRoutes)
 app.use(plantFeedRoutes)
 app.use(newReportsRoutes)
 app.use(tmms)
+app.use(breakdowns)
+app.use(closedBreakdowns)
 
 
 app.all("*", (req, res, next) => {

@@ -3,9 +3,7 @@
 <div class="main-body">
     <div class="element">
         <h2>Sections</h2>
-        <p>
-            <strong>Total number of sections: <%= sections.length %></strong>
-        </p>
+        <h3>Total number of sections: <%= sections.length %></h3>
         <hr>
         <% if(!sections){ %>
             <div>
@@ -30,8 +28,8 @@
         <% } %>
         
 
-        <% if(currentUser && currentUser.isAdmin){ %>
         <br>
+        <% if(currentUser && currentUser.isAdmin){ %>
         <a class="button" href="/sections/new">Add New Section</a>
         <%} %>
     </div>

@@ -4,11 +4,10 @@
     <div class="element">
         <h2><%= section.name %></h2>
         <hr>
-
         <div>
-            <p>Mine Overseer - <%= section.mineOverseer %></p>
-            <p>Effective shift duration D/S - (6 hours)</p>
-            <p>Effective shift duration N/S - (9 hours)</p>
+            <p>Mine Overseer - <%= section.mineOverseer.name %></p>
+            <!-- <p>Effective shift duration D/S - (6 hours)</p>
+            <p>Effective shift duration N/S - (9 hours)</p> -->
             <p>Planned advance - <%= section.plannedAdvance  %> <span>m</span> </p>
             <p>Daily target (Blast) - <%= section.forecast %> <span>m<sup>2</sup></span>  </p>
         </div>
@@ -18,13 +17,16 @@
             <a class="button" href="/sections/<%= section._id %>/production/new">Production Report</a>
             <a class="button" href="/sections/<%= section._id %>/newReds/new">Add New Red Panel</a>
         </div>
+        <hr>
         <div>
             <a href="/sections">Sections</a>
         </div>
         
         <% if(currentUser && currentUser.isAdmin){ %>
         <div class="admin">
-            <a href="/sections/<%= section._id %>/edit">Edit</a>
+            <p>
+                <a href="/sections/<%= section._id %>/edit">Edit</a>
+            </p>
             <form action="/sections/<%= section._id %>?_method=DELETE" method="post">
                 <button id="delete" type="submit">Delete</button>
             </form>

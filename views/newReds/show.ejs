@@ -10,14 +10,44 @@
                 <p>Date declared - <%= newRedPanel.dateDeclared.toDateString() %> </p>
             </div>
 
-            <div>
-                <a href="/sections/<%= newRedPanel.section.id %>/redPanel/new?q=<%= newRedPanel._id %>">Issue Recommendation</a>
-            </div>
+            <% if (currentUser && currentUser.isAdmin) { %>
+                <table class="prod-group-item">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Author</td>
+                            <td><%= locals.redUser.email %></td>
+                        </tr>
+                        <tr>
+                            <td>Created(true)</td>
+                            <td><%= locals.newRedPanel.createdAt %></td>
+                        </tr>
+                        <tr>
+                            <td>Updated</td>
+                            <td><%= locals.newRedPanel.updatedAt %></td>
+                        </tr>
+                        <tr>
+                            <td>Created</td>
+                            <td><%= locals.newRedPanel.created %></td>
+                        </tr>
+                    </tbody>
+                </table>
+            <% } %>
+
+            <% if (currentUser && currentUser.department === "MRM" || currentUser && currentUser.isAdmin) { %>
+                <div>
+                    <a href="/sections/<%= newRedPanel.section.id %>/redPanel/new?q=<%= newRedPanel._id %>">Issue Recommendation</a>
+                </div>
+            <% } %>
             <hr>
             <div>
                 <a href="/redPanel">Dashboard</a>
             </div>
-            <% if( currentUser && newRedPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+            <% if(currentUser && newRedPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
                 <p>
                     <a href="/sections/<%= newRedPanel.section.id %>/newRedPanel/<%= newRedPanel._id %>/edit">Edit</a>
                 </p>

@@ -1,4 +1,4 @@
-//==================The Solution to Dynamic form====================
+console.time();
 let fieldNumber = 1;
 let panelInput = document.querySelector("#panel");
 let quantityInput = document.querySelector("#length");
@@ -299,7 +299,9 @@ function validatePanelName(e) {
 
 // ================solution Showing Infomation selectively=======
 filter("combine")
+let chartData;
 function filter(c, data = []) {
+    let chartData = data
     let all = document.getElementsByClassName("filterDiv");
     if (c == "all") {
         var hideProg = c
@@ -358,6 +360,9 @@ if (document.getElementById("myBtnContainer")) {
 
 // ===============date filtering=========
 function dateChange(e, f) {
+    console.log(f);
+    // const productions = JSON.parse(f);
+    // console.log(productions);
     selectedDate = e.value
     let main = document.getElementById("tables")
     let section = main.getElementsByTagName("section")
@@ -522,32 +527,38 @@ function dateChange(e, f) {
     all.innerHTML = content;
     all.setAttribute("id", "wrapper");
     main.appendChild(all)
-    document.getElementById('all').click()
+    document.getElementById('morning_shift').click()
 }
 
 
 
 // **************************************************************************end***************************************************
 // Selecting date range for blast 
-let today = new Date()
-let todayDay = today.getDate()
-let todayMonth = today.getMonth() + 1
-let todayYear = today.getFullYear()
+let today = new Date();
+const todayHours = today.getHours().toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false });
+const todayMinutes = today.getMinutes().toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false });
+let todayDay = today.getDate();
+let todayMonth = today.getMonth() + 1;
+let todayYear = today.getFullYear();
 if (todayMonth <= 9) {
-    todayMonth = "0" + todayMonth
+    todayMonth = "0" + todayMonth;
+    console.log("Here")
+    console.log(todayMonth)
 }
 if (todayDay <= 9) {
-    todayDay = "0" + todayDay
+    todayDay = "0" + todayDay;
+    console.log(todayDay);
 }
 
 let startDateDay = "01"
 let htmlStartDate = `${todayYear}-${todayMonth}-${startDateDay}`
-let htmlDate = `${todayYear}-${todayMonth}-${todayDay}`
+let htmlDate = `${todayYear}-${todayMonth}-${todayDay}`;
+console.log(htmlDate);
 if(document.getElementById("tableDate")){
     document.getElementById("tableDate").innerHTML = htmlDate.slice(8) + "/" + htmlDate.slice(5, 7) + "/" + htmlDate.slice(0, 4)
 }
 
-if (document.getElementById("endDate")) {
+if (document.getElementById("endDate") && document.getElementById("startDate")) {
     document.getElementById("endDate").value = htmlDate
     document.getElementById("endDate").max = htmlDate
     document.getElementById("startDate").value = htmlStartDate
@@ -557,13 +568,27 @@ if(document.getElementById("dateFilter")){
     document.getElementById("dateFilter").max = htmlDate
 }
 
+if(document.getElementById("startDate")){
+    document.getElementById("startDate").value = htmlDate
+    document.getElementById("startDate").max = htmlDate
+}
+
 
 if(document.getElementById("declaredDate")){
     document.getElementById("declaredDate").max = htmlDate + "T23:59:59"
 }
 
 
+// Setting max time for input type=time
+if(document.getElementById("startTime")){
+    document.getElementById("startTime").max = `${todayHours}:${todayMinutes}`;
+}
 
+// Setting default date for breakdowns index
+if (document.getElementById("breakdown-date")) {
+	document.getElementById("breakdown-date").value = htmlDate;
+	document.getElementById("breakdown-date").max = htmlDate;
+}
 
 
 if (document.getElementById("dateFilter")) {
@@ -576,7 +601,7 @@ if (document.getElementById("dateFilter")) {
 }
 
 
-function blastFilter(e, prod, roms, feeds) {
+function blastFilter(e, prod) {
     let endDate = document.getElementById("endDate").value
     let startDate = document.getElementById("startDate").value
     document.getElementById("tableDate").innerHTML = endDate.slice(8) + "/" + endDate.slice(5, 7) + "/" + endDate.slice(0, 4)
@@ -595,46 +620,46 @@ function blastFilter(e, prod, roms, feeds) {
             return -1
         }
     })
-    let todayROM = roms.filter(roms1 => { return moment(roms1.created).format('YYYY-MM-DD') == endDate})
-    let todayPlantFeed = feeds.filter(feeds1 => { return moment(feeds1.created).format('YYYY-MM-DD') == endDate})
-    let actualTotalBudget = todayProduction.map(b => b.section.budget).reduce((i, j) => i + j, 0)
-    let actualTotalForecast = todayProduction.map(b => b.section.forecast).reduce((i, j) => i + j, 0)
+    // let todayROM = roms.filter(roms1 => { return moment(roms1.created).format('YYYY-MM-DD') == endDate})
+    // let todayPlantFeed = feeds.filter(feeds1 => { return moment(feeds1.created).format('YYYY-MM-DD') == endDate})
+    const actualTotalBudget = todayProduction.map(b => b.section.budget).reduce((i, j) => i + j, 0)
+    const actualTotalForecast = todayProduction.map(b => b.section.forecast).reduce((i, j) => i + j, 0)
 
-    let actualTotalBlast2 = todayProduction.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0))
-    let actualTotalAdvance = todayProduction.map(b => b.section.plannedAdvance)
-    let actualBlastTotal = actualTotalBlast2.reduce((r, a, i) => r + a * actualTotalAdvance[i], 0)
+    const actualTotalBlast2 = todayProduction.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0))
+    const actualTotalAdvance = todayProduction.map(b => b.section.plannedAdvance)
+    const actualBlastTotal = actualTotalBlast2.reduce((r, a, i) => r + a * actualTotalAdvance[i], 0)
 
 
-    let actualFeed = todayPlantFeed.map(b => b.actual).join("")
-    let forecastFeed = todayPlantFeed.map(b => b.forecast).join("")
-    let budgetFeed = todayPlantFeed.map(b => b.forecast).join("")
-    let actualROM = todayROM.map(b => b.actual).join("")
-    let forecastROM = todayROM.map(b => b.forecast).join("")
-    let budgetROM = todayROM.map(b => b.budget).join("")
+    // const actualFeed = todayPlantFeed.map(b => b.actual).join("")
+    // const forecastFeed = todayPlantFeed.map(b => b.forecast).join("")
+    // const budgetFeed = todayPlantFeed.map(b => b.forecast).join("")
+    // const actualROM = todayROM.map(b => b.actual).join("")
+    // const forecastROM = todayROM.map(b => b.forecast).join("")
+    // const budgetROM = todayROM.map(b => b.budget).join("")
     
 
-    let actualFeedProg = feeds.map(feed => feed.actual).reduce((a, b) => a + b, 0)
-    let actualROMProg = roms.map(rom => rom.actual).reduce((a, b) => a + b, 0)
-    let forecastFeedProg = feeds.map(feed => feed.forecast).reduce((a, b) => a + b, 0)
-    let forecastROMProg = roms.map(rom => rom.forecast).reduce((a, b) => a + b, 0)
-    let budegtROMProg = roms.map(rom => rom.budget).reduce((a, b) => a + b, 0)
-    let budgetFeedProg = feeds.map(feed => feed.budget).reduce((a, b) => a + b, 0)
+    // const actualFeedProg = feeds.map(feed => feed.actual).reduce((a, b) => a + b, 0)
+    // const actualROMProg = roms.map(rom => rom.actual).reduce((a, b) => a + b, 0)
+    // const forecastFeedProg = feeds.map(feed => feed.forecast).reduce((a, b) => a + b, 0)
+    // const forecastROMProg = roms.map(rom => rom.forecast).reduce((a, b) => a + b, 0)
+    // const budegtROMProg = roms.map(rom => rom.budget).reduce((a, b) => a + b, 0)
+    // const budgetFeedProg = feeds.map(feed => feed.budget).reduce((a, b) => a + b, 0)
 
     varianceTotals = Number(actualBlastTotal) - Number(actualTotalForecast)
-    varianceROM = Number(actualROM) - Number(forecastROM)
-    variancePlantFeed = Number(actualFeed) - Number(forecastFeed)
-    varianceProgFeed = Number(actualFeedProg) - Number(forecastFeedProg)
-    varianceProgROM = Number(actualROMProg) - Number(forecastROMProg)
+    // varianceROM = Number(actualROM) - Number(forecastROM)
+    // variancePlantFeed = Number(actualFeed) - Number(forecastFeed)
+    // varianceProgFeed = Number(actualFeedProg) - Number(forecastFeedProg)
+    // varianceProgROM = Number(actualROMProg) - Number(forecastROMProg)
 
-    const variancesArray = [varianceProgFeed, varianceProgROM]
+    // const variancesArray = [varianceProgFeed, varianceProgROM]
 
-    for(let i = 0; i < variancesArray.length; ++i){
-        if(Math.sign(variancesArray[i] === -1)){
-            variancesArray[i] = `(${(variancesArray[i] * -1).toFixed(1)})`
-        } else {
-            variancesArray[i] = variancesArray[i].toFixed(1)
-        }
-    }
+    // for(let i = 0; i < variancesArray.length; ++i){
+    //     if(Math.sign(variancesArray[i] === -1)){
+    //         variancesArray[i] = `(${(variancesArray[i] * -1).toFixed(1)})`
+    //     } else {
+    //         variancesArray[i] = variancesArray[i].toFixed(1)
+    //     }
+    // }
 
     if (Math.sign(varianceTotals) === -1) { 
         varianceTotals = `(${(varianceTotals * -1).toFixed(1)})`
@@ -642,17 +667,17 @@ function blastFilter(e, prod, roms, feeds) {
         varianceTotals = varianceTotals.toFixed(1) 
     }
 
-    if (Math.sign(varianceROM) === -1) { 
-        varianceROM = `(${(varianceROM * -1).toFixed(1)})`
-    } else {
-        varianceROM = varianceROM.toFixed(1) 
-    }
+    // if (Math.sign(varianceROM) === -1) { 
+    //     varianceROM = `(${(varianceROM * -1).toFixed(1)})`
+    // } else {
+    //     varianceROM = varianceROM.toFixed(1) 
+    // }
 
-    if (Math.sign(variancePlantFeed) === -1) { 
-        variancePlantFeed = `(${(variancePlantFeed * -1).toFixed(1)})`
-    } else {
-        variancePlantFeed = variancePlantFeed.toFixed(1) 
-    }
+    // if (Math.sign(variancePlantFeed) === -1) { 
+    //     variancePlantFeed = `(${(variancePlantFeed * -1).toFixed(1)})`
+    // } else {
+    //     variancePlantFeed = variancePlantFeed.toFixed(1) 
+    // }
 
     budgetProgTotal = filteredByDate.map(b2 => b2.section.budget).reduce((b3, b4) => b3 + b4, 0)
     forecastProgTotal = filteredByDate.map(b2 => b2.section.forecast).reduce((b3, b4) => b3 + b4, 0)
@@ -669,7 +694,6 @@ function blastFilter(e, prod, roms, feeds) {
 
     let numRows = todayProduction.length + 3
 
-    // let mapped = filteredByDate.map(prod => prod.blast)
     document.getElementById("progressives").innerHTML = "";
     let content = `
                     <thead>
@@ -790,8 +814,8 @@ function blastFilter(e, prod, roms, feeds) {
 
 
 
-if(document.getElementById("endDate")){
-    document.getElementById("endDate").oninput()
+if(document.getElementById("endDate") && document.getElementById("startDate")){
+    document.getElementById("endDate").oninput();
 }
 
 // Making flash message disappear after few seconds

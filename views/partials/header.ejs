@@ -4,28 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report KDL</title>
+    <title>Declaration</title>
     <link rel="stylesheet" href="/app.css">
+    <link rel="stylesheet" href="/charts.css">
     <!-- <link rel="icon" type="image/png" href="/pictures/LOGO.png"> -->
     <link rel="icon" type="image/svg" href="/pictures/Group2.svg">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js" integrity="sha256-Y26AMvaIfrZ1EQU49pf6H4QzVTrOI8m9wQYKkftBt4s=" crossorigin="anonymous"></script>
     <!-- <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script> -->
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet"> -->
     <script src="/moment.min.js"></script>
 
 </head>
 
 <body>
     <div id="flash">
-        <% if(success && success.length) {%>
+        <% if(locals.success && locals.success.length) {%>
             <div class="success">
                 <%= success %>
             </div>
         <% } %>
 
-        <% if(error && error.length) {%>
+        <% if(locals.error && locals.error.length) {%>
             <div class="error">
                 <%= error %>
+            </div>
+        <% } %>
+        <% if(locals.warning && locals.warning.length) {%>
+            <div class="warning">
+                <%= warning %>
             </div>
         <% } %>
     </div>

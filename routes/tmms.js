@@ -12,36 +12,42 @@ router.get("/tmms", isLoggedIn, isAdmin, function (req, res) {
     TMM.find({}, function (err, allTMMs) {
         if (err || !allTMMs) {
             req.flash("error", "Error occured while fetching all TMMs");
-            return res.redirect("/");
+            return res.redirect("/breakdowns");
         }
+
         
         const collator = new Intl.Collator(undefined, {
           numeric: true,
           sensitivity: "base",
         });
 
-        let sorted = allTMMs.sort(function(a, b){
+        const sorted = allTMMs.sort(function(a, b){
             return collator.compare(a.name, b.name)
         })
 
-
-        let bolters = sorted.filter((b) => b.category === "roofBolter");
-        let drillRigs = sorted.filter((dR) => dR.category === "drillRig");
-        let LHDs = sorted.filter((LHD) => LHD.category === "LHD");
-        let UVs = sorted.filter((UV) => UV.category === "UV");
-        let LDVs = sorted.filter((LDV) => LDV.category === "LDV");
-        let otherTMMs = sorted.filter((other) => other.category === "Other");
+        const bolters = sorted.filter((b) => b.category === "roofBolter");
+        const drillRigs = sorted.filter((dR) => dR.category === "drillRig");
+        const LHDs = sorted.filter((LHD) => LHD.category === "LHD");
+        const UVs = sorted.filter((UV) => UV.category === "UV");
+        const LDVs = sorted.filter((LDV) => LDV.category === "LDV");
+        const ug_belts = sorted.filter((belts) => belts.category === "ug_belts");
+        const electrical = sorted.filter((elect) => elect.category === "electrical");
+        const mechanical = sorted.filter((mech) => mech.category === "mechanical");
+        const tmm_length = bolters.length + drillRigs.length + LHDs.length + LDVs.length +UVs.length
         res.render("tmms/index", {
-            bolters: bolters,
-            drillRigs: drillRigs,
-            LHDs: LHDs,
-            LDVs: LDVs,
-            UVs: UVs,
-            otherTMMs: otherTMMs,
-            title: "tmms",
+            bolters,
+            drillRigs,
+            LHDs,
+            LDVs,
+            UVs,
+            ug_belts,
+            electrical,
+            mechanical,
+            tmm_length,
+            tmms: allTMMs,
+            title: "assets"
         });
     });
-        // .sort({ name: 1 })
 });
 
 // 2. New route - renders a for creating new TMM
@@ -77,6 +83,7 @@ router.get("/tmm/:id", isLoggedIn, isAdmin, function (req, res) {
         req.flash("error", "TMM not found");
         return res.redirect("/tmms");
         } 
+        console.log(foundTMM)
         res.render("tmms/show", { tmm: foundTMM, title: "tmms" });
     });
 });

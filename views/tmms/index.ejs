@@ -3,90 +3,192 @@
 <div class="main-body">
     <div class="element">
         <div class="element2">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Catergory</th>
-                        <th>ID</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th rowspan="<%= bolters.length + 1 %>">Roof Bolters</th>
-                        <% bolters.forEach(element => { %>
+            <h2>Engineering Assets (<%= tmms.length %>)</h2>
+            <div class="element3">
+                <div class="element2">
+                    <h3>TMMs (<%= tmm_length %>)</h3>
+                    <table>
+                        <thead>
                             <tr>
-                                <td>
-                                    <a href="/tmm/<%= element._id %>">
-                                        <%= element.name %>
-                                    </a>
-                                </td>
+                                <th>Catergory</th>
+                                <th>ID</th>
                             </tr>
-                        <% }) %>
-                    </tr>
-                    <tr>
-                        <th rowspan="<%= drillRigs.length + 1 %>">Drill Rigs</th>
-                        <% drillRigs.forEach(element => { %>
+                        </thead>
+                        <tbody>
+
+                            <% if (tmms.length === 0) { %>
+                                <tr>
+                                    <td colspan="2">
+                                        <p>No TMMs in the database</p>
+                                    </td>
+                                </tr>
+                            <% } else { %>
+                                <% if (bolters && bolters.length >= 0) { %>
+                                    <tr>
+                                        <th rowspan="<%= bolters.length + 1 %>">Roof Bolters (<%= bolters.length %>)</th>
+                                        <% bolters.forEach(element => { %>
+                                            <tr>
+                                                <td>
+                                                    <a href="/tmm/<%= element._id %>">
+                                                        <%= element.name %>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    </tr>
+                                <% } %>
+
+                                <% if (drillRigs && drillRigs.length) { %>
+                                    <tr>
+                                        <th rowspan="<%= drillRigs.length + 1 %>">Drill Rigs (<%= drillRigs.length %>)</th>
+                                        <% drillRigs.forEach(element => { %>
+                                            <tr>
+                                                <td>
+                                                    <a href="/tmm/<%= element._id %>">
+                                                        <%= element.name %> 
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    </tr>
+                                <% } %>
+
+                                <% if (LHDs && LHDs.length) { %>
+                                    <tr>
+                                        <th rowspan="<%= LHDs.length + 1 %>">LHDs (<%= LHDs.length %>)</th>
+                                        <% LHDs.forEach(element => { %>
+                                            <tr>
+                                                <td>
+                                                    <a href="/tmm/<%= element._id %>">
+                                                        <%= element.name %> 
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    </tr>
+                                <% } %>
+
+                                <% if (UVs && UVs.length) { %>
+                                    <tr>
+                                        <th rowspan="<%= UVs.length + 1 %>">UVs (<%= UVs.length %>)</th>
+                                        <% UVs.forEach(element => { %>
+                                            <tr>
+                                                <td>
+                                                    <a href="/tmm/<%= element._id %>">
+                                                        <%= element.name %> 
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    </tr>
+                                <% } %>
+
+                                <% if (LDVs && LDVs.length) { %>
+                                    <tr>
+                                        <th rowspan="<%= LDVs.length + 1 %>">LDVs (<%= LDVs.length %>)</th>
+                                        <% LDVs.forEach(element => { %>
+                                            <tr>
+                                                <td>
+                                                    <a href="/tmm/<%= element._id %>">
+                                                        <%= element.name %> 
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    </tr>
+                                <% } %>
+
+                                <% if (locals.otherTMMs && locals.otherTMMs.length) { %>
+                                    <tr>
+                                        <th rowspan="<%= otherTMMs.length + 1 %>">Other TMMs (<%= otherTMMs.length %>)</th>
+                                        <% otherTMMs.forEach(element => { %>
+                                            <tr>
+                                                <td>
+                                                    <a href="/tmm/<%= element._id %>">
+                                                        <%= element.name %> 
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    </tr>
+                                <% } %>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="element2">
+                    <h3>UG Belts (<%= locals.ug_belts.length %>)</h3>
+                    <table>
+                        <thead>
                             <tr>
-                                <td>
-                                    <a href="/tmm/<%= element._id %>">
-                                        <%= element.name %> 
-                                    </a>
-                                </td>
+                                <th>#</th>
+                                <th>Belt ID</th>
                             </tr>
-                        <% }) %>
-                    </tr>
-                    <tr>
-                        <th rowspan="<%= LHDs.length + 1 %>">LHDs</th>
-                        <% LHDs.forEach(element => { %>
+                        </thead>
+                        <tbody>
+                            <% locals.ug_belts.forEach((belt, i) => { %>
+                                <tr>
+                                    <td><%= i+1 %></td>
+                                    <td>
+                                        <a href="/tmm/<%= belt._id %>">
+                                            <%= belt.name %>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                            <tr></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="element2">
+                    <h3>Electrical (<%= locals.electrical.length %>)</h3>
+                    <table>
+                        <thead>
                             <tr>
-                                <td>
-                                    <a href="/tmm/<%= element._id %>">
-                                        <%= element.name %> 
-                                    </a>
-                                </td>
+                                <th>#</th>
+                                <th>Item ID</th>
                             </tr>
-                        <% }) %>
-                    </tr>
-                    <tr>
-                        <th rowspan="<%= UVs.length + 1 %>">UVs</th>
-                        <% UVs.forEach(element => { %>
+                        </thead>
+                        <tbody>
+                            <% locals.electrical.forEach((item, i) => { %>
+                                <tr>
+                                    <td><%= i+1 %></td>
+                                    <td>
+                                        <a href="/tmm/<%= item._id %>">
+                                            <%= item.name %>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="element2">
+                    <h3>Mechanical (<%= locals.mechanical.length %>)</h3>
+                    <table>
+                        <thead>
                             <tr>
-                                <td>
-                                    <a href="/tmm/<%= element._id %>">
-                                        <%= element.name %> 
-                                    </a>
-                                </td>
+                                <th>#</th>
+                                <th>Item ID</th>
                             </tr>
-                        <% }) %>
-                    </tr>
-                    <tr>
-                        <th rowspan="<%= LDVs.length + 1 %>">LDVs</th>
-                        <% LDVs.forEach(element => { %>
-                            <tr>
-                                <td>
-                                    <a href="/tmm/<%= element._id %>">
-                                        <%= element.name %> 
-                                    </a>
-                                </td>
-                            </tr>
-                        <% }) %>
-                    </tr>
-                    <tr>
-                        <th rowspan="<%= otherTMMs.length + 1 %>">Other TMMs</th>
-                        <% otherTMMs.forEach(element => { %>
-                            <tr>
-                                <td>
-                                    <a href="/tmm/<%= element._id %>">
-                                        <%= element.name %> 
-                                    </a>
-                                </td>
-                            </tr>
-                        <% }) %>
-                    </tr>
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody>
+                            <% locals.mechanical.forEach((item, i) => { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td>
+                                        <a href="/tmm/<%= item._id %>">
+                                            <%= item.name %>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             <hr>
-            <a class="button" href="tmms/new">Add New TMM</a>
+            <a class="button" href="tmms/new">Add New Asset</a>
         </div>
     </div>
 </div>

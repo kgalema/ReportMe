@@ -1,0 +1,113 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <h2>Edit Breakdown: <%= breakdown.equipment %> at <%= breakdown.section.name %> </h2>
+        <form action="/breakdown/<%= breakdown._id %>?_method=PUT" method="POST">
+            <div class="shift">
+                <input type="radio" name="breakdown[shift]" id="morning-shift" value="morning" required>
+                <label for="morning">Morning Shift</label>
+                <input type="radio" name="breakdown[shift]" id="afternoon-shift" value="afternoon" required>
+                <label for="afternoon">Afternoon Shift</label>
+                <input type="radio" name="breakdown[shift]" id="night-shift" value="night" required>
+                <label for="night">Night Shift</label>
+            </div>
+            <br>
+            <table class="form-row">
+                <tr>
+                    <td class="form-row">
+                        <label for="category">Category:</label>
+                    </td>
+                    
+                    <td class="form-row">
+                        <select name="breakdown[category]" id="category" required>
+                            <option selected value=<%= breakdown.category %>><%= breakdown.category %></option>
+                            <option value="roofBolter">Roof Bolter</option>
+                            <option value="drillRig">Drill Rig</option>
+                            <option value="LHD">LHD</option>
+                            <option value="UV">UV</option>
+                            <option value="LDV">LDV</option>
+                            <option value="electrical">Electrical</option>
+                            <option value="mechanical">Mechanical</option>
+                            <option value="UGBelts">UG Belts</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="form-row">
+                        <label for="equipment">Item/TMM ID:</label>
+                    </td>
+                    
+                    <td class="form-row">
+                        <select name="breakdown[equipment]" id="equipment" required>
+                            <option value="<%= breakdown.equipment %>" selected><%= breakdown.equipment %></option>
+                            <option value="other">other</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="form-row">
+                        <label for="section">Section:</label>
+                    </td>
+                    
+                    <td class="form-row">
+                        <select name="breakdown[sectionId]" id="section" required>
+                            <option value="<%= breakdown.section.name %>" selected><%= breakdown.section.name %></option>
+                            <% sections.forEach(section => { %>
+                                <option value="<%= section._id %>"><%= section.name %></option>
+                            <% }) %>
+                            <option value="Other">Other</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="form-row">
+                        <label for="description">Description:</label>
+                    </td>
+                    <td class="form-row">
+                        <textarea name="breakdown[description]" id="description" cols="30" rows="5" required><%= breakdown.description %></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="form-row">
+                        <label for="startDate">Date:</label>
+                    </td>
+                    <td class="form-row">
+                        <input style="width: fit-content;" id="startDate" value="<%= moment(breakdown.startTime).format('YYYY-MM-DD') %>" name="breakdown[startDate]" type="date" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="form-row">
+                        <label for="startTime">Time Start:</label>
+                    </td>
+                    <td class="form-row">
+                        <input  id="startTime" value="<%= breakdown.start %>" name="breakdown[startTime]" type="time" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="form-row">
+                        <label for="sapNumber">Ref Number:</label>
+                    </td>
+                    
+                    <td class="form-row">
+                        <input type="number" value="<%= breakdown.sapNumber %>" id="sapNumber" name="breakdown[sapNumber]" required>
+                    </td>
+                </tr>
+                
+        
+                <tr>
+                    <td class="form-row" colspan="2">
+                        <button style="width: 100%;" type="submit">Update</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div>
+            <a href="/breakdown/<%= breakdown._id %>">&#11013 Back</a>
+        </div>
+    </div>
+</div>
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

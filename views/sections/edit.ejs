@@ -21,14 +21,10 @@
                     </td>
                     <td class="form-row">
                         <select name="section[mineOverseer]" id="mineOverseer">
-                            <option value="<%= section.mineOverseer %>" selected><%= section.mineOverseer %></option>
-                            <!-- <% mineOverseers.forEach(mo => { %>
-                                <option value="<%= mo.username %>"><%= mo.username %></option>
-                            <% }) %> -->
-                            <option value="MO_1">MO_1</option>
-                            <option value="MO_2">MO_2</option>
-                            <option value="MO_2">MO_3</option>
-                            <option value="MO_2">MO_4</option>
+                            <option value="<%= section.mineOverseer._id %>" selected><%= section.mineOverseer.name %></option>
+                            <% mineOverseers.forEach(mo => { %>
+                                <option value="<%= mo._id %>"><%= mo.username %></option>
+                            <% }) %>
                         </select>
                     </td>
                 </tr>
@@ -61,7 +57,7 @@
                 </tr>
                 <tr>
                     <td class="form-row" colspan="2">
-                        <input style="width: 100%;" type="submit" value="Update!">
+                        <input style="width: 100%;" type="submit" value="Update">
                     </td>
                 </tr>
             </table>

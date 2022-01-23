@@ -15,10 +15,10 @@
                     </h3>
                     <div class="shift">
                         <% if(production.general[0].shift === "morning"){ %>
-                            <input type="radio" id="morning" name="production[general][1][shift]" id="morning" value="morning" checked required>
+                            <input type="radio" id="morning" name="production[general][1][shift]" id="morning" value="morning" onchange="shiftSelector(event)" checked required>
                             <label for="morning">Morning Shift</label>
                         <% } else { %>
-                            <input type="radio" id="backshift" name="production[general][1][shift]" id="backshift" value="backshift" checked required>
+                            <input type="radio" id="backshift" name="production[general][1][shift]" id="backshift" value="backshift" onchange="shiftSelector(event)" checked required>
                             <label for="backshift">Back Shift</label>
                         <% } %>
                     </div>
@@ -115,7 +115,9 @@
                                             <input type="number" id="anchors" name="production[support][<%= numSupport %>][anchors]" placeholder="anchors" min="0" value="<%= s.anchors %>" required>
                                         </td>
                                         <td class="form-row">
-                                            <label style="display: block;" for="bolter">Bolter/RDO</label>
+                                            <% if(i === 0){ %>
+                                                <label style="display: block;" for="bolter">Bolter/RDO</label>
+                                            <% } %>
                                             <select id="bolter" name="production[support][<%= numSupport %>][machine]" required>
                                                 <option selected value="<%= s.machine %>"><%= s.machine %></option>
                                                 <option value="RDO">RDO</option>
@@ -164,7 +166,9 @@
                                         </td>
 
                                         <td class="form-row">
-                                            <label style="display: block;" for="drillRig">Drill Rig</label>
+                                            <% if(i === 0){ %>
+                                                <label style="display: block;" for="drillRig">Drill Rig</label>
+                                            <% } %>
                                             <select name="production[drill][<%= numDrill %>][drillRig]" id="drillRig" required>
                                                 <option selected value="<%= d.drillRig %>"><%= d.drillRig %></option>
                                                 <option value="TDR01">TDR01</option>
@@ -268,9 +272,23 @@
                                             <input type="number" id="coyNumber" name="production[LHD][<%= numLHD %>][coyNumber]" placeholder="operator_#" min="0" value="<%= lhd.coyNumber %>"
                                                 required>
                                         </td>
+
                                         <td class="form-row">
-                                            <input type="text" id="LHDnumber" name="production[LHD][<%= numLHD %>][LHDnumber]" placeholder="GL_#" value="<%= lhd.LHDnumber %>" required>
+                                            <% if(i === 0){ %>
+                                                <label style="display: block;" for="LHDnumber">LHD</label>
+                                            <% } %>
+                                            <select id="LHDnumber" name="production[LHD][<%= numLHD %>][LHDnumber]" required>
+                                                <option selected value="<%= lhd.LHDnumber %>"><%= lhd.LHDnumber %></option>
+                                                <option value="GL11">GL11</option>
+                                                <option value="GL12">GL12</option>
+                                                <option value="GL02">GL02</option>
+                                                <option value="GL03">GL03</option>
+                                                <option value="GL05">GL05</option>
+                                                <option value="GL55">GL55</option>
+                                                <option value="GL66">GL66</option>
+                                            </select>
                                         </td>
+
                                         <td class="form-row">
                                             <input type="number" id="LHDbuckets" name="production[LHD][<%= numLHD %>][buckets]" placeholder="buckets" value="<%= lhd.buckets %>" required>
                                         </td>

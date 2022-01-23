@@ -4,7 +4,7 @@
 
     <div class="element">
         <div>
-            <h1>Rehabilitated Panel <%= rehabedPanel.panel %> of <%= rehabedPanel.section.name %></h1>
+            <h2>Rehabilitated Panel <%= rehabedPanel.panel %> of <%= rehabedPanel.section.name %></h2>
             <p>Trigger(s) - <%= rehabedPanel.trigger %></p>
             <p>Report number - <%= rehabedPanel.reportNumber %></p>
             <p>Date Declared - <%= rehabedPanel.declaredDate.toDateString() %></p>
@@ -12,26 +12,47 @@
             <p>Date Rehabilitated - <%= rehabedPanel.rehabDate.toDateString() %></p>
          </div>
 
-         <p>
-            <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/download" method="get">
-               <button type="submit">Download Recommendation</button>
-            </form>
-            <br>
-            <hr>
-            <div>
-                  <a href="/rehabedPanels">Dashboard</a>
-            </div>
+         <% if (currentUser && currentUser.isAdmin) { %>
+            <table class="prod-group-item">
+               <thead>
+                  <tr>
+                        <th colspan="2">Details</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr>
+                        <td>Author</td>
+                        <td><%= authors[0].email %>, <%= authors[1].email %> & <%=authors[2].email  %></td>
+                  </tr>
+                  <tr>
+                        <td>Created(true)</td>
+                        <td><%= rehabedPanel.createdAt %></td>
+                  </tr>
+                  <tr>
+                        <td>Updated</td>
+                        <td><%= rehabedPanel.updatedAt %></td>
+                  </tr>
+               </tbody>
+            </table>
+         <% } %>
 
-            <% if( currentUser && rehabedPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
-               <p>
-                  <a href="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/edit">Edit</a>
-               </p>
-               <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>?_method=DELETE" method="POST">
-                  <button id="delete" type="submit">Delete</button>
-               </form>
-            <% } %>
-         </p>
-         
+         <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/download" method="get">
+            <button type="submit">Download Recommendation</button>
+         </form>
+         <br>
+         <hr>
+         <div>
+            <a href="/rehabedPanels">Dashboard</a>
+         </div>
+
+         <% if( currentUser && rehabedPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+            <p>
+               <a href="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/edit">Edit</a>
+            </p>
+            <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>?_method=DELETE" method="POST">
+               <button id="delete" type="submit">Delete</button>
+            </form>
+         <% } %>
     </div>  
     
  </div>

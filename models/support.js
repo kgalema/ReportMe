@@ -11,13 +11,13 @@ const supportSchema = new mongoose.Schema({
 	section: {
 		id: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: "Section"
+			ref: "Section",
 		},
-		name: String
+		name: String,
 	},
 
-	created: {type: Date, default: Date.now}
-})
+	created: { type: Date, default: () => new Date() },
+});
 
 const Support = mongoose.model("Support", supportSchema)
 module.exports = Support

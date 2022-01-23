@@ -1,483 +1,219 @@
 <%- include("../partials/header") %>
 
-    <div class="main-body">
-        <div class="element">
+<div class="main-body">
+    <div class="element">
+        <div class="element2">
+
+            
             <div class="element2">
-                <div class="heading">
-                    <h2>Production Report</h2>
-                    <div id="fromDB">
-                        <% let newProduction = production.filter(prod => moment(prod.created).format('YYYY-MM-DD') === moment(new Date()).format('YYYY-MM-DD')) %>
-                        <% let recentProduction = production.filter(prod => moment(prod.created).format('YYYY-MM-DD') === moment(new Date()).format('YYYY-MM-DD')) %>
-                        <% let dayshift = newProduction.filter(prod => prod.general[0].shift === "morning") %>
-                        <% let backshift = newProduction.filter(prod => prod.general[0].shift === "backshift" ) %>
-                    </div>
-
-                    <div class="myBtnContainer" id="myBtnContainer">
-                            <button class="btn" id="all" onclick="filter('all')">All</button>
-                            <button class="btn selected" id="combine" onclick="filter('combine')" style="display: none;">Morning + Night</button>
-                            <button class="btn" onclick="filter('day')">Morning Shift</button>
-                            <button class="btn" onclick="filter('night')">Back Shift</button>
-                            <button class="btn" onclick="filter('blast-progs', <%= JSON.stringify(production) %>)">Progressive Blast</button>
-                            <input type="date" id="dateFilter" oninput="dateChange(this, <%= JSON.stringify(production) %>)" >
-                    </div>
-
+            <div class="heading">
+                <h2>Production Report</h2>
+                <div id="fromDB">
+                    <% let newProduction = production.filter(prod => moment(prod.created).format('YYYY-MM-DD') === moment(new Date()).format('YYYY-MM-DD')) %>
+                    <% let recentProduction = production.filter(prod => moment(prod.created).format('YYYY-MM-DD') === moment(new Date()).format('YYYY-MM-DD')) %>
+                    <% let dayshift = newProduction.filter(prod => prod.general[0].shift === "morning") %>
+                    <% let backshift = newProduction.filter(prod => prod.general[0].shift === "backshift" ) %>
                 </div>
 
-                <div id="tables">
-                    <table id="all-shift" class="filterDiv all combine" style="display: none;">
-                        <thead>
-                            <tr>
+                <div id="DB" style="display: none;">
+                    <%= JSON.stringify(production) %>
+                </div>
+                <div id="DBS" style="display: none;">
+                    <%= JSON.stringify(sections) %>
+                </div>
 
-                            </tr>
-                            <tr>
-                                <th>Both</th>
-                                <th>Blasted (m)</th>
-                                <th>Cleaned (m)</th>
-                                <th>Supported (m)</th>
-                                <th>Drilled (m)</th>
-                                <th>Prep'd (m)</th>
-                                <th>Not Cleaned (m)</th>
-                                <th>LHDs</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% newProduction.forEach(function(e){ %>
-                                <tr>
-                                    <td>
-                                        <a
-                                            href="/sections/<%= e.section.id %>/production/<%= e._id %>">
-                                            <%= e.section.name %>
-                                        </a>
-                                    </td>
+                <div class="myBtnContainer" id="myBtnContainer">
+                    <button class="btn" id="all" onclick="filter('all')" style="display: none;">All</button>
+                    <button class="btn selected" id="combine" onclick="filter('combine')" style="display: none;">Morning + Night</button>
+                    <button class="btn" id="morning_shift" onclick="filter('day')">Morning Shift</button>
+                    <button class="btn" onclick="filter('night')">Back Shift</button>
+                    <button class="btn" onclick="filter('blast-progs')">Progressive Blast</button>
+                    <button class="btn" id="chartData" onfocus="chartsData()" onclick="filter('charts')">Graphs</button>
+                    <input type="date" id="dateFilter" oninput="dateChange(this, <%= JSON.stringify(locals.production) %>)">
+                </div>
 
-                                    <td>
-                                        <a href="#">
-                                            <%= e.blast.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.clean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.support.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.drill.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.prep.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.notClean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.LHD.length %>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <% }) %>
-
-                                <tr>
-                                    <th>Totals</th>
-                                    <td>
-
-                                        <% let a = newProduction.map(b => b.blast) %>
-
-                                        <%= a.map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j)).reduce((x,y) => x+y, 0)%>
-
-                                    </td>
-                                    <td>
-                                        <%= newProduction.map(b=> b.clean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
-                                    </td>
-                                    <td>
-                                        <%= newProduction.map(b=> b.support).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
-                                    </td>
-                                    <td>
-                                        <%= newProduction.map(b=> b.drill).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
-                                    </td>
-                                    <td>
-                                        <%= newProduction.map(b=> b.prep).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
-                                    </td>
-                                    <td>
-                                        <%= newProduction.map(b=> b.notClean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
-                                    </td>
-                                    <td>
-                                        <%= newProduction.map(b=> b.LHD).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %>
-                                    </td>
-                                </tr>
-
-                        </tbody>
-                    </table>
-                    <br>
-                    <table id="day-shift" class="filterDiv day">
-                        <thead>
-                            <tr>
-
-                            </tr>
-                            <tr>
-                                <th>Day</th>
-                                <th>Blasted (m)</th>
-                                <th>Cleaned (m)</th>
-                                <th>Supported (m)</th>
-                                <th>Drilled (m)</th>
-                                <th>Prep'd (m)</th>
-                                <th>Not Cleaned (m)</th>
-                                <th>LHDs</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% dayshift.forEach(function(e){ %>
-                                <tr>
-                                    <td>
-                                        <a
-                                            href=" /sections/<%= e.section.id %>/production/<%= e._id %>">
-                                            <%= e.section.name %>
-                                        </a>
-                                    </td>
-
-                                    <td>
-                                        <a href="#">
-                                            <%= e.blast.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.clean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.support.map(sub1 => sub1.length).reduce((i, j) => i+j)
-                                                %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.drill.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.prep.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a> 
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.notClean.map(sub1 => sub1.length).reduce((i, j) => i+j)
-                                                %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.LHD.length %>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <% }) %>
-
-                                    <tr>
-                                        <th>Totals</th>
-                                        <th>
-
-
-                                            <%= dayshift.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y)=>x+y,0) %>
-                                        </th>
-                                        <td>
-                                            <%= dayshift.map(b => b.clean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
-                                        </td>
-                                        <td>
-                                            <%= dayshift.map(b => b.support).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j)).reduce((x,y)=>x+y,0) %>
-                                        </td>
-                                        <td>
-                                            <%= dayshift.map(b => b.drill).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j)).reduce((x,y) => x+y,0)
-                                                %>
-                                        </td>
-                                        <td>
-                                            <%= dayshift.map(b => b.prep).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
-                                        </td>
-                                        <td>
-                                            <%= dayshift.map(b => b.notClean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
-                                        </td>
-                                        <td>
-                                            <%= dayshift.map(b=> b.LHD).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %>
-                                        </td>
-                                    </tr>
-
-                        </tbody>
-                    </table>
-                    <br>
-                    <table id="night-shift" class="filterDiv night">
-                        <thead>
-                            <tr>
-
-                            </tr>
-                            <tr>
-                                <th>Night</th>
-                                <!-- <th>Blasted (m)</th> -->
-                                <th>Cleaned (m)</th>
-                                <th>Supported (m)</th>
-                                <th>Drilled (m)</th>
-                                <th>Prep'd (m)</th>
-                                <th>Not Cleaned (m)</th>
-                                <th>LHDs</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% backshift.forEach(function(e){ %>
-                                <tr>
-                                    <td>
-                                        <a
-                                            href=" /sections/<%= e.section.id %>/production/<%= e._id %>">
-                                            <%= e.section.name %>
-                                        </a>
-                                    </td>
-
-                                    <td>
-                                        <a href="#">
-                                            <%= e.blast.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.clean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.support.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.drill.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.prep.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.notClean.map(sub1 => sub1.length).reduce((i, j) => i+j) %>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <%= e.LHD.length %>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <% }) %>
-
-                                    <tr>
-                                        <th>Totals</th>
-                                        <th>
-
-
-                                            <%= backshift.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
-
-                                        </th>
-                                        <th>
-                                            <%= backshift.map(b=> b.clean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
-                                        </th>
-                                        <th>
-                                            <%= backshift.map(b => b.support).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
-                                        </th>
-                                        <th>
-                                            <%= backshift.map(b => b.drill).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
-                                        </th>
-                                        <th>
-                                            <%= backshift.map(b => b.prep).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
-                                        </th>
-                                        <th>
-                                            <%= backshift.map(b => b.notClean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j,0)).reduce((x,y) => x+y,0) %>
-                                        </th>
-                                        <th>
-                                            <%= backshift.map(b => b.LHD).map(sub1 => sub1.length).reduce((i, j) => i+j,0) %>
-                                        </th>
-                                    </tr>
-                        </tbody>
-                    </table>
-                </div>    
-                    <section id="blast-prog" class="filterDiv blast-progs">
-                        <div style="display: flex; align-items: center; justify-content: center;">
-                            <table class="daterange" style="border: 0;">
-                                <tbody>
-                                <tr>
-                                    <td class="daterange">
-                                        <label for="startDate">From:</label>
-                                    </td>
-                                    <td class="daterange">
-                                        <input type="date" id="startDate" oninput="blastFilter(event, <%= JSON.stringify(production) %>, <%= JSON.stringify(roms)%>, <%= JSON.stringify(feeds) %>)">
-                                    </td>
-                                    <td class="daterange">
-                                        <label for="endDate">To:</label>
-                                    </td>
-                                    <td class="daterange">
-                                        <input type="date" id="endDate" oninput="blastFilter(event, <%= JSON.stringify(production) %>, <%= JSON.stringify(roms)%>, <%= JSON.stringify(feeds) %>)">
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <br>
-                        <table id="progressives">
-                            <thead>
-                
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th colspan="2"><span id="tableDate" >18-Jan</span></th>
-                                    <th colspan="6">Daily</th>
-                                    <th rowspan="5"></th>
-                                    <th colspan="5">Month to date</th>
-                                </tr>
-                
-                               
-                                    <!-- Sections square meters start from here -->
-                                <tr>
-                                    <th>Centares</th>
-                                    <th>m<sup>2</sup></th>
-                                    <td>
-                                        <% let actualTotalBudget = dayshift.map(b=> b.section.budget).reduce((i, j) => i+j, 0) %>
-                                        <%= actualTotalBudget.toFixed(1) %>
-                                    </td>
-                                    <td>
-                                        <% let actualTotalForecast = dayshift.map(b=> b.section.forecast).reduce((i, j) => i+j, 0) %>
-                                        <%= actualTotalForecast.toFixed(1) %>
-                                    </td>
-                                    <td>
-                                        <% let actualTotalBlast = dayshift.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j, 0)).reduce((x,y) => x+y, 0) %>
-                                        <% let actualTotalBlast2 = dayshift.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j, 0)) %>
-                                        <% let actualTotalAdvance = dayshift.map(b => b.section.plannedAdvance) %>
-                                        <% let actualBlastTotal = actualTotalBlast2.reduce((r , a, i) => r+a*actualTotalAdvance[i], 0) %> 
-                                        <%= actualBlastTotal.toFixed(1) %>
-                                    </td>
-                                    <td class="variance">
-                                        <% let varianceTotals = actualBlastTotal - actualTotalForecast %>
-                                        <% if (varianceTotals < 0) { %>
-                                            (<%= (varianceTotals * -1).toFixed(1) %>)
-                                        <% } else { %>
-                                            <%= varianceTotals.toFixed(1) %>
-                                        <% } %>
-                                    </td>
-                                    <td>&#128577</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="variance"></td>
-                                    <td>&#128577</td>
-                                </tr>
-                
-                                <tr>
-                                    <td style="height: 1.0rem;" colspan="14"></td>
-                                </tr>
-                
-                                <tr>
-                                    <th colspan="2">Sections</th>
-                                    <th>Budget</th>
-                                    <th>Forecast</th>
-                                    <th>Actual</th>
-                                    <th>Variance</th>
-                                    <th></th>
-                                    <th>Comments</th>
-                                    <th rowspan= <%= dayshift.length + 2 %> ></th>
-                                    <th>Budget</th>
-                                    <th>Forecast</th>
-                                    <th>Actual</th>
-                                    <th>Variance</th>
-                                    <th></th>
-                                </tr>
-                                
-                                <% dayshift.forEach(function (e) { %>
-                                    <tr>
-                                        <th>
-                                            <%= e.section.name %>
-                                        </th>
-                                        <th>m<sup>2</sup></th>
-                                        <td>
-                                            <% let budget = e.section.budget %>
-                                            <%= budget.toFixed(1) %>
-                                        </td>
-                                        <td>
-                                            <% let forecast = e.section.forecast %>
-                                            <%= forecast.toFixed(1) %>
-                                        </td>
-                                        <td>
-                                            <% let actual = e.blast.map(sub1=> sub1.length).reduce((i, j) => i+j, 0)*(e.section.plannedAdvance) %>
-                                            <%= actual.toFixed(1) %>
-                                        </td>
-                                        <td class="variance">
-                                            <% let variance = actual - forecast  %>
-                                            <% if (Math.sign(variance) === -1) { %>
-                                                (<%= (variance * -1).toFixed(1) %>)
-                                            <% } else { %>
-                                                <%= variance.toFixed(1)  %> 
-                                            <% } %>
-                                        </td>
-                                        <td class="smiley">
-                                            &#128577
-                                        </td>
-                                        <td>
-                                            <%= e.general[0].comments %>
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td class="variance"></td>
-                                        <td>&#128577</td>
-                                    </tr>
-                                <% }) %>
-                    
-                                <tr>
-                                    <th>Totals</th>
-                                    <th>m<sup>2</sup></th>
-                                    <td>
-                                        <%= actualTotalBudget.toFixed(1) %>
-                                    </td>
-                                    <td>
-                                        <%= actualTotalForecast.toFixed(1) %>
-                                    </td>
-                                    <td>
-                                        <%= actualBlastTotal.toFixed(1) %>
-                                    </td>
-                                    <td class="variance">
-                                        <% if (Math.sign(varianceTotals) === -1) { %>
-                                            (<%= (varianceTotals * -1).toFixed(1) %>)
-                                        <% } else { %> 
-                                            <%= varianceTotals.toFixed(1) %>  
-                                        <% } %> 
-                                    </td>
-                                    <td>&#128577</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="variance"></td>
-                                    <td>&#128577</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </section>
-                    <hr>
-                    <a class="button" href="sections/sectionId/production/new">Add New Production Report</a>
-                <!-- </div> -->
             </div>
+
+
+            <div id="tables"></div>    
+            <section id="blast-prog" class="filterDiv blast-progs">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <table class="daterange" style="border: 0;">
+                        <tbody>
+                        <tr>
+                            <td class="daterange">
+                                <label for="startDate">From:</label>
+                            </td>
+                            <td class="daterange">
+                                <input type="date" id="startDate" oninput="blastFilter(event, <%= JSON.stringify(production) %>)">
+                            </td>
+                            <td class="daterange">
+                                <label for="endDate">To:</label>
+                            </td>
+                            <td class="daterange">
+                                <input type="date" id="endDate" oninput="blastFilter(event, <%= JSON.stringify(production) %>)">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+                <table id="progressives">
+                    <thead>
+        
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th colspan="2"><span id="tableDate" >18-Jan</span></th>
+                            <th colspan="6">Daily</th>
+                            <th rowspan="5"></th>
+                            <th colspan="5">Month to date</th>
+                        </tr>
+        
+                        
+                            <!-- Sections square meters start from here -->
+                        <tr>
+                            <th>Centares</th>
+                            <th>m<sup>2</sup></th>
+                            <td>
+                                <% let actualTotalBudget = dayshift.map(b=> b.section.budget).reduce((i, j) => i+j, 0) %>
+                                <%= actualTotalBudget.toFixed(1) %>
+                            </td>
+                            <td>
+                                <% let actualTotalForecast = dayshift.map(b=> b.section.forecast).reduce((i, j) => i+j, 0) %>
+                                <%= actualTotalForecast.toFixed(1) %>
+                            </td>
+                            <td>
+                                <% let actualTotalBlast = dayshift.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j, 0)).reduce((x,y) => x+y, 0) %>
+                                <% let actualTotalBlast2 = dayshift.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i+j, 0)) %>
+                                <% let actualTotalAdvance = dayshift.map(b => b.section.plannedAdvance) %>
+                                <% let actualBlastTotal = actualTotalBlast2.reduce((r , a, i) => r+a*actualTotalAdvance[i], 0) %> 
+                                <%= actualBlastTotal.toFixed(1) %>
+                            </td>
+                            <td class="variance">
+                                <% let varianceTotals = actualBlastTotal - actualTotalForecast %>
+                                <% if (varianceTotals < 0) { %>
+                                    (<%= (varianceTotals * -1).toFixed(1) %>)
+                                <% } else { %>
+                                    <%= varianceTotals.toFixed(1) %>
+                                <% } %>
+                            </td>
+                            <td>&#128577</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="variance"></td>
+                            <td>&#128577</td>
+                        </tr>
+        
+                        <tr>
+                            <td style="height: 1.0rem;" colspan="14"></td>
+                        </tr>
+        
+                        <tr>
+                            <th colspan="2">Sections</th>
+                            <th>Budget</th>
+                            <th>Forecast</th>
+                            <th>Actual</th>
+                            <th>Variance</th>
+                            <th></th>
+                            <th>Comments</th>
+                            <th rowspan= <%= dayshift.length + 2 %> ></th>
+                            <th>Budget</th>
+                            <th>Forecast</th>
+                            <th>Actual</th>
+                            <th>Variance</th>
+                            <th></th>
+                        </tr>
+                        
+                        <% dayshift.forEach(function (e) { %>
+                            <tr>
+                                <th>
+                                    <%= e.section.name %>
+                                </th>
+                                <th>m<sup>2</sup></th>
+                                <td>
+                                    <% let budget = e.section.budget %>
+                                    <%= budget.toFixed(1) %>
+                                </td>
+                                <td>
+                                    <% let forecast = e.section.forecast %>
+                                    <%= forecast.toFixed(1) %>
+                                </td>
+                                <td>
+                                    <% let actual = e.blast.map(sub1=> sub1.length).reduce((i, j) => i+j, 0)*(e.section.plannedAdvance) %>
+                                    <%= actual.toFixed(1) %>
+                                </td>
+                                <td class="variance">
+                                    <% let variance = actual - forecast  %>
+                                    <% if (Math.sign(variance) === -1) { %>
+                                        (<%= (variance * -1).toFixed(1) %>)
+                                    <% } else { %>
+                                        <%= variance.toFixed(1)  %> 
+                                    <% } %>
+                                </td>
+                                <td class="smiley">
+                                    &#128577
+                                </td>
+                                <td>
+                                    <%= e.general[0].comments %>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="variance"></td>
+                                <td>&#128577</td>
+                            </tr>
+                        <% }) %>
+            
+                        <tr>
+                            <th>Totals</th>
+                            <th>m<sup>2</sup></th>
+                            <td>
+                                <%= actualTotalBudget.toFixed(1) %>
+                            </td>
+                            <td>
+                                <%= actualTotalForecast.toFixed(1) %>
+                            </td>
+                            <td>
+                                <%= actualBlastTotal.toFixed(1) %>
+                            </td>
+                            <td class="variance">
+                                <% if (Math.sign(varianceTotals) === -1) { %>
+                                    (<%= (varianceTotals * -1).toFixed(1) %>)
+                                <% } else { %> 
+                                    <%= varianceTotals.toFixed(1) %>  
+                                <% } %> 
+                            </td>
+                            <td>&#128577</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="variance"></td>
+                            <td>&#128577</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            <section id="prod_charts" class="prod_charts filterDiv">
+                <div>
+                    <label for="startdate">From:</label>
+                    <input type="date" onchange="filterData()" id="startdate" value="">
+                    <label for="enddate">To:</label>
+                    <input type="date" onchange="filterData()" id="enddate" value="">
+                </div>
+                <% locals.sections.forEach(el => { %>
+                    <canvas id="<%=el.name%>"></canvas>
+                <% }) %>
+            </section>
+            </div>
+            <hr>
+            <a class="button" href="sections/sectionId/production/new">Add New Production Report</a>
         </div>
     </div>
+</div>
 
 
 

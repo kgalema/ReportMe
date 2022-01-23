@@ -7,24 +7,26 @@ const codeAdmin = process.env.secretCode
 // 1. @Index route: Shows you all users/employess***
 router.get("/users", isLoggedIn, isAdmin, function (req, res) {
 	User.find({}, function (err, allUsers) {
-		if (err) {
+		if (err || !allUsers) {
 			req.flash("error", "Error occured while fetching all users")
 			return res.redirect("back")
 		}
+		console.log(allUsers)
         res.render("users/index", { allUsers: allUsers, title: "users" })
 	})
 })
 
 // 2. @New route: Renders register form***
 router.get("/users/new", function (req, res) {
-	res.render("users/new", { title: "Register" });
-})
+	res.render("users/new", { title: "users" });
+});
 
 // 3. @Create route - post a new section into the database then redirect elsewhere
 router.post("/users", async function (req, res, next) {
 	try {
-    	const { email, username, password, occupation, department } = req.body;
-    	const user = new User({ email, username, occupation, department });
+
+    	const { preferredName, username, password, occupation, department } = req.body;
+    	const user = new User({ preferredName, username, occupation, department });
     	
     	const registeredUser = await User.register(user, password);
     	req.login(registeredUser, (err) => {
@@ -45,6 +47,7 @@ router.get("/user/:id", isLoggedIn, isAdmin, function (req, res) {
 			req.flash("error", "Invalid user");
 			return res.redirect("/users");
 		}
+		console.log(foundUser.username)
 		res.render("users/show", { foundUser: foundUser, title: "users" });
 	});
 });
@@ -66,16 +69,16 @@ router.put("/user/:id", isLoggedIn, isAdmin, function (req, res) {
 	if (req.body.user.admin === codeAdmin) {
     	req.body.user.isAdmin = true;
   	}
+	
 	User.findByIdAndUpdate(req.params.id, req.body.user, function (err, updatedUser) {
-		if (err) {
+		if (err || !updatedUser) {
 			req.flash("error", "Error occured while updating user");
 			return res.redirect("back")
-		} else {
-			req.flash("success", "Successfully updated user")
-			res.redirect("/user/" + req.params.id)
-		}
-	})
-})
+		} 
+		req.flash("success", "Successfully updated user");
+		res.redirect("/user/" + req.params.id);
+	});
+});
 
 // 7. @Destroy route - Deletes a particular section 
 router.delete("/user/:id", isLoggedIn, isAdmin, function (req, res) {

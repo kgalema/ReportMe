@@ -5,22 +5,22 @@
             <form action="/newReport" method="post">
                 <div class="flex-form">
                     <div class="flex-row">
-                        <label for="section">Section:</label>
-                        <select name="newReport[section]" id="section" required>
-                            <option value="" selected disabled>select section</option>
+                        <label for="category">Category:</label>
+                        <select name="newBreakdown[category]" id="category" required>
+                            <option value="" selected disabled>select category</option>
                             <% sections.forEach(section => { %>
                                 <option value="<%= section._id %>"><%= section.name %></option>
                             <% }) %>
                         </select>
                     </div>
-                    <div class="flex-row">
+                    <!-- <div class="flex-row">
                         <label for="report">Report:</label>
                         <select name="newReport[report]" id="report" required>
                             <option value="" selected disabled>select report</option>
                             <option value="production">Production Report</option>
                             <option value="TARP">TARP Red Panel</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="flex-row">
                         <input type="submit" value="Proceed">
                     </div>

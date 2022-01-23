@@ -2,18 +2,16 @@
 
 <div class="main-body">
     <div class="element">
-        <h3>Edit existing user</h3>
-
+        <h2>Edit <%= foundUser.preferredName %></h2>
         <form method="POST" action="/user/<%= foundUser._id %>?_method=PUT">
-
             <div class="flex-form">
                 <div class="flex-row">
-                    <label for="username">Username:</label>
-                    <input id="username" type="text" name="user[username]" placeholder="my_preferred_name" value="<%= foundUser.username %>" required>
+                    <label for="username">Preferred Name:</label>
+                    <input id="username" type="text" name="user[preferredName]" placeholder="my_preferred_name" value="<%= foundUser.preferredName %>" required>
                 </div>
                 <div class="flex-row">
                     <label for="email_address">Email Address:</label>
-                    <input id="email_address" type="email" name="user[email]" placeholder="my_email_address" value="<%= foundUser.email %>" required>
+                    <input id="email_address" type="email" name="user[username]" placeholder="my_email_address" value="<%= foundUser.username %>" required>
                 </div>
                 
                 <div class="flex-row">
@@ -32,6 +30,7 @@
                         <option value="Geologist(Snr)">Geologist (Snr)</option>
                         <option value="Geologist">Geologist</option>
                         <option value="SCO">SCO</option>
+                        <option value="Planner(Mine)">Mine Planner</option>
                         <option value="Supervisor(Shift)">Shift Supervisor</option>
                         <option value="Miner">Miner</option>
                         <option value="Other">Other</option>

@@ -15,10 +15,9 @@ router.get("/sections", function (req, res) {
 		if (err || !allSections) {
 			req.flash("error", "Error occured while fetching all sections")
 			return res.redirect("/")
-		} else {
-			res.render("sections/index", { sections: allSections, title: "sections" })
 		}
-	})
+		res.render("sections/index", { sections: allSections, title: "sections" })
+	}).sort("name")
 })
 
 // 2. New route - renders a for creating new section
@@ -31,24 +30,30 @@ router.get("/sections/new", isLoggedIn, function (req, res) {
     	res.render("sections/new", { title: "sections", mineOverseers: allMOs });
   });
 })
+
 // 3. Create route - post a new section into the database then redirect elsewhere
 router.post("/sections", isLoggedIn, function (req, res) {
-	Section.create(req.body.section, function (err, newSection) {
-		if (err) {
-			return res.render("sections/new", { title: "section" })
-		} else {
-			newSection.author = req.user._id
-			newSection.save(function (err, savedSection) {
-				if (err) {
-					req.flash("error", "Something went wrong")
-					return res.redirect("back")
-				}
-				req.flash("success", "Successfully added new section")
-				res.redirect("/sections")
-			})
+	User.findById(req.body.section.mineOverseer, function(err, foundUser){
+		if(err || !foundUser){
+			req.flash("error", "Provided MO does not exist");
+			return res.redirect("sections");
 		}
+		req.body.section.author = req.user._id;
+		req.body.section.mineOverseer = {
+			_id : foundUser._id,
+			name: foundUser.username
+		}
+		Section.create(req.body.section, function (err, newSection) {
+			if (err || !newSection) {
+				req.flash("error", "Error occured while creating new section")
+				return res.redirect("sections/new")
+			}
+			req.flash("success", "Successfully added new section")
+			res.redirect("/sections")
+		});
 	});
-})
+});
+
 // 4. Show route - shows/get info about one specific section
 router.get("/sections/:id", function (req, res) {
 	let redirect = "/"
@@ -69,6 +74,7 @@ router.get("/sections/:id", function (req, res) {
 			return res.redirect("/sections/"+ foundSection._id + redirect)
 		} else {
 			console.log("Show Rendered")
+			console.log(foundSection)
 			res.render("sections/show", { section: foundSection, title: "sections" })
 		}
 	});
@@ -77,7 +83,8 @@ router.get("/sections/:id", function (req, res) {
 // 5. Edit route - renders edit form to edit one particular section
 router.get("/sections/:id/edit", isLoggedIn, isSectionAuthor, function (req, res) {
 	Section.findById(req.params.id, function (err, section) {
-		if (err) {
+		if (err || !section) {
+			req.flash("error", "Section with provided ID does not exist")
 			return res.redirect("back")
 		} 
 		User.find({ occupation: "Mine_Overseer" }, function (err, allMOs) {
@@ -89,17 +96,29 @@ router.get("/sections/:id/edit", isLoggedIn, isSectionAuthor, function (req, res
     	});
 	})
 })
+
 // 6. Update route - Puts edited info about one particular section in the database
 router.put("/sections/:id", isLoggedIn, isSectionAuthor, function (req, res) {
-	Section.findByIdAndUpdate(req.params.id, req.body.section, function (err, updatedSection) {
-		if (err) {
-			return res.redirect("back")
-		} else {
-			req.flash("success", "Successfully updated section")
-			res.redirect("/sections/" + req.params.id)
+	User.findById(req.body.section.mineOverseer, function(err, foundUser){
+		if(err || !foundUser){
+			req.flash("error", "MO does not exist");
+			return res.redirect("back");
 		}
-	})
-})
+		req.body.section.mineOverseer = {
+			_id: foundUser._id,
+			name: foundUser.username,
+		};
+		Section.findByIdAndUpdate(req.params.id, req.body.section, function (err, updatedSection) {
+			if (err || !updatedSection) {
+				req.flash("error", "Update went wrong. Contact admin");
+				return res.redirect("/sections");
+			} 
+			req.flash("success", "Successfully updated section");
+			res.redirect("/sections/" + req.params.id);
+		});
+	});
+});
+
 // 7. Destroy route - Deletes a particular section 
 router.delete("/sections/:id", isLoggedIn, isSectionAuthor, function (req, res) {
 	Section.findByIdAndRemove(req.params.id, function (err) {

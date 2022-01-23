@@ -3,9 +3,9 @@
     <div class=element>
         <div class="element2">
             <h2>Reported Production: <%= reported.section.name %></h2>
+            <h3><%= reported.created.toDateString() %></h3>
+
             <p>
-                <%= reported.created.toDateString() %>
-                <br>
                 <% const blastSum = reported.blast.map(b => b.length).reduce((i, j)=> i+j, 0) %>
                 <% const cleanedSum = reported.clean.map(b => b.length).reduce((i, j)=> i+j, 0) %>
                 <% const supportSum = reported.support.map(b => b.length).reduce((i, j)=> i+j, 0) %>
@@ -13,7 +13,6 @@
                 <% const prepSum = reported.prep.map(b => b.length).reduce((i, j)=> i+j, 0) %>
                 <% const notCleanSum = reported.notClean.map(b => b.length).reduce((i, j)=> i+j, 0) %>
                 <% const LHDSum = reported.LHD.length %>
-
             </p>
             <section id="production-groups">
                 <% if (reported.general[0].shift === "morning") { %>
@@ -236,6 +235,34 @@
                         </tbody>
                     </table>
                 <% } %>
+
+                <% if (currentUser && currentUser.isAdmin) { %>
+                    <table class="prod-group-item">
+                        <thead>
+                            <tr>
+                                <th colspan="2">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Author</td>
+                                <td><%= locals.reportedUser.preferredName %></td>
+                            </tr>
+                            <tr>
+                                <td>Created(true)</td>
+                                <td><%= locals.reported.createdAt.toDateString() %> - <%= reported.createdAt.getHours()%>:<%= reported.createdAt.getMinutes()%></td>
+                            </tr>
+                            <tr>
+                                <td>Updated</td>
+                                <td><%= locals.reported.updatedAt.toDateString() %> - <%= reported.updatedAt.getHours()%>:<%= reported.updatedAt.getMinutes()%></td>
+                            </tr>
+                            <tr>
+                                <td>Created</td>
+                                <td><%= locals.reported.created.toDateString() %></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                <% } %>
                 
             </section>
           
@@ -243,12 +270,14 @@
             <p>
                 <a href="/production">Dashboard</a>
             </p>
-            <div class="admin">
-                <a href="/sections/<%= reported.section.id %>/production/<%= reported._id %>/edit">Edit</a>
-                <form action="/sections/<%= reported.section.id %>/production/<%= reported._id %>?_method=DELETE" method="POST">
-                    <button id="delete" type="submit">Delete!</button>
-                </form>
-            </div>
+            <% if( currentUser && reported.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+                <div class="admin">
+                    <a href="/sections/<%= reported.section.id %>/production/<%= reported._id %>/edit">Edit</a>
+                    <form action="/sections/<%= reported.section.id %>/production/<%= reported._id %>?_method=DELETE" method="POST">
+                        <button id="delete" type="submit">Delete!</button>
+                    </form>
+                </div>
+            <% } %>
         </div>
     </div>
 </div>

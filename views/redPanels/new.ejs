@@ -5,7 +5,7 @@
 
         <div class="element">
 
-            <h3>Issue TARP Red Recommendation for <%= section.name %>'s <%= redPanel.panel %> Panel </h3>
+            <h2>Issue TARP Red Recommendation for <%= section.name %>'s <%= redPanel.panel %> Panel </h2>
 
             <form action="/sections/<%= section._id %>/redPanels?q=<%= queryId %>" enctype="multipart/form-data" method="POST">
                 <table class="form-row">
@@ -15,7 +15,8 @@
                         </td>
                         <td class="form-row">
                             <input type="text" id="panel-name" name="redPanel[panel]"  value="<%= redPanel.panel %>" readonly required>
-                        </td>
+                            <input type="text" name="redPanel[newRedAuthor]"  value="<%= redPanel.author.id %>" hidden required>
+                        </td
                     </tr>
                     <tr>
                         <td class="form-row">
@@ -66,7 +67,7 @@
                 </table>
             </form>
             <div>
-                <a href="/newRedPanel/<%= queryId %>"">&#11013 Back</a>
+                <a href="/newRedPanel/<%= queryId %>">&#11013 Back</a>
             </div>
         </div>
     </div>

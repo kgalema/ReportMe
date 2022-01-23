@@ -7,16 +7,47 @@
          <h2>TARP Red Panel <%= redPanel.panel %> of: <%= redPanel.section.name %></h2>
          <p>Trigger(s) - <%= redPanel.trigger %></p>
          <p>Report number - <%= redPanel.reportNumber %></p>
-         <p>Date report issued - <%= redPanel.issueDate.toDateString() %></p>
+         <p>Date Declared - <%= redPanel.declaredDate.toDateString() %></p>
+         <p>Date Report Issued - <%= redPanel.issueDate.toDateString() %></p>
+
+         <% if (currentUser && currentUser.isAdmin) { %>
+                <table class="prod-group-item">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Authors</td>
+                            <td><%= locals.redAuthors[0].email %> and <%= locals.redAuthors[1].email %></td>
+                        </tr>
+                        <tr>
+                            <td>Created(true)</td>
+                            <td><%= locals.redPanel.createdAt %></td>
+                        </tr>
+                        <tr>
+                            <td>Updated</td>
+                            <td><%= locals.redPanel.updatedAt %></td>
+                        </tr>
+                        <tr>
+                            <td>Created</td>
+                            <td><%= locals.redPanel.created %></td>
+                        </tr>
+                    </tbody>
+                </table>
+            <% } %>
          
          <p>
          <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/download" method="get">
             <button type="submit">Download Recommendation</button>
          </form>
+         <% if (currentUser && currentUser.department === "MRM" || currentUser && currentUser.isAdmin) { %>
          <br>
-         <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/rehabedPanel/new" method="GET">
-            <button type="submit">Rehabilitated</button>
-         </form>
+            <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/rehabedPanel/new" method="GET">
+               <button type="submit">Rehabilitated</button>
+            </form>
+         <% } %>
          </p>
 
       </div>

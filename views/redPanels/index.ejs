@@ -5,16 +5,16 @@
         <div class="element2">
 
             <h2>TARP Red Panels</h2>
-            <p> <strong>Total number of TARP Red Panels: <%= newRedPanels.length + redpanels.length %></strong></p>
+            <h3>Total number of TARP Red Panels: <%= newRedPanels.length + redpanels.length %></h3>
 
 
 
             <table>
                 <colgroup>
-                    <col style="background-color: grey; width: auto;" span="<%= 4 %>">
+                    <col style="background-color: grey; width: auto;" span="<%= 5 %>">
                 </colgroup>
                 <tr>
-                    <th colspan="4">
+                    <th colspan="5">
                         <%= newRedPanels.length %> Red Panels Awaiting Visits
                     </th>
                 </tr>
@@ -23,6 +23,7 @@
                     <th>Section</th>
                     <th>Trigger(s)</th>
                     <th>Date Panel Declared</th>
+                    <th>Age</th>
                 </tr>
 
                 <% newRedPanels.forEach(function(red){ %>
@@ -43,7 +44,9 @@
                     <td>
                         <%= red.dateDeclared.toDateString() %>
                     </td>
-
+                    <td>
+                        <%= red.age %>
+                    </td>
                 </tr>
                 <% }) %>
 
@@ -95,7 +98,7 @@
                     </td>
 
                     <td>
-                        <p> <%= moment(red.issueDate).fromNow() %> </p>
+                        <p><%= red.age %></p>
                     </td>
                 </tr>
                 <% }) %>

@@ -1,0 +1,36 @@
+<%- include("../../partials/header") %>
+
+    <div class="main-body">
+        <div class="element">
+            <div class="element2">
+                <div>
+                    <h2>Closed Breakdown: <%= closedBreakdown.breakdown.equipment %> at <%= locals.closedBreakdown.breakdown.section.name %></h2>
+                    <p>Date: - <%= closedBreakdown.breakdown.startTime.toDateString() %></p>
+                    <p>Shift: - <%= closedBreakdown.breakdown.shift %></p>
+                    <p>Start time (hh:mm): - <%= closedBreakdown.start %></p>
+                    <p>End time (hh:mm): - <%= closedBreakdown.end %></p>
+                    <p>Downtime (hh:mm): - <%= closedBreakdown.downtime %></p>
+                    <p>Description: - <%= closedBreakdown.breakdown.description %></p>
+                    <p>Artisan Comments: - <%= closedBreakdown.comments %></p>
+                    <p>Reference number: - <%= closedBreakdown.breakdown.sapNumber %></p>
+                </div>
+                <hr>
+                <div>
+                    <a href="/breakdowns">Dashboard</a>
+                </div>
+                <% if(currentUser && closedBreakdown.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+                    <p>
+                        <a href="/closedBreakdowns/<%= closedBreakdown._id %>/edit">Edit</a>
+                    </p>
+                    <form action="/closedBreakdowns/<%= closedBreakdown._id %>?_method=DELETE" method="POST">
+                        <button id="delete" type="submit">Delete</button>
+                    </form>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+
+
+<%- include("../../partials/sidebar") %>
+<%- include("../../partials/footer") %>

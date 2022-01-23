@@ -1,9 +1,14 @@
 const mongoose = require("mongoose")
 
 
-// ====================
+// ============
 // TMMS Schema
-// ====================
+// ============
+const opts = {
+	toJSON: { virtuals: true },
+	timestamps: true,
+};
+
 const tmmSchema = new mongoose.Schema({
 	category: {
 		type: String,
@@ -16,12 +21,11 @@ const tmmSchema = new mongoose.Schema({
 	},
 	author: {
 		id: {
-    		type: mongoose.Schema.Types.ObjectId,
-    		ref: "User",
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
 		},
-	},
-	created: { type: Date, default: new Date() },
-});
+	}
+}, opts);
 
 const TMM = mongoose.model("TMM", tmmSchema);
 module.exports = TMM;

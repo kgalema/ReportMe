@@ -2,7 +2,9 @@ body {
     display: flex;
     margin: 0;
     height: 100vh;
-    font-family: "Montserrat", sans-serif;
+    /* font-family: "Montserrat", sans-serif; */
+    font-family: sans-serif;
+    font-size: 0.95rem;
 }
 
 h3 {
@@ -47,6 +49,10 @@ table, th, td {
  
 td.form-row {
     border: none;
+}
+
+td input[type=date] {
+    width: fit-content;
 }
 
 .form-row input, button {
@@ -114,6 +120,12 @@ table.form-row {
     flex-direction: column;
     align-items: center;
     padding: 0 3px;
+}
+.element3 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+    grid-auto-flow: row;
 }
 
 form {

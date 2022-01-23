@@ -7,31 +7,29 @@ const mongoose = require("mongoose")
 // ==============
 // Section Schema
 // ==============
+const opts = {
+	toJSON: { virtuals: true },
+	timestamps: true,
+};
+
 const sectionSchema = new mongoose.Schema({
 	name: String,
-	mineOverseer: String,
+	// mineOverseer: String,
+	mineOverseer: {
+		_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+        },
+        name: String
+	},
 	budget: Number,
 	forecast: Number,
 	plannedAdvance: Number,
-	created: { type: Date, default: Date.now },
-	redPanels: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Redpanel"
-		}
-	],
-
-	production: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Production"
-		}
-	],
 	author: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: "User"
-	}
-})
+		ref: "User",
+	},
+}, opts);
 
 const Section = mongoose.model("Section", sectionSchema)
 module.exports = Section

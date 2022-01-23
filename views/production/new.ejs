@@ -18,10 +18,14 @@
                         <input type="radio" name="production[general][1][shift]" id="backshift" value="backshift" onchange="shiftSelector(event)" required>
                         <label for="backshift">Back Shift</label>
                     </div>
+                    <br>
+                    <% if(currentUser && currentUser.isAdmin){ %>
+                        <input type="date" name="production[created]" id="startDate">
+                    <% } %>
 
                     <br>
 
-                    <button id="blast-report-heading" type="button" class="collapsible">Blasted Panels Report</button>
+                    <button id="blast-report-heading" type="button" class="collapsible">Blasted Panels Report (Target = <%= section.forecast/section.plannedAdvance %>m)</button>
                     <div class="content" id="blast-report">
                         <table class="form-row">
                             <tbody>
@@ -93,13 +97,9 @@
                                         <label style="display: block;" for="bolter">Bolter/RDO</label>
                                             <select name="production[support][1][machine]" id="bolter" required>
                                                 <option value=""></option>
-                                                <option value="RB01">RB01</option>
-                                                <option value="RB02">RB02</option>
-                                                <option value="RB03">RB03</option>
-                                                <option value="RB04">RB04</option>
-                                                <option value="RB05">RB05</option>
-                                                <option value="RB06">RB06</option>
-                                                <option value="RB07">RB07</option>
+                                                <% bolters.forEach(e => { %>
+                                                    <option value="<%= e.name %>"><%= e.name %></option>
+                                                <% }) %>
                                                 <option value="RDO">RDO</option>
                                             </select>
                                     </td>
@@ -132,14 +132,10 @@
                                         <label style="display: block;" for="drillRig">Drill Rig</label>
                                         <select name="production[drill][1][drillRig]" id="drillRig" required>
                                             <option value=""></option>
-                                            <option value="TDR01">TDR01</option>
-                                            <option value="TDR02">TDR02</option>
-                                            <option value="TDR03">TDR03</option>
-                                            <option value="TDR04">TDR04</option>
-                                            <option value="TDR05">TDR05</option>
-                                            <option value="TDR06">TDR06</option>
-                                            <option value="TDR07">TDR07</option>
-                                            <option value="TDR104">TDR104</option>
+                                            <% drillRigs.forEach(e => { %>
+                                                <option value="<%= e.name %>"><%= e.name %></option>
+                                            <% }) %>
+                                            <option value="RDO">RDO</option>
                                         </select>
                                     </td>
 
@@ -204,20 +200,15 @@
                                     <td class="form-row">
                                         <input type="number" min="0" id="coyNumber" name="production[LHD][1][coyNumber]" placeholder="operator_#" required>
                                     </td>
-                                    <!-- <td class="form-row">
-                                        <input type="text" id="LHDnumber" name="production[LHD][1][LHDnumber]" placeholder="GL_#" required>
-                                    </td> -->
 
                                     <td class="form-row">
                                         <label style="display: block;" for="LHDnumber">LHD</label>
                                         <select name="production[LHD][1][LHDnumber]" id="LHDnumber" required>
                                             <option value="" selected disabled>GL#</option>
-                                            <option value="GL11">GL11</option>
-                                            <option value="GL02">GL02</option>
-                                            <option value="GL03">GL03</option>
-                                            <option value="GL04">GL04</option>
-                                            <option value="GL05">GL05</option>
-                                            <option value="RR1">RR1</option>
+                                            <% LHDs.forEach(e => { %>
+                                                <option value="<%= e.name %>"><%= e.name %></option>
+                                            <% }) %>
+                                            <option value="Other">Other</option>
                                         </select>
                                     </td>
 

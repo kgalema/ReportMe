@@ -3,41 +3,40 @@ const mongoose = require("mongoose")
 // ====================
 // Rehab panels Schema
 // ====================
+const opts = {
+	toJSON: { virtuals: true },
+	timestamps: true,
+};
+
 const rehabSchema = new mongoose.Schema({
 	panel: String,
 	trigger: String,
 	reportNumber: String,
-	issueDate: {type: Date},
-	declaredDate: {type: Date},
-	created: {type: Date, default: Date.now},
-	rehabDate: {type: Date},
+	issueDate: { type: Date },
+	declaredDate: { type: Date },
+	rehabDate: { type: Date },
 	section: {
 		id: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: "Section"
+			ref: "Section",
 		},
-		name: String
+		name: String,
 	},
 	author: {
-		id: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "User"
-		}
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "User",
 	},
 	authorRed: {
-		id: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "User"
-		}
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "User",
 	},
-	// fileID: {
-	// 	id: {
-	// 		type: mongoose.Schema.Types.ObjectId,
-	// 		ref: "Reds.files"
-	// 		}
-	// },
-	fileID: { type: mongoose.Schema.Types.ObjectId}
-})
+	authorNewRed: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "User",
+	},
+
+	fileID: { type: mongoose.Schema.Types.ObjectId },
+},opts);
 
 const Rehab = mongoose.model("Rehab", rehabSchema)
 

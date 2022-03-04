@@ -1,0 +1,48 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <h2>Shift Classes</h2>
+        <h3>Total number of shift classes: <%= locals.shifts.length %></h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Start Time (hh:mm)</th>
+                    <th>End Time (hh:mm)</th>
+                    <th>Duration (hrs)</th>
+                    <th>Overlap?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% locals.shifts.forEach((el, i) => { %>
+                    <tr>
+                        <td><%= i+1 %></td>
+                        <td>
+                            <a href="/shifts/<%= el._id %>">
+                                <%= el.name %>
+                            </a>
+                        </td>
+                        <td><%= el.start %></td>
+                        <td><%= el.end %></td>
+                        <td><%= el.duration %></td>
+                        <td>
+                            <% if (el.overlap) { %>
+                                    &#10004
+                            <% }  else { %>
+                                    &#10006
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <p>
+			<a class="button" href="/shifts/new">Add New Shift</a>
+		</p>
+    </div>
+</div>
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

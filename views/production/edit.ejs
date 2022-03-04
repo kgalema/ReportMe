@@ -120,14 +120,12 @@
                                             <% } %>
                                             <select id="bolter" name="production[support][<%= numSupport %>][machine]" required>
                                                 <option selected value="<%= s.machine %>"><%= s.machine %></option>
+                                                <% bolters.forEach(e => { %>
+                                                    <% if(e.name !== s.machine){ %>
+                                                        <option value="<%= e.name %>"><%= e.name %></option>
+                                                    <% } %>
+                                                <% }) %>
                                                 <option value="RDO">RDO</option>
-                                                <option value="RB01">RB01</option>
-                                                <option value="RB02">RB02</option>
-                                                <option value="RB03">RB03</option>
-                                                <option value="RB04">RB04</option>
-                                                <option value="RB05">RB05</option>
-                                                <option value="RB06">RB06</option>
-                                                <option value="RB07">RB07</option>
                                             </select>
                                         </td>
 
@@ -171,14 +169,11 @@
                                             <% } %>
                                             <select name="production[drill][<%= numDrill %>][drillRig]" id="drillRig" required>
                                                 <option selected value="<%= d.drillRig %>"><%= d.drillRig %></option>
-                                                <option value="TDR01">TDR01</option>
-                                                <option value="TDR02">TDR02</option>
-                                                <option value="TDR03">TDR03</option>
-                                                <option value="TDR04">TDR04</option>
-                                                <option value="TDR05">TDR05</option>
-                                                <option value="TDR06">TDR06</option>
-                                                <option value="TDR07">TDR07</option>
-                                                <option value="TDR104">TDR104</option>
+                                                <% drillRigs.forEach(e => { %>
+                                                    <% if(e.name !== d.drillRig){ %>
+                                                        <option value="<%= e.name %>"><%= e.name %></option>
+                                                    <% } %>
+                                                <% }) %>
                                             </select>
                                         </td>
 
@@ -279,13 +274,11 @@
                                             <% } %>
                                             <select id="LHDnumber" name="production[LHD][<%= numLHD %>][LHDnumber]" required>
                                                 <option selected value="<%= lhd.LHDnumber %>"><%= lhd.LHDnumber %></option>
-                                                <option value="GL11">GL11</option>
-                                                <option value="GL12">GL12</option>
-                                                <option value="GL02">GL02</option>
-                                                <option value="GL03">GL03</option>
-                                                <option value="GL05">GL05</option>
-                                                <option value="GL55">GL55</option>
-                                                <option value="GL66">GL66</option>
+                                                <% LHDs.forEach(e => { %>
+                                                    <% if(e.name !== lhd.LHDnumber){ %>
+                                                        <option value="<%= e.name %>"><%= e.name %></option>
+                                                    <% } %>
+                                                <% }) %>
                                             </select>
                                         </td>
 

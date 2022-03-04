@@ -10,6 +10,13 @@ const opts = {
 
 const breakdownSchema = new mongoose.Schema({
     category: String,
+    // equipment: {
+    //     _id: {
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref: "TMM"
+    //     },
+    //     name: String
+    // },
     equipment: String,
     sapNumber: Number,
     description: String,

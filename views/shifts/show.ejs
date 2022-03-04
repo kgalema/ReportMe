@@ -1,0 +1,29 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <div>
+            <h2><%= locals.shift.name %> Shift</h2>
+            <p>Start Time - <%= locals.shift.start %></p>
+            <p>End Time - <%= locals.shift.end %></p>
+            <p>Duration - <%= locals.shift.duration %> hours</p>
+            <p>Overlaps to next day? - <%= locals.shift.overlap %></p>
+        </div>
+
+        <hr>
+        <div>
+            <a href="/shifts">Dashboard</a>
+        </div>
+
+        <% if(locals.currentUser && locals.shift.authorId.equals(locals.currentUser._id) || locals.currentUser && locals.currentUser.isAdmin){ %>
+            <p>
+                <a href="/shifts/<%= shift._id %>/edit">Edit</a>
+            </p>
+            <form action="/shifts/<%= shift._id %>?_method=DELETE" method="POST">
+                <button id="delete" type="submit">Delete</button>
+            </form>
+        <% } %>
+    </div>
+</div>
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

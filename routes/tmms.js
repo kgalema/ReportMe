@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const TMM = require("../models/tmms")
+const ClosedBreakdown = require("../models/closedBreakdown")
 const { isLoggedIn, isAdmin } = require("../middleware");
 
 //================
@@ -52,7 +53,7 @@ router.get("/tmms", isLoggedIn, isAdmin, function (req, res) {
 
 // 2. New route - renders a for creating new TMM
 router.get("/tmms/new", isLoggedIn, isAdmin, function (req, res) {
-    res.render("tmms/new", { title: "tmms"});
+    res.render("tmms/new", { title: "assets"});
 });
 
 // 3. Create route - post a new TMM into the database then redirect elsewhere
@@ -82,9 +83,17 @@ router.get("/tmm/:id", isLoggedIn, isAdmin, function (req, res) {
         if (err || !foundTMM) {
         req.flash("error", "TMM not found");
         return res.redirect("/tmms");
-        } 
-        console.log(foundTMM)
-        res.render("tmms/show", { tmm: foundTMM, title: "tmms" });
+        }
+        ClosedBreakdown.find({"breakdown.equipment": foundTMM.name}, function(err, foundBreakdowns){
+            if(err || !foundTMM){
+                req.flash("error", "Error occure while fetching breakdowns for the asset")
+                return res.redirect("/tmms")
+            }
+            const MORNING = foundBreakdowns.filter(e => e.breakdown.shift === 'morning')
+            const AFTERNOON = foundBreakdowns.filter(e => e.breakdown.shift === 'afternoon')
+            const NIGHT = foundBreakdowns.filter(e => e.breakdown.shift === 'night')
+            res.render("tmms/show", { tmm: foundTMM, MORNING, AFTERNOON, NIGHT, foundBreakdowns, title: "assets" });
+        })
     });
 });
 
@@ -95,7 +104,7 @@ router.get("/tmm/:id/edit", isLoggedIn, isAdmin, function (req, res) {
             req.flash("error", "TMM not found");
             return res.redirect("/tmms");
         }
-        res.render("tmms/edit", {tmm: tmm, title: "tmms"});
+        res.render("tmms/edit", {tmm: tmm, title: "assets"});
     });
 });
 

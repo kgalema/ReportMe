@@ -6,7 +6,28 @@ const Rehab = require("./models/rehab")
 const User = require("./models/user")
 const Breakdown = require("./models/breakdown")
 
+const exported = require("./app");
+// console.log(exported.app)
 
+const mongoose = require("mongoose");
+
+
+mongoose.connection.on("connected", () => {
+	console.log("On connected emmited inside middlware*******************************************");
+});
+
+let isDBconnected;
+mongoose.connection.on('open', () => {
+    console.log("DB live");
+    isDBconnected = true;
+    console.log(isDBconnected);
+})
+
+mongoose.connection.on('disconnected', () => {
+    console.log("DB dead");
+    isDBconnected = false;
+    console.log(isDBconnected);
+})
 
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
@@ -128,13 +149,11 @@ module.exports.isSectionSelected = (req, res, next) => {
     })
 }
 
-// module.exports.areUserExist = (req, res, next) => {
-//     User.findById(req.params.id, function (err, foundSection) {
-//         if (err || !foundSection ) {
-//             req.session.returnTo = req.originalUrl
-//             req.flash("warning", "Please select a section to proceed")
-//             return res.redirect("/sections")
-//         }
-//         next();
-//     })
-// }
+module.exports.isConnectionOpen = (req, res, next) => {
+	console.log("Inside middleware to check it whether DB is available");
+	console.log(isDBconnected);
+	if (!isDBconnected) {
+		return res.render("welcomePage");
+	} 
+	next();
+}

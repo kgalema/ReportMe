@@ -1,0 +1,35 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <h2>New Blasting Shift</h2>
+        <form action="/productionCalendar" method="post">
+            <div class="flex-form">
+                <input type="text" name="productionShift[author][_id]" id="author" value="<%= currentUser._id %>" readonly hidden required>
+                <div class="flex-row">
+                    <label for="blastingDay">Production Day:</label>
+                    <input type="date" name="productionShift[date]" id="blastingDay" required>
+                </div>
+                <div class="flex-row">
+                    <label for="blastingShift">Production Shift?:</label>
+                    <select name="productionShift[isProductionShift]" id="blastingShift" required>
+                        <option disabled selected value="">Select Yes/No</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+                <div class="flex-row">
+                    <input type="submit" value="Submit">
+                </div>
+            </div>
+        </form>
+        <div>
+            <a href="/productionCalendar">Dashboard</a>
+        </div>
+    </div>
+</div>
+
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

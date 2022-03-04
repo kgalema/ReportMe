@@ -3,6 +3,17 @@
 <div class="main-body">
 	<div class="element">
 		<div class="element2">
+			<div id="fromDB" style="display: none;">
+				<p id="shiftData">
+					<%= JSON.stringify(foundShifts) %> 
+				</p>
+				<p id="allBreakdowns">
+					<%= JSON.stringify(allBreakdowns) %> 
+				</p>
+				<p id="closedBreakdowns">
+					<%= JSON.stringify(closedBreakdowns) %> 
+				</p>
+			</div>
 			<h2>Breakdowns</h2>
 			<div>
 				<input type="date" max="" id="breakdown-date" name="" oninput="breakdownFilter(this.value, <%= JSON.stringify(allBreakdowns) %>, <%=  JSON.stringify(closedBreakdowns) %>)" />

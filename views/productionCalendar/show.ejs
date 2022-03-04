@@ -1,0 +1,28 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <h2>Production Shift</h2>
+        
+        <h3><%= locals.foundDate.date.toDateString() %></h3>
+        <h4>Production shift - <%= locals.foundDate.isProductionShift %></h4>
+
+        <br>
+        <p>
+            <a href="/productionCalendar">Dashboard</a>
+        </p>
+        <% if(locals.currentUser && locals.foundDate.author.equals(currentUser._id) || locals.currentUser && locals.currentUser.isAdmin){ %>
+            <div class="admin">
+                <a href="/productionCalendar/<%= locals.foundDate._id %>/edit">Edit</a>
+                <form action="/productionCalendar/<%= locals.foundDate._id %>?_method=DELETE" method="POST">
+                    <button id="delete" type="submit">Delete!</button>
+                </form>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

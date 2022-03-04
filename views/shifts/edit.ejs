@@ -1,0 +1,37 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <h2>Edit Shift Class: <%= locals.shiftClass.name %></h2>
+        <form action="/shifts/<%= locals.shiftClass._id %>?_method=PUT" method="post">
+            <div class="flex-form">
+                <div class="flex-row">
+                    <label for="shift_name">Name/ID</label>
+                    <input type="text" id="shift_name" name="shift[name]" value="<%= locals.shiftClass.name  %>" onkeyup="validatePanelName(event)" size="10" required>
+                </div>
+                <div class="flex-row">
+                    <label for="shift_start">Start Time</label>
+                    <input type="time" name="shift[start]" id="shift_start" value="<%= locals.shiftClass.start %>" required>
+                </div>
+                <div class="flex-row">
+                    <label for="shift_end">End Time</label>
+                    <input type="time" name="shift[end]" id="shift_end" value="<%= locals.shiftClass.end %>" required>
+                </div>
+                <div class="flex-row">
+                    <label for="shift_end">Overlaps to next day?</label>
+                    <div>
+                        <label for="overlap_false">No</label>
+                        <input type="radio" name="shift[overlap]" id="overlap_false" value="false" <% shiftClass.overlap ? "checked" : ""%> >
+                        <label for="overlap_true">Yes</label>
+                        <input type="radio" name="shift[overlap]" id="overlap_true" value="true" <% shiftClass.overlap ? "checked" : ""%> >
+                    </div>
+                </div>
+                <div class="flex-row">
+                    <input type="submit" value="Submit">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

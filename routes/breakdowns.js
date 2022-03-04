@@ -4,6 +4,7 @@ const Section = require("../models/section");
 const User = require("../models/user");
 const Breakdown = require("../models/breakdown");
 const TMM = require("../models/tmms");
+const Shift = require("../models/shift");
 const closedBreakdown = require("../models/closedBreakdown")
 const { isLoggedIn, isBreakdownAuthor } = require("../middleware");
 
@@ -20,12 +21,14 @@ router.get("/breakdowns", function (req, res) {
 				req.flash("error", "Error occured while fetching closed breakdowns");
         		return res.redirect("/");
 			}
-
-			res.render("breakdowns/index", {
-				allBreakdowns,
-				closedBreakdowns,
-				title: "breakdowns",
-		  	});
+			Shift.find({}, {name: 1, start: 1, end: 1, _id: 0, overlap: 1}, function(err, foundShifts){
+				if(err || !foundShifts){
+					req.flash("error", "Error occured while fetching shift information");
+					return res.redirect("/");
+				}
+				console.log(foundShifts)
+				res.render("breakdowns/index", { allBreakdowns, closedBreakdowns, foundShifts, title: "breakdowns" });
+			})
 		})
 	})
 })

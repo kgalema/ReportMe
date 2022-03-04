@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const Section = require("../models/section")
 const User = require("../models/user")
+const Shift = require("../models/shift")
 const { isLoggedIn, isSectionAuthor } = require("../middleware")
 
 
@@ -13,8 +14,8 @@ const { isLoggedIn, isSectionAuthor } = require("../middleware")
 router.get("/sections", function (req, res) {
 	Section.find({}, function (err, allSections) {
 		if (err || !allSections) {
-			req.flash("error", "Error occured while fetching all sections")
-			return res.redirect("/")
+			req.flash("error", "Error occured while fetching all sections");
+			return res.redirect("/");
 		}
 		res.render("sections/index", { sections: allSections, title: "sections" })
 	}).sort("name")
@@ -56,29 +57,34 @@ router.post("/sections", isLoggedIn, function (req, res) {
 
 // 4. Show route - shows/get info about one specific section
 router.get("/sections/:id", function (req, res) {
-	let redirect = "/"
-	Section.findById(req.params.id, function (err, foundSection) {
-		if (err || !foundSection) {
-			req.flash("error", "Invalid Section ID")
-			return res.redirect("back")
-		} else if (req.session.returnTo) {
-			switch (req.session.returnTo) {
-				case "/sections/sectionId/production/new":
-					redirect = "/production/new";
-					break;
-				case "/sections/sectionId/newReds/new":
-					redirect = "/newReds/new";
-					break;
-				}
-			delete req.session.returnTo;
-			return res.redirect("/sections/"+ foundSection._id + redirect)
-		} else {
-			console.log("Show Rendered")
-			console.log(foundSection)
-			res.render("sections/show", { section: foundSection, title: "sections" })
+	Shift.find({}, function(err, shifts){
+		if(err || !shifts){
+			req.flash("error", "Error occured while fetching shifts");
+			return res.redirect("/sections");
 		}
+		let redirect = "/"
+		Section.findById(req.params.id, function (err, foundSection) {
+			if (err || !foundSection) {
+				req.flash("error", "Invalid Section ID")
+				return res.redirect("back")
+			} else if (req.session.returnTo) {
+				switch (req.session.returnTo) {
+					case "/sections/sectionId/production/new":
+						redirect = "/production/new";
+						break;
+					case "/sections/sectionId/newReds/new":
+						redirect = "/newReds/new";
+						break;
+					}
+				delete req.session.returnTo;
+				return res.redirect("/sections/"+ foundSection._id + redirect)
+			} else {
+				// const sortedShifts = shifts
+				res.render("sections/show", { shifts, section: foundSection, title: "sections" })
+			}
+		});
 	});
-})
+});
 
 // 5. Edit route - renders edit form to edit one particular section
 router.get("/sections/:id/edit", isLoggedIn, isSectionAuthor, function (req, res) {

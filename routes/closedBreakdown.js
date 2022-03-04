@@ -13,10 +13,12 @@ router.get("/closedBreakdowns", function (req, res) {
 // 2. New route - renders a for creating new closed breakdown
 router.get("/sections/:sectionId/closedBreakdowns/new", isLoggedIn, function (req, res) {
 	Breakdown.findById(req.query.q, function (err, foundBreakdown) {
+		if(err && !foundBreakdown){
+			req.flash("error", "The breakdown you are trying to close does not exist")
+			return res.redirect("/breakdowns")
+		}
 		res.render("breakdowns/closed/new", {
-			title: "breakdowns",
-			sectionId: req.params.sectionId,
-			breakdownId: req.query.q,
+			title: "breakdowns", foundBreakdown
 		});
 	});
 });
@@ -26,13 +28,14 @@ router.post("/breakdowns/:breakdownId/closedBreakdowns", isLoggedIn, function (r
 	const time = req.body.closedBreakdown.endTime.split(":");
 	const hours = Number(time[0]);
 	const minutes = Number(time[1]);
-	const endTime = new Date();
+	// const endTime = new Date();
+	const endTime = new Date(req.body.closedBreakdown.endDate);
 	endTime.setHours(hours);
 	endTime.setMinutes(minutes);
 	endTime.setSeconds(0);
 	endTime.setMilliseconds(0);
 	req.body.closedBreakdown.endTime = endTime;
-	
+
 
 	Breakdown.findById(req.params.breakdownId, function (err, foundBreakdown) {
 		if (err || !foundBreakdown) {
@@ -57,6 +60,7 @@ router.post("/breakdowns/:breakdownId/closedBreakdowns", isLoggedIn, function (r
 						req.flash("error", "Error occured while deleting breakdown");
 						res.redirect("/breakdowns");
 					}
+
 					req.flash("success", "Successfully closed breakdown");
 					res.redirect("/breakdowns");
 				});

@@ -28,7 +28,7 @@
                     <button class="btn" id="morning_shift" onclick="filter('day')">Morning Shift</button>
                     <button class="btn" onclick="filter('night')">Back Shift</button>
                     <button class="btn" onclick="filter('blast-progs')">Progressive Blast</button>
-                    <button class="btn" id="chartData" onfocus="chartsData()" onclick="filter('charts')">Graphs</button>
+                    <button class="btn" id="chartData" onclick="filter('charts')">Graphs</button>
                     <input type="date" id="dateFilter" oninput="dateChange(this, <%= JSON.stringify(locals.production) %>)">
                 </div>
 
@@ -200,13 +200,21 @@
             <section id="prod_charts" class="prod_charts filterDiv">
                 <div>
                     <label for="startdate">From:</label>
-                    <input type="date" onchange="filterData()" id="startdate" value="">
+                    <!-- <input type="date" onchange="filterData()" id="startdate" value=""> -->
+                    <input type="date" onchange="drawProductionGraph()" id="startdate" value="">
                     <label for="enddate">To:</label>
-                    <input type="date" onchange="filterData()" id="enddate" value="">
+                    <!-- <input type="date" onchange="filterData()" id="enddate" value=""> -->
+                    <input type="date" onchange="drawProductionGraph()" id="enddate" value="">
+                    <label for="section">Section:</label>
+                    <select name="" id="selectedSection" onchange="drawProductionGraph()">
+                        <% locals.sections.forEach(el => { %>
+                            <option value=<%=el.name%>><%=el.name%></option>
+                        <% }) %>
+                    </select>
                 </div>
-                <% locals.sections.forEach(el => { %>
-                    <canvas id="<%=el.name%>"></canvas>
-                <% }) %>
+                <div>
+                    <canvas id="draw"></canvas>
+                </div>
             </section>
             </div>
             <hr>

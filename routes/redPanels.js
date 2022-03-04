@@ -6,10 +6,9 @@ const Section = require("../models/section")
 const Redpanel = require("../models/tarp")
 const User = require("../models/user")
 const NewRedPanel = require("../models/newRed")
-const { isLoggedIn, isAuthor, isAdmin } = require("../middleware")
+const { isLoggedIn, isAuthor, isConnectionOpen } = require("../middleware")
 const ExpressError = require("../utils/ExpressError")
 const nodemailer = require("nodemailer")
-
 
 
 const GridFsStorage = require("multer-gridfs-storage")
@@ -61,7 +60,8 @@ const upload2 = multer({ storage: storage2 })
 //======================
 
 // 1. Index routes -renders a list for all red panels
-router.get("/redPanel",  function (req, res) {
+router.get("/redPanel", function (req, res) {
+	console.log("red panel route after middleware");
 	Redpanel.find({}, function (err, redpanels) {
 		if (err || !redpanels) {
 			req.flash("error", "Error occured while fetching data")
@@ -177,7 +177,7 @@ router.get("/redPanel/:id", function (req, res, next) {
 			req.flash("error", "Cannot find requested TARP Red panel")
 			return res.redirect("/redPanel")
 		}
-		User.find({_id: { $in: [foundRedPanel.newRedAuthor, foundRedPanel.author] }}, { email: 1 }, function (err, user) {
+		User.find({_id: { $in: [foundRedPanel.newRedAuthor, foundRedPanel.author] }}, { preferredName: 1 }, function (err, user) {
 			if (err || !user) {
 				req.flash("error", "Looks like the TARP red panel does not have author");
 				return res.redirect("back");

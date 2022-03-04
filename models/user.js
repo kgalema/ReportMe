@@ -30,6 +30,8 @@ const userSchema = new mongoose.Schema({
 	resetPasswordExpires: { type: Date },
 }, opts);
 
+
+// This line adds on to our schema username and password and ensure that they are unique
 userSchema.plugin(passportLocalMongoose)
 
 

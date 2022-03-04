@@ -94,6 +94,13 @@ function addAnotherSupport(e) {
     let inputsCount = e.querySelectorAll("tr").length;
     inputsCount = inputsCount + 1;
     let num = inputsCount;
+
+    const options = document.getElementById("bolter").getElementsByTagName("option");
+    let stringOpts = "";
+    for(let i = 0; i < options.length; i++){
+        stringOpts = stringOpts + `<option value=${options[i].value}>${options[i].value}</option>`;
+    }
+
     // fieldNumber = fieldNumber + 1;
     // let num = fieldNumber;
     let body = (e.childNodes[1].childNodes[1]);
@@ -116,15 +123,7 @@ function addAnotherSupport(e) {
 
                     <td class="form-row">
                         <select name="production[support][${num}][machine]" id="bolter">
-                            <option value=""></option>
-                            <option value="RB01">RB01</option>
-                            <option value="RB02">RB02</option>
-                            <option value="RB03">RB03</option>
-                            <option value="RB04">RB04</option>
-                            <option value="RB05">RB05</option>
-                            <option value="RB06">RB06</option>
-                            <option value="RB07">RB07</option>
-                            <option value="RDO">RDO</option>
+                        ${stringOpts}
                         </select>
                     </td>
 
@@ -143,6 +142,13 @@ function addAnotherDrilled(e) {
     let inputsCount = e.querySelectorAll("tr").length;
     inputsCount = inputsCount + 1;
     let num = inputsCount;
+
+    const options = document.getElementById("drillRig").getElementsByTagName("option");
+	let stringOpts = "";
+	for (let i = 0; i < options.length; i++) {
+		stringOpts = stringOpts + `<option value=${options[i].value}>${options[i].value}</option>`;
+	}
+
     // fieldNumber = fieldNumber + 1;
     // let num = fieldNumber;
     let body = (e.childNodes[1].childNodes[1]);
@@ -161,15 +167,7 @@ function addAnotherDrilled(e) {
 
                     <td class="form-row">
                         <select name="production[drill][${num}][drillRig]" id="drillRig" required>
-                            <option value=""></option>
-                            <option value="TDR01">TDR01</option>
-                            <option value="TDR02">TDR02</option>
-                            <option value="TDR03">TDR03</option>
-                            <option value="TDR04">TDR04</option>
-                            <option value="TDR05">TDR05</option>
-                            <option value="TDR06">TDR06</option>
-                            <option value="TDR07">TDR07</option>
-                            <option value="TDR104">TDR104</option>
+                            ${stringOpts}
                         </select>
                     </td>
 
@@ -244,6 +242,13 @@ function addAnotherLHD(e) {
     let inputsCount = e.querySelectorAll("tr").length;
     inputsCount = inputsCount + 1;
     let num = inputsCount;
+
+    const options = document.getElementById("LHDnumber").getElementsByTagName("option");
+	let stringOpts = "";
+	for (let i = 0; i < options.length; i++) {
+		stringOpts = stringOpts + `<option value=${options[i].value}>${options[i].value}</option>`;
+	}
+    console.log(stringOpts)
     // fieldNumber = fieldNumber + 1;
     // let num = fieldNumber;
     let body = (e.childNodes[1].childNodes[1]);
@@ -254,13 +259,7 @@ function addAnotherLHD(e) {
 
                     <td class="form-row">
                         <select name="production[LHD][${num}][LHDnumber]" id="LHDnumber" required>
-                            <option value="" selected disabled>GL#</option>
-                            <option value="GL11">GL11</option>
-                            <option value="GL02">GL02</option>
-                            <option value="GL03">GL03</option>
-                            <option value="GL04">GL04</option>
-                            <option value="GL05">GL05</option>
-                            <option value="RR1">RR1</option>
+                            ${stringOpts}
                         </select>
                     </td>
 
@@ -285,11 +284,11 @@ function addAnotherLHD(e) {
 //======Making sure that panel name is all upper case and no spaces exist in between======
 const newForm = document.getElementById("new-production")
 if(newForm){
-    console.log(true)
+    // console.log(true)
     const allPanels = newForm.querySelectorAll("#panel")
     allPanels.forEach(p => p.setAttribute("onkeyup", "validatePanelName(event)"))
 } else {
-    console.log(false)
+    // console.log(false)
 }
 
 function validatePanelName(e) {
@@ -360,7 +359,7 @@ if (document.getElementById("myBtnContainer")) {
 
 // ===============date filtering=========
 function dateChange(e, f) {
-    console.log(f);
+    // console.log(f);
     // const productions = JSON.parse(f);
     // console.log(productions);
     selectedDate = e.value
@@ -542,18 +541,18 @@ let todayMonth = today.getMonth() + 1;
 let todayYear = today.getFullYear();
 if (todayMonth <= 9) {
     todayMonth = "0" + todayMonth;
-    console.log("Here")
-    console.log(todayMonth)
+    // console.log("Here")
+    // console.log(todayMonth)
 }
 if (todayDay <= 9) {
     todayDay = "0" + todayDay;
-    console.log(todayDay);
+    // console.log(todayDay);
 }
 
 let startDateDay = "01"
 let htmlStartDate = `${todayYear}-${todayMonth}-${startDateDay}`
 let htmlDate = `${todayYear}-${todayMonth}-${todayDay}`;
-console.log(htmlDate);
+// console.log(htmlDate);
 if(document.getElementById("tableDate")){
     document.getElementById("tableDate").innerHTML = htmlDate.slice(8) + "/" + htmlDate.slice(5, 7) + "/" + htmlDate.slice(0, 4)
 }
@@ -578,11 +577,6 @@ if(document.getElementById("declaredDate")){
     document.getElementById("declaredDate").max = htmlDate + "T23:59:59"
 }
 
-
-// Setting max time for input type=time
-if(document.getElementById("startTime")){
-    document.getElementById("startTime").max = `${todayHours}:${todayMinutes}`;
-}
 
 // Setting default date for breakdowns index
 if (document.getElementById("breakdown-date")) {
@@ -892,7 +886,22 @@ if(document.getElementById("blast-report")){
 function checkCallAchieved (e) {
     const faceLengths = diva.querySelectorAll("#length");
     const panelsBlastedLength = faceLengths.length;
-    const target = Number(document.getElementById("call").innerText)
+    // const target = Number(document.getElementById("call").innerText)
+    let target = 0;
+    const productionShifts = JSON.parse(document.getElementById("productionShifts").innerText)
+    const productionShifts1 = productionShifts.map(e => new Date(e).toDateString());
+    const selectedDate = new Date().toDateString();
+    // if(document.getElementById("startDate")){
+    //     new Date(selectedDate = document.getElementById("startDate").value).toDateString();
+    //     console.log("*********************YES*************")
+    // }
+    const index = productionShifts1.indexOf(selectedDate);
+    console.log(selectedDate)
+    if(productionShifts1[index] === selectedDate){
+        target = Number(document.getElementById("call").innerText);
+    }
+
+    document.getElementById("target-number").innerText = target;
 
     let actual = 0;
     for (i = 0; i < panelsBlastedLength; i++) {
@@ -919,9 +928,8 @@ const productionForm = document.querySelector(".new-production")
 //     checkCallAchieved()
 // }
 if(productionForm){
-    console.log("Success");
     checkCallAchieved();
 }
 
-console.log("ENd");
+// console.log("ENd");
 

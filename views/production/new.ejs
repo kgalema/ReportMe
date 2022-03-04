@@ -6,6 +6,29 @@
                 <form class="new-production" id="new-production" action="/sections/<%= section._id %>/production" method="post">
 
                     <h2> <%= section.name %>'s Production Report </h2>
+                    <div style="display: none;" class="fromDB">
+                        <p id="productionShifts">
+                            <%= JSON.stringify(foundDates1) %>
+                        </p>
+                         <p id="target">
+                            <% let target = section.forecast/section.plannedAdvance %>
+                         </p>   
+                         <p>
+                             <p>
+                                <% const dateNow = new Date().toDateString() %>
+                             </p>
+                             <p>
+                                <% const dateFound = new Date(foundDates1[2]).toDateString()%>
+                             </p>
+                             <p>
+                                <%= Boolean(dateNow === dateFound )%>
+                             </p>
+                             <p>
+                                <%= typeof foundDates1 %>
+                             </p>
+                         </p>
+                    </div>
+                    
                     <p id="call">
                         <%= section.forecast/section.plannedAdvance %>
                     </p>
@@ -19,13 +42,13 @@
                         <label for="backshift">Back Shift</label>
                     </div>
                     <br>
-                    <% if(currentUser && currentUser.isAdmin){ %>
+                    <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
                         <input type="date" name="production[created]" id="startDate">
                     <% } %>
 
                     <br>
 
-                    <button id="blast-report-heading" type="button" class="collapsible">Blasted Panels Report (Target = <%= section.forecast/section.plannedAdvance %>m)</button>
+                    <button id="blast-report-heading" type="button" class="collapsible">Blasted Panels Report (Target = <span id="target-number"><%= target %></span>m)</button>
                     <div class="content" id="blast-report">
                         <table class="form-row">
                             <tbody>

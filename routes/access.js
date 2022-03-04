@@ -4,6 +4,7 @@ const router = express.Router()
 const User = require("../models/user")
 const nodemailer = require("nodemailer")
 const crypto = require("crypto")
+const { isConnectionOpen } = require("../middleware")
 
 
 //@Log in routes
@@ -14,7 +15,8 @@ router.get("/login", function (req, res) {
 })
 
 //@authenticate user with submitted form data
-router.post("/login", passport.authenticate("local", { failureFlash: true, failureRedirect: "/login" }), function (req, res) {
+router.post("/login", isConnectionOpen, passport.authenticate("local", { failureFlash: true, failureRedirect: "/login" }), function (req, res) {
+	console.log(req.session.returnTo)
 	const redirectUrl = req.session.returnTo || "/production";
 	delete req.session.returnTo;
 	req.flash("success", "Welcome back!");

@@ -3,7 +3,64 @@
 <div class="main-body">
     <div class="element">
         <div class="element2">
-            <h2><%= tmm.name %></h2>
+            <p id="foundBreakdowns" style="display: none;">
+                <%= JSON.stringify(foundBreakdowns) %>
+            </p>
+            <h2><%= locals.tmm.name %></h2>
+            <div>
+                <label for="">From:</label>
+                <input type="date" name="" id="startdate" onchange="filterBreakdowns()">
+                <label for="">To:</label>
+                <input type="date" name="" id="enddate" onchange="filterBreakdowns()">
+            </div>
+            <br>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Shift</th>
+                        <th>Availability (%)</th>
+                        <th>Utilisation (%)</th>
+                        <th>Reliability (hrs)</th>
+                        <!-- <th>Production eff</th>
+                        <th>Overall effectiveness</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <%= "MORNING" %>
+                        </td>
+                        <td id="morning-availability">
+                        </td>
+                        <td id="morning-utilisation">
+                        </td>
+                        <td id="morning-reliability">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <%= "AFTERNOON" %>
+                        </td>
+                        <td id="afternoon-availability">
+                        </td>
+                        <td id="afternoon-utilisation">
+                        </td>
+                        <td id="afternoon-reliability">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <%= "NIGHT" %>
+                        </td>
+                        <td id="night-availability">
+                        </td>
+                        <td id="night-utilisation">
+                        </td>
+                        <td id="night-reliability">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
             <br>
             <p>

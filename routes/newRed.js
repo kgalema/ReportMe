@@ -91,11 +91,12 @@ router.get("/newRedPanel/:id", function (req, res) {
             req.flash("error", "Cannot find requested TARP Red panel");
             return res.redirect("/redPanel");
         }
-        User.findById(foundNewRedPanel.author.id, { email: 1 }, function (err, user) {
+        User.findById(foundNewRedPanel.author.id, { preferredName: 1 }, function (err, user) {
 			if (err || !user) {
 				req.flash("error", "Looks like the TARP red panel does not have author");
 				return res.redirect("back");
 			}
+            console.log(user)
             res.render("newReds/show", { newRedPanel: foundNewRedPanel, redUser: user, title: "TARP-Red" });
 		});
     });

@@ -83,15 +83,18 @@ productionSchema.virtual("blasted").get(function () {
 	// const startTimeHours = this.startTime.getHours().toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false });
 	// const startTimeMins = this.startTime.getMinutes().toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false });
 	const blastedPanels = this.blast;
-	// const start = `${startTimeHours}:${startTimeMins}`;
-	// const blasted = `Hello`;
 	const achievesM = this.blast.map(pl => pl.length).reduce((a, b) => a + b, 0)
 	const achievesSQM = (achievesM * this.section.plannedAdvance).toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false });
-	// console.log(achievesSQM)
-	// console.log(this.section.name);
-	// console.log(this._id);
-	// console.log(blastedPanels.length);
 	return achievesSQM;
+});
+
+productionSchema.virtual("forecast").get(function () {
+	const forecast = this.section.forecast;
+	return forecast;
+});
+productionSchema.virtual("budget").get(function () {
+	const budget = this.section.budget;
+	return budget;
 });
 
 

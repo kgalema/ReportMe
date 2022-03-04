@@ -91,23 +91,23 @@ router.get("/rehabedPanel/:id", function (req, res) {
 			req.flash("error", "Cannot find requested Rehabilitated panel")
 			return res.redirect("/rehabedPanels")
 		}
-		console.log(foundRehabed._id)
-		User.findById(foundRehabed.author, { email: 1 }, function (err, rehabedUser) {
+		User.findById(foundRehabed.authorNewRed, { preferredName: 1 }, function (err, rehabedUser) {
 			if (err || !rehabedUser) {
 				req.flash("error", "Looks like rehabed panel panel does not have author");
 				return res.redirect("back");
 			}
-			User.findById(foundRehabed.authorRed, { email: 1 }, function (err, redUser) {
+			User.findById(foundRehabed.authorRed, { preferredName: 1 }, function (err, redUser) {
 				if (err || !redUser) {
 					req.flash("error", "Looks like red panel panel does not have author");
 					return res.redirect("back");
 				}
-				User.findById(foundRehabed.authorNewRed, { email: 1 }, function (err, newRedUser) {
+				User.findById(foundRehabed.author, { preferredName: 1 }, function (err, newRedUser) {
 					if (err || !newRedUser) {
 						req.flash("error", "Looks like new red panel panel does not have author");
 						return res.redirect("back");
 					}
 					const authors = [rehabedUser, redUser, newRedUser];
+					console.log(authors);
 					res.render("rehab/show", { rehabedPanel: foundRehabed, authors, title: "TARP-Red" });
 				});
 			});

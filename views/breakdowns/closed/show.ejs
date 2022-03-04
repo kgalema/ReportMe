@@ -5,10 +5,9 @@
             <div class="element2">
                 <div>
                     <h2>Closed Breakdown: <%= closedBreakdown.breakdown.equipment %> at <%= locals.closedBreakdown.breakdown.section.name %></h2>
-                    <p>Date: - <%= closedBreakdown.breakdown.startTime.toDateString() %></p>
-                    <p>Shift: - <%= closedBreakdown.breakdown.shift %></p>
-                    <p>Start time (hh:mm): - <%= closedBreakdown.start %></p>
-                    <p>End time (hh:mm): - <%= closedBreakdown.end %></p>
+                    <p>Shift: - <%= closedBreakdown.breakdown.shift.toUpperCase() %></p>
+                    <p>Start time (hh:mm): - <%= closedBreakdown.start %> (<%= closedBreakdown.breakdown.startTime.toDateString() %>)</p>
+                    <p>End time (hh:mm): - <%= closedBreakdown.end %> (<%= closedBreakdown.endTime.toDateString() %>)</p>
                     <p>Downtime (hh:mm): - <%= closedBreakdown.downtime %></p>
                     <p>Description: - <%= closedBreakdown.breakdown.description %></p>
                     <p>Artisan Comments: - <%= closedBreakdown.comments %></p>

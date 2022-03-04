@@ -3,9 +3,50 @@
 <div class="main-body">
     <div class="element">
         <div class="element2">
-            <h2>Closing Breakdown</h2>
-            <form action="/breakdowns/<%= locals.breakdownId %>/closedBreakdowns" method="POST">
+            <p style="display: none;">
+                <% const year = locals.foundBreakdown.startTime.getFullYear() %> 
+                <% const day = locals.foundBreakdown.startTime.getDate().toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false }) %> 
+                <% const month = (locals.foundBreakdown.startTime.getMonth() + 1).toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false }) %>
+                <% const minDate = `${year}-${month}-${day}`  %>
+            </p>
+            <h2>Closing Breakdown: <%= locals.foundBreakdown.equipment %></h2>
+            <form action="/breakdowns/<%= locals.foundBreakdown._id %>/closedBreakdowns" method="POST">
                 <table class="form-row">
+                    <tr>
+                        <td class="form-row">
+                            <label for="section">Section:</label>
+                        </td>
+                        
+                        <td class="form-row">
+                            <%= locals.foundBreakdown.section.name %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="desc">Description:</label>
+                        </td>
+                        <td class="form-row">
+                            <%= locals.foundBreakdown.description %>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="form-row">
+                            <label for="startTime">Time Start:</label>
+                        </td>
+                        <td class="form-row">
+                            <%= locals.foundBreakdown.start %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="startDate">Date Start:</label>
+                        </td>
+                        <td class="form-row">
+                            <%= locals.foundBreakdown.startTime.toDateString() %>
+                        </td>
+                    </tr>
+
                     <tr>
                         <td class="form-row">
                             <label for="comments">Comments:</label>
@@ -24,7 +65,15 @@
                     </tr>
                     <tr>
                         <td class="form-row">
-                            <input type="text" value="<%= locals.breakdownId %>" name="closedBreakdown[breakdown][id]" hidden readonly required>
+                            <label for="startDate1">End Date:</label>
+                        </td>
+                        <td class="form-row">
+                            <input  id="startDate1" name="closedBreakdown[endDate]" type="date" min=<%=minDate%> value=<%=minDate%> required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
+                            <input type="text" value="<%= locals.foundBreakdown._id %>" name="closedBreakdown[breakdown][id]" hidden readonly required>
                         </td>
                     </tr>
             
@@ -36,7 +85,7 @@
                 </table>
             </form>
             <div>
-                <a href="/breakdown/<%= locals.breakdownId %>">&#11013 Back</a>
+                <a href="/breakdown/<%= locals.foundBreakdown._id %>">&#11013 Back</a>
             </div>
         </div>
   </div>

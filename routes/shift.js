@@ -44,8 +44,6 @@ router.post("/shifts", isLoggedIn, isAdmin, function (req, res) {
       const duration = Math.abs((endTime - startTime)/(1000 * 60 * 60))
       
       req.body.shift.duration = duration;
-      console.log(req.user);
-      console.log(req.body.shift);
       req.body.shift.authorId = req.user._id;
 	Shift.create(req.body.shift, function (err, newShift) {
 		if (!err && newShift) {

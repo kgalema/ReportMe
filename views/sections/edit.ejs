@@ -12,7 +12,7 @@
                         <label for="section">Section:</label>
                     </td>
                     <td class="form-row">
-                        <input id="section" type="text" name="section[name]" onkeyup="validatePanelName(event)" value="<%= section.name %>">
+                        <input id="section" required type="text" name="section[name]" onkeyup="validatePanelName(event)" value="<%= locals.section.name %>">
                     </td>
                 </tr>
                 <tr>
@@ -20,10 +20,10 @@
                         <label for="mineOverseer">Mine Overseer:</label>
                     </td>
                     <td class="form-row">
-                        <select name="section[mineOverseer]" id="mineOverseer">
-                            <option value="<%= section.mineOverseer._id %>" selected><%= section.mineOverseer.name %></option>
-                            <% mineOverseers.forEach(mo => { %>
-                                <option value="<%= mo._id %>"><%= mo.username %></option>
+                        <select name="section[mineOverseer]" id="mineOverseer" required>
+                            <option value="<%= section.mineOverseer._id +'&'+ section.mineOverseer.name %>" selected><%= section.mineOverseer.name %></option>
+                            <% locals.mineOverseers.forEach(mo => { %>
+                                <option value="<%= mo._id + '&'+ mo.preferredName %>"><%= mo.preferredName %></option>
                             <% }) %>
                         </select>
                     </td>
@@ -33,8 +33,8 @@
                         <label for="budget">Budget:</label>
                     </td>
                     <td class="form-row">
-                        <input id="budget" type="number" step="0.1" min="0" name="section[budget]"
-                            value="<%= section.budget %>">
+                        <input id="budget" required type="number" step="0.1" min="0" name="section[budget]"
+                            value="<%= locals.section.budget %>">
                     </td>
                 </tr>
                 <tr>
@@ -42,8 +42,8 @@
                         <label for="forecast">Forecast:</label>
                     </td>
                     <td class="form-row">
-                        <input id="forecast" type="number" step="0.1" min="0" name="section[forecast]"
-                            value="<%= section.forecast %>">
+                        <input id="forecast" required type="number" step="0.1" min="0" name="section[forecast]"
+                            value="<%= locals.section.forecast %>">
                     </td>
                 </tr>
                 <tr>
@@ -51,8 +51,35 @@
                         <label for="advance">Planned Advance:</label>
                     </td>
                     <td class="form-row">
-                        <input id="advance" type="number" step="0.1" min="0" name="section[plannedAdvance]"
-                            value="<%= section.plannedAdvance %>">
+                        <input id="advance" required type="number" step="0.1" min="0" name="section[plannedAdvance]"
+                            value="<%= locals.section.plannedAdvance %>">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="form-row">
+                        <label for="EEEDuration">EEE duration (hh:mm):</label>
+                    </td>
+                    <td class="form-row">
+                        <input id="EEEDuration" required type="time" name="section[EEEDuration]"
+                            value="<%= locals.section.EEEDuration %>">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="form-row">
+                        <label for="pre-meeting">Pre-shift meeting duration (hh:mm):</label>
+                    </td>
+                    <td class="form-row">
+                        <input id="pre-meeting" required type="time" name="section[meetingDuration]"
+                            value="<%= locals.section.meetingDuration %>">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="form-row">
+                        <label for="travelingTime">Traveling time (to & from) (hh:mm):</label>
+                    </td>
+                    <td class="form-row">
+                        <input id="travelingTime" required type="time" name="section[travelingTime]"
+                            value="<%= locals.section.travelingTime %>">
                     </td>
                 </tr>
                 <tr>

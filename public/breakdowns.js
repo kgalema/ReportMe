@@ -846,16 +846,13 @@ if (document.getElementById("foundBreakdowns")) {
     filterBreakdowns()
 }
 
+// Filter machine availability , utilisation and efficiency
 function filterBreakdowns(){
     const foundBreakdowns = document.getElementById("foundBreakdowns").innerText;
     const parsedFoundBreakdowns = JSON.parse(foundBreakdowns);
-    const start = document.getElementById("startdate").value
-    const end = document.getElementById("enddate").value
-    console.log(start)
-    console.log(end)
+    const start = document.getElementById("startdate").value;
+    const end = document.getElementById("enddate").value;
     const data = parsedFoundBreakdowns.filter((e) => moment(e.created).format("YYYY-MM-DD") >= start && moment(e.created).format("YYYY-MM-DD") <= end);
-    // console.log(data)
-    // console.log(parsedFoundBreakdowns)
 
     const MORNING = data.filter((e) => e.breakdown.shift === "morning");
 	const AFTERNOON = data.filter((e) => e.breakdown.shift === "afternoon");
@@ -872,9 +869,9 @@ function filterBreakdowns(){
     const utilNight = getUtilisationForNight(NIGHT)
 
     // Getting reliability
-    const reliabilityMorning = getReliabilityForMorning(MORNING)
-    const reliabilityANoon = getReliabilityForANoon(AFTERNOON)
-    const reliabilityNight = getReliabilityForNight(NIGHT)
+    // const reliabilityMorning = getReliabilityForMorning(MORNING)
+    // const reliabilityANoon = getReliabilityForANoon(AFTERNOON)
+    // const reliabilityNight = getReliabilityForNight(NIGHT)
 
     document.getElementById("morning-availability").innerText = availFinalMorning;
     document.getElementById("afternoon-availability").innerText = availFinalANoon;
@@ -884,9 +881,14 @@ function filterBreakdowns(){
     document.getElementById("afternoon-utilisation").innerText = utilANoon;
     document.getElementById("night-utilisation").innerText = utilNight;
 
-    document.getElementById("morning-reliability").innerText = reliabilityMorning;
-    document.getElementById("afternoon-reliability").innerText = reliabilityANoon;
-    document.getElementById("night-reliability").innerText = reliabilityNight;
+    // document.getElementById("morning-reliability").innerText = reliabilityMorning;
+    // document.getElementById("afternoon-reliability").innerText = reliabilityANoon;
+    // document.getElementById("night-reliability").innerText = reliabilityNight;
+
+    document.getElementById("morning-efficiency").innerText = ((availFinalMorning * utilMorning)/ 100);
+    document.getElementById("afternoon-efficiency").innerText = ((availFinalANoon * utilANoon) / 100);
+    document.getElementById("night-efficiency").innerText = ((availFinalNight * utilNight) / 100);
+    document.getElementById("startdate").oninput
 }
 
 function convertTimesToSeconds(str){
@@ -1018,7 +1020,7 @@ function getReliabilityForANoon(arr){
     return reliability;
 }
 
-// 2. Getting reliability for night shift
+// 3. Getting reliability for night shift
 function getReliabilityForNight(arr){
     const failures = arr.length
     const DTs = arr.map((e) => e.downtime);
@@ -1034,3 +1036,6 @@ function getReliabilityForNight(arr){
 	
     return reliability;
 }
+
+
+// Creating chart for the table

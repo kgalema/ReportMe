@@ -1,8 +1,13 @@
 let chartCreated;
+let efficiencyChart;
 
 function drawnChart(chart){
     chartCreated = chart;
     return chartCreated;
+}
+function drawnEffChart(chart){
+    efficiencyChart = chart;
+    return efficiencyChart;
 }
 
 
@@ -105,3 +110,74 @@ function drawProductionGraph(){
 }
 
 // drawProductionGraph()
+
+
+/*
+ * Creating a chart for table of breakdowns efficiencies
+ *
+ */
+
+function drawEffGraph(){
+	if (efficiencyChart) {
+		console.log("Chart efficiency chart exist");
+		efficiencyChart.destroy();
+	}
+	const availabilities = document.getElementsByClassName("availability");
+	const utilisations = document.getElementsByClassName("utilisation");
+	const efficiencies = document.getElementsByClassName("efficiency");
+
+	const availabilitiesLength = availabilities.length;
+	const utilisationsLength = utilisations.length;
+	const efficienciesLength = efficiencies.length;
+
+	const avails = [];
+	const utils = [];
+	const effs = [];
+
+	for( let i = 0; i < availabilitiesLength; i++){
+		avails.push(Number(availabilities[i].innerText))
+	}
+	for (let i = 0; i < utilisationsLength; i++) {
+		utils.push(Number(utilisations[i].innerText));
+	}
+	for (let i = 0; i < efficienciesLength; i++) {
+		effs.push(Number(efficiencies[i].innerText));
+	}
+
+	const configEffGraph = {
+		data: {
+			labels: ["Morning", "Afternoon", "Night"],
+			datasets: [
+				{
+					type: "bar",
+					data: avails,
+					borderColor: "#777",
+					borderWidth: "2",
+					label: "Availability %",
+				},
+				{
+					type: "bar",
+					data: utils,
+					backgroundColor: "blue",
+					label: "Utilisation %",
+				},
+				{
+					type: "bar",
+					data: effs,
+					backgroundColor: "green",
+					label: "Efficiency %",
+				},
+			],
+		},
+	};
+
+	let effGraph = new Chart(document.getElementById("effGraph").getContext("2d"), configEffGraph);
+	
+	drawnEffChart(effGraph)
+
+}
+
+if(document.getElementById("effGraph")){
+	drawEffGraph()
+}
+

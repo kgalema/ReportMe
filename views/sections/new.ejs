@@ -12,10 +12,10 @@
                 </div>
                 <div class="flex-row">
                     <label for="mineOverseer">Mine Overseer:</label>
-                    <select name="section[mineOverseer]" id="mineOverseer">
-                        <option value="" selected disabled>Select M/O</option>
+                    <select name="section[mineOverseer]" id="mineOverseer" required>
+                        <option value="heloo" selected disabled>Select M/O</option>
                         <% mineOverseers.forEach(mo => { %>
-                            <option value="<%= mo._id %>"><%= mo.username %></option>
+                            <option value="<%= mo._id %>"><%= mo.preferredName %></option>
                         <% }) %>
                     </select>
                 </div>
@@ -30,6 +30,18 @@
                 <div class="flex-row">
                     <label for="advance">Planned Advance (m):</label>
                     <input id="advance" type="number" step="0.1" min="0"  name="section[plannedAdvance]" placeholder="advance/blast" required>
+                </div>
+                <div class="flex-row">
+                    <label for="EEEDuration">EEE duration (hh:mm):</label>
+                    <input id="EEEDuration" type="time" name="section[EEEDuration]" required>
+                </div>
+                <div class="flex-row">
+                    <label for="pre-meeting">Pre-shift meeting duration (hh:mm):</label>
+                    <input id="pre-meeting" type="time" name="section[meetingDuration]" required>
+                </div>
+                <div class="flex-row">
+                    <label for="travelingTime">Traveling time (to & from) (hh:mm):</label>
+                    <input id="travelingTime" type="time" name="section[travelingTime]" required>
                 </div>
                 <div class="flex-row">
                     <input type="submit" value="Submit">

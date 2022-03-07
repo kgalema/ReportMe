@@ -26,7 +26,7 @@ router.get("/production", isConnectionOpen, function (req, res) {
 			req.flash("error", "Oops! Error occured while fetching production reports");
 			return res.redirect("back");
 		}
-		Section.find({}, {name: 1},  function(err, sections){
+		Section.find({},  function(err, sections){
 			if (err || !sections) {
 				req.flash("error", "Error occured while fetching sections");
 				return res.redirect("back");

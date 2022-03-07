@@ -9,9 +9,9 @@
             <h2><%= locals.tmm.name %></h2>
             <div>
                 <label for="">From:</label>
-                <input type="date" name="" id="startdate" onchange="filterBreakdowns()">
+                <input type="date" name="" id="startdate" onchange="drawEffGraph()" oninput="filterBreakdowns()">
                 <label for="">To:</label>
-                <input type="date" name="" id="enddate" onchange="filterBreakdowns()">
+                <input type="date" name="" id="enddate" oninput="filterBreakdowns()">
             </div>
             <br>
             <table>
@@ -20,7 +20,7 @@
                         <th>Shift</th>
                         <th>Availability (%)</th>
                         <th>Utilisation (%)</th>
-                        <th>Reliability (hrs)</th>
+                        <th>Efficiency (%)</th>
                         <!-- <th>Production eff</th>
                         <th>Overall effectiveness</th> -->
                     </tr>
@@ -30,37 +30,48 @@
                         <td>
                             <%= "MORNING" %>
                         </td>
-                        <td id="morning-availability">
+                        <td id="morning-availability" class="availability">
                         </td>
-                        <td id="morning-utilisation">
+                        <td id="morning-utilisation" class="utilisation">
                         </td>
-                        <td id="morning-reliability">
+                        <!-- <td id="morning-reliability">
+                        </td> -->
+                        <td id="morning-efficiency" class="efficiency">
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <%= "AFTERNOON" %>
                         </td>
-                        <td id="afternoon-availability">
+                        <td id="afternoon-availability" class="availability">
                         </td>
-                        <td id="afternoon-utilisation">
+                        <td id="afternoon-utilisation" class="utilisation">
                         </td>
-                        <td id="afternoon-reliability">
+                        <!-- <td id="afternoon-reliability">
+                        </td> -->
+                        <td id="afternoon-efficiency" class="efficiency">
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <%= "NIGHT" %>
                         </td>
-                        <td id="night-availability">
+                        <td id="night-availability" class="availability">
                         </td>
-                        <td id="night-utilisation">
+                        <td id="night-utilisation" class="utilisation">
                         </td>
-                        <td id="night-reliability">
+                        <!-- <td id="night-reliability">
+                        </td> -->
+                        <td id="night-efficiency" class="efficiency">
                         </td>
                     </tr>
                 </tbody>
             </table>
+            <div id="canvasDiv" style="margin-top: 20px;">
+                <canvas id="effGraph" width="393.219px">
+
+                </canvas>
+            </div>
 
             <br>
             <p>

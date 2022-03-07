@@ -5,21 +5,60 @@
         <h2><%= section.name %></h2>
         <hr>
         <div>
-            <p>Mine Overseer - <%= section.mineOverseer.name %></p>
-            <p>Planned advance/blast - <%= section.plannedAdvance  %> <span>m</span></p>
-            <p>Daily target (Blast) - <%= section.forecast %> <span>m<sup>2</sup></span></p>
-            <p>Safety meeting duration - <%= 20 %> minutes</p>
-            <p>EEE duration - <%= 50 %> minutes</p>
-            <% locals.shifts.forEach(shift => { %>
-                <p><%= shift.name%> shift duration - (<%= (shift.duration - (20/60) - (50/60)).toFixed(2) %> hours)</p>
-            <% }) %>
+            <% function subtract2Times (a, b){ %>
+                <% const bSplitted = b.split(":"); %>
+                <% const bSplittedHours = Number(bSplitted[0]); %>
+                <% const bSplittedMinutes = Number(((Number(bSplitted[1]) / 60)).toFixed(10)); %>
+                <% const duration = a - bSplittedHours - bSplittedMinutes %>
+                <% const hours = Math.floor(duration).toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false }); %>
+                <% const minutes = Number((duration - hours).toFixed(10)); %>
+                <% const minutesConverted = Math.round(minutes * 60).toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false }); %>
+                <% const result = `${hours}:${minutesConverted}` %>
+                <% return result; %>
+            <% } %>
+            <table class="form-row">
+                <tr>
+                    <td class="form-row">Mine Overseer:</td>
+                    <td class="form-row"><%= locals.section.mineOverseer.name %></td>
+                </tr>
+                <tr>
+                    <td class="form-row">Planned advance/blast:</td>
+                    <td class="form-row"><%= locals.section.plannedAdvance  %> m</td>
+                </tr>
+                <tr>
+                    <td class="form-row">Daily target (Blast):</td>
+                    <td class="form-row"><%= locals.section.forecast %> <span>m<sup>2</sup></span></td>
+                </tr>
+                <tr>
+                    <td class="form-row">Traveling duration (to & from) (hh:mm):</td>
+                    <td class="form-row"><%= locals.section.travelingTime %></td>
+                </tr>
+                <tr>
+                    <td class="form-row">Pre-shift meeting duration (hh:mm):</td>
+                    <td class="form-row"><%= locals.section.meetingDuration %></td>
+                </tr>
+                <tr>
+                    <td class="form-row">EEE duration (hh:mm):</td>
+                    <td class="form-row"><%= locals.section.EEEDuration %></td>
+                </tr>
+                <tr>
+                    <td class="form-row">Unusable shift duration (hh:mm):</td>
+                    <td class="form-row"><%= locals.section.unusableTime %></td>
+                </tr>
+                <% locals.shifts.forEach(shift => { %>
+                    <tr>
+                        <td class="form-row"><%= shift.name %> shift facetime (hh:mm):</td>
+                        <td class="form-row"><%= subtract2Times(shift.duration, locals.section.unusableTime) %></td>
+                    </tr>
+                <% }) %>
+            </table>
         </div>
 
 
-        <div class="show-section">
-            <a class="button" href="/sections/<%= section._id %>/production/new">Production Report</a>
-            <a class="button" href="/sections/<%= section._id %>/newReds/new">Add New Red Panel</a>
-        </div>
+        <!-- <div class="show-section">
+            <a class="button" href="/sections/<%= locals.section._id %>/production/new">Production Report</a>
+            <a class="button" href="/sections/<%= locals.section._id %>/newReds/new">Add New Red Panel</a>
+        </div> -->
         <hr>
         <div>
             <a href="/sections">Sections</a>

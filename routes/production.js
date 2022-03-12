@@ -36,7 +36,7 @@ router.get("/production", isConnectionOpen, function (req, res) {
 	});
 });
 
-router.get("/api/production", function (req, res) {
+router.get("/api/production", isConnectionOpen, function (req, res) {
 	Production.find({}, function (err, allProduction) {
 		if (err) {
 			console.log(err);
@@ -45,8 +45,8 @@ router.get("/api/production", function (req, res) {
 		} else {
 			res.send(allProduction);
 		}
-	})
-})
+	});
+});
 
 
 

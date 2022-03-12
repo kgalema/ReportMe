@@ -1,10 +1,17 @@
 let chartCreated;
+let progChart;
 let efficiencyChart;
 
 function drawnChart(chart){
     chartCreated = chart;
     return chartCreated;
 }
+
+function drawnProgChart(chart){
+    progChart = chart;
+    return progChart;
+}
+
 function drawnEffChart(chart){
     efficiencyChart = chart;
     return efficiencyChart;
@@ -21,6 +28,10 @@ function drawProductionGraph(){
 	if (chartCreated) {
 		console.log("Chart created exist");
 		chartCreated.destroy();
+	}
+	if (progChart) {
+		console.log("Progressive chart already exist");
+		progChart.destroy();
 	}
 	const mongoDB = document.getElementById("DB").innerText;
 	const prodDataCharts = JSON.parse(mongoDB);
@@ -41,6 +52,14 @@ function drawProductionGraph(){
 	const dataForecast = dayShiftDataSection.map((e) => e.forecast);
 	const dataBlasted = dayShiftDataSection.map((e) => e.blasted);
 
+	// Configuring Progressive Values
+	const cummulativeBlast = cummulateArr(dataBlasted)
+	const cummulativeForecast = cummulateArr(dataForecast)
+	console.log("Cummulative Blast")
+	console.log(cummulativeBlast)
+
+
+	// Configuration for non-cummulative graph
 	const config = {
 		data: {
 			labels: labels,
@@ -103,10 +122,75 @@ function drawProductionGraph(){
 		},
 	};
 
+	// Configurations for cummulative graph
+	const configProgressive = {
+		data: {
+			labels: labels,
+			datasets: [
+				{
+					type: "line",
+					data: cummulativeForecast,
+					borderColor: "#777",
+					borderWidth: "2",
+					label: "Progressive Target m\u00B2",
+				},
+				{
+					type: "bar",
+					data: cummulativeBlast,
+					backgroundColor: "green",
+					label: "Progressive Actual m\u00B2",
+				},
+			],
+		},
+		options: {
+			plugins: {
+				title: {
+					display: true,
+					text: `${selectedSection}`,
+					padding: {
+						bottom: 5,
+					},
+				},
+				subtitle: {
+					display: true,
+					text: "Progressive Chart",
+					padding: {
+						bottom: 5,
+					},
+				},
+				legend: {
+					position: "bottom",
+				},
+			},
+			responsive: true,
+			scales: {
+				y: {
+					ticks: {
+						callback: function (value) {
+							return value + "m\u00B2";
+						},
+					},
+					title: {
+						display: true,
+						text: "m\u00B2",
+					},
+				},
+				x: {
+					title: {
+						display: true,
+						text: "Date",
+					},
+				},
+			},
+		},
+	};
+
 	// Draw requested function
 	let myChart = new Chart(document.getElementById("draw").getContext("2d"), config);
+	let myChartProgressive = new Chart(document.getElementById("drawProgressive").getContext("2d"), configProgressive);
 
 	drawnChart(myChart);
+	drawnProgChart(myChartProgressive)
 }
 
 // drawProductionGraph()
@@ -175,6 +259,17 @@ function drawEffGraph(){
 	
 	drawnEffChart(effGraph)
 
+}
+
+function cummulateArr(arr) {
+	const arrLength = arr.length;
+	const arr2 = [];
+	for (let i = 1; i <= arrLength; i++) {
+		const slicedArr = arr.slice(0, i);
+		const pusher = slicedArr.reduce((e, i) => Number(e) + Number(i), 0);
+		arr2.push(pusher);
+	}
+	return arr2;
 }
 
 if(document.getElementById("effGraph")){

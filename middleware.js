@@ -5,6 +5,7 @@ const NewRedPanel = require("./models/newRed")
 const Rehab = require("./models/rehab")
 const User = require("./models/user")
 const Breakdown = require("./models/breakdown")
+const ClosedBreakdown = require("./models/closedBreakdown")
 
 const exported = require("./app");
 // console.log(exported.app)
@@ -91,6 +92,20 @@ module.exports.isBreakdownAuthor = (req, res, next) => {
         if (!foundBreakdown.author.equals(req.user._id) && !req.user.isAdmin) {
             req.flash("error", "You do not have permission to do that")
             return res.redirect(`/breakdowns/${req.params.id}`)
+        }
+        next()
+    })
+}
+module.exports.isClosedBreakdownAuthor = (req, res, next) => {
+    ClosedBreakdown.findById(req.params.id, function (err, foundBreakdown) {
+        if (err) {
+            req.flash("error", "Something went wrong while validating breakdown author")
+            return res.redirect(`/closedBreakdowns/${req.params.id}`)
+        }
+        
+        if (!foundBreakdown.author.equals(req.user._id) && !req.user.isAdmin) {
+            req.flash("error", "You do not have permission to do that")
+            return res.redirect(`/closedBreakdowns/${req.params.id}`);
         }
         next()
     })

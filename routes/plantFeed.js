@@ -2,8 +2,7 @@ const express = require("express")
 const router = express.Router()
 const PlantFeed = require("../models/plantFeed")
 
-const moment = require("moment")
-const { isLoggedIn, isProductionAuthor } = require("../middleware")
+const { isLoggedIn, isConnectionOpen } = require("../middleware")
 
 // 1. Index Route
 router.get("/plantFeed", function (req, res) {
@@ -16,11 +15,12 @@ router.get("/plantFeed", function (req, res) {
 })
 
 // 2. New Route - for rendering a new plant-feed form
-router.get("/plantFeed/new", function (req, res) {
+router.get("/plantFeed/new", isLoggedIn, function (req, res) {
     res.render("plantfeed/new", { title: "production-report" })
 })
+
 // 3. Create Route - post captured data into database
-router.post("/plantFeed", function (req, res) {
+router.post("/plantFeed", isConnectionOpen, isLoggedIn, function (req, res) {
     // console.log("Hey")
     PlantFeed.create(req.body.plantFeed, function (err, createdPlantFeed) {
         if (err) {
@@ -31,7 +31,6 @@ router.post("/plantFeed", function (req, res) {
             createdPlantFeed.author.id = req.user._id
             createdPlantFeed.save(function (err, savedCreatedPlantFeed) {
                 if (err) {
-                    console.log(err + "Error occured while linking user and C1 Entry")
                     req.flash("error", "Error occured while linking user and C1 Entry")
                     return res.redirect("back")
                 }
@@ -42,7 +41,7 @@ router.post("/plantFeed", function (req, res) {
     })
 })
 // 4. Show Route - Show specific captured plant-feed entry with unique id
-router.get("/plantFeed/:id", function (req, res) {
+router.get("/plantFeed/:id", isConnectionOpen, function (req, res) {
     PlantFeed.findById(req.params.id, function (err, foundPlantFeed) {
         if (err || !foundPlantFeed) {
             req.flash("error", "Something went wrong while fetching PlantFeed")
@@ -54,7 +53,7 @@ router.get("/plantFeed/:id", function (req, res) {
 })
 
 // 5. Edit Route - Renders a form for editting
-router.get("/plantFeed/:id/edit", function (req, res) {
+router.get("/plantFeed/:id/edit", isConnectionOpen, isLoggedIn, function (req, res) {
     PlantFeed.findById(req.params.id, function (err, editPlantFeed) {
         if (err || !editPlantFeed) {
             req.flash("error, Something went wrong while fetching PlantFeed")
@@ -64,31 +63,31 @@ router.get("/plantFeed/:id/edit", function (req, res) {
     })
 })
 // 6. Updated Route - Posts the updated info and overrides what's in the databse
-router.put("/plantFeed/:id", function (req, res) {
-    PlantFeed.findByIdAndUpdate(req.params.id, req.body.plantFeed, function (err, updatedPlantFeed) {
-        if (err || !updatedPlantFeed) {
-            console.log(err)
-            req.flash("error", "Something went wrong with the database")
-            return res.redirect("back")
-        } else {
-            // console.log(updatedProduction)
-            req.flash("success", "Successfully Updated Production Report")
-            res.redirect("/plantFeed")
-        }
-    })
-})
+router.put("/plantFeed/:id", isConnectionOpen, isLoggedIn, function (req, res) {
+	PlantFeed.findByIdAndUpdate(req.params.id, req.body.plantFeed, function (err, updatedPlantFeed) {
+		if (err || !updatedPlantFeed) {
+			console.log(err);
+			req.flash("error", "Something went wrong with the database");
+			return res.redirect("back");
+		} else {
+			// console.log(updatedProduction)
+			req.flash("success", "Successfully Updated Production Report");
+			res.redirect("/plantFeed");
+		}
+	});
+});
 // 7. Delete Route - For deleting one specific plant-feed captured
-router.delete("/plantFeed/:id", function (req, res) {
-    PlantFeed.findByIdAndRemove(req.params.id, function (err) {
-        if (err) {
-            req.flash("error", "Something went wrong while deleting")
-            return res.redirect("back")
-        } else {
-            req.flash("success", "Successfully Deleted Production Report")
-            res.redirect("/plantFeed")
-        }
-    })
-})
+router.delete("/plantFeed/:id", isConnectionOpen, isLoggedIn, function (req, res) {
+	PlantFeed.findByIdAndRemove(req.params.id, function (err) {
+		if (err) {
+			req.flash("error", "Something went wrong while deleting");
+			return res.redirect("back");
+		} else {
+			req.flash("success", "Successfully Deleted Production Report");
+			res.redirect("/plantFeed");
+		}
+	});
+});
 
 
 module.exports = router;

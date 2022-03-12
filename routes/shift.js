@@ -20,85 +20,85 @@ router.get("/shifts/new", isConnectionOpen, isLoggedIn, isAdmin, function (req, 
 });
 
 // 3. Create route - post a new shift class into the database then redirect to index
-router.post("/shifts", isLoggedIn, isAdmin, function (req, res) {
-      // Making a date
-      const startTime = new Date();
-      const timeStart = req.body.shift.start.split(":");
+router.post("/shifts", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
+	// Making a date
+	const startTime = new Date();
+	const timeStart = req.body.shift.start.split(":");
 	const hoursStart = Number(timeStart[0]);
 	const minutesStart = Number(timeStart[1]);
-      startTime.setHours(hoursStart);
-      startTime.setMinutes(minutesStart);
-      startTime.setSeconds(0);
-      startTime.setMilliseconds(0);
+	startTime.setHours(hoursStart);
+	startTime.setMinutes(minutesStart);
+	startTime.setSeconds(0);
+	startTime.setMilliseconds(0);
 
-      // End time
-      const endTime = new Date();
-      const timeEnd = req.body.shift.end.split(":");
-      const hoursEnd = Number(timeEnd[0]);
+	// End time
+	const endTime = new Date();
+	const timeEnd = req.body.shift.end.split(":");
+	const hoursEnd = Number(timeEnd[0]);
 	const minutesEnd = Number(timeEnd[1]);
-      endTime.setHours(hoursEnd);
-      endTime.setMinutes(minutesEnd);
-      endTime.setSeconds(0);
-      endTime.setMilliseconds(0);
+	endTime.setHours(hoursEnd);
+	endTime.setMinutes(minutesEnd);
+	endTime.setSeconds(0);
+	endTime.setMilliseconds(0);
 
-      const duration = Math.abs((endTime - startTime)/(1000 * 60 * 60))
-      
-      req.body.shift.duration = duration;
-      req.body.shift.authorId = req.user._id;
+	const duration = Math.abs((endTime - startTime) / (1000 * 60 * 60));
+
+	req.body.shift.duration = duration;
+	req.body.shift.authorId = req.user._id;
 	Shift.create(req.body.shift, function (err, newShift) {
 		if (!err && newShift) {
-                  req.flash("success", "Successfully created new shift");
-                  return res.redirect("/shifts");
-            }
-            req.flash("error", "Something went wrong while creating new shift class");
-            res.redirect("/shifts");
+			req.flash("success", "Successfully created new shift");
+			return res.redirect("/shifts");
+		}
+		req.flash("error", "Something went wrong while creating new shift class");
+		res.redirect("/shifts");
 	});
 });
 
 // 4. Show route - shows/get info about one specific shift class
-router.get("/shifts/:id", isLoggedIn, isAdmin, function (req, res) {
+router.get("/shifts/:id", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
 	Shift.findById(req.params.id, function (err, foundShift) {
-        if (!err && foundShift) {
-            return res.render("shifts/show", { shift: foundShift, title: "shifts" });
+		if (!err && foundShift) {
+			return res.render("shifts/show", { shift: foundShift, title: "shifts" });
 		}
-        req.flash("error", "Invalid shift class id. Shift class does not exist");
-        res.redirect("/shifts");
+		req.flash("error", "Invalid shift class id. Shift class does not exist");
+		res.redirect("/shifts");
 	});
 });
 
 // 5. Edit route - renders edit form to edit one particular shift class
-router.get("/shifts/:id/edit", isLoggedIn, isAdmin, function (req, res) {
+router.get("/shifts/:id/edit", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
 	Shift.findById(req.params.id, function (err, shiftClass) {
 		if (!err || shiftClass) {
-                 return res.render("shifts/edit", { shiftClass, title: "shifts" });
+			return res.render("shifts/edit", { shiftClass, title: "shifts" });
 		}
-        req.flash("error", "Error occured while fetching shift class");
-        return res.redirect("/shifts");
+		req.flash("error", "Error occured while fetching shift class");
+		return res.redirect("/shifts");
 	});
 });
 
 // 6. Update route - Puts edited info about one particular breakdown in the database
-router.put("/shifts/:id", isLoggedIn, isAdmin, function (req, res) {
-      console.log(req.params.id)
+router.put("/shifts/:id", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
+	console.log(req.params.id);
 	Shift.findByIdAndUpdate(req.params.id, req.body.shift, function (err, updatedShiftClass) {
 		if (!err || updatedShiftClass) {
-            req.flash("success", "Successfully updated shift class");
-            return res.redirect("/shifts/" + updatedShiftClass._id);
+			req.flash("success", "Successfully updated shift class");
+			return res.redirect("/shifts/" + updatedShiftClass._id);
 		}
-            console.log(err)
-            req.flash("error", "Error occured while updating shift class");
-            res.redirect("/shifts/" + req.params.id + "/edit");
+		console.log(err);
+		req.flash("error", "Error occured while updating shift class");
+		res.redirect("/shifts/" + req.params.id + "/edit");
 	});
 });
 
-router.delete("/shifts/:id", isLoggedIn, isAdmin, function (req, res) {
+router.delete("/shifts/:id", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
 	Shift.findByIdAndRemove(req.params.id, function (err) {
 		if (!err) {
-            req.flash("success", "Successfully deleted shift class");
-            return res.redirect("/shifts");
+			req.flash("success", "Successfully deleted shift class");
+			return res.redirect("/shifts");
 		}
-        req.flash("error", "Shift class not deleted. Something went wrong");
-        res.redirect("shifts");
+		req.flash("error", "Shift class not deleted. Something went wrong");
+		res.redirect("shifts");
 	});
 });
 

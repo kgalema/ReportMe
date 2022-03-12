@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require("../models/user");
 const ClosedBreakdown = require("../models/closedBreakdown");
 const Breakdown = require("../models/breakdown");
-const { isLoggedIn, isBreakdownAuthor } = require("../middleware");
+const { isLoggedIn, isClosedBreakdownAuthor, isConnectionOpen } = require("../middleware");
 
 // 1. Index route -list all breakdowns
 router.get("/closedBreakdowns", function (req, res) {
@@ -11,20 +11,21 @@ router.get("/closedBreakdowns", function (req, res) {
 });
 
 // 2. New route - renders a for creating new closed breakdown
-router.get("/sections/:sectionId/closedBreakdowns/new", isLoggedIn, function (req, res) {
+router.get("/sections/:sectionId/closedBreakdowns/new", isConnectionOpen, isLoggedIn, function (req, res) {
 	Breakdown.findById(req.query.q, function (err, foundBreakdown) {
-		if(err && !foundBreakdown){
-			req.flash("error", "The breakdown you are trying to close does not exist")
-			return res.redirect("/breakdowns")
+		if (err && !foundBreakdown) {
+			req.flash("error", "The breakdown you are trying to close does not exist");
+			return res.redirect("/breakdowns");
 		}
 		res.render("breakdowns/closed/new", {
-			title: "breakdowns", foundBreakdown
+			title: "breakdowns",
+			foundBreakdown,
 		});
 	});
 });
 
 // 3. Create route - post a new breakdown into the database then redirect elsewhere
-router.post("/breakdowns/:breakdownId/closedBreakdowns", isLoggedIn, function (req, res) {
+router.post("/breakdowns/:breakdownId/closedBreakdowns", isConnectionOpen, isLoggedIn, function (req, res) {
 	const time = req.body.closedBreakdown.endTime.split(":");
 	const hours = Number(time[0]);
 	const minutes = Number(time[1]);
@@ -35,7 +36,6 @@ router.post("/breakdowns/:breakdownId/closedBreakdowns", isLoggedIn, function (r
 	endTime.setSeconds(0);
 	endTime.setMilliseconds(0);
 	req.body.closedBreakdown.endTime = endTime;
-
 
 	Breakdown.findById(req.params.breakdownId, function (err, foundBreakdown) {
 		if (err || !foundBreakdown) {
@@ -81,18 +81,18 @@ router.get("/closedBreakdowns/:id", function (req, res) {
 });
 
 // 5. Edit route - renders edit form to edit one particular breakdown
-router.get("/closedBreakdowns/:id/edit", isLoggedIn, function (req, res) {
+router.get("/closedBreakdowns/:id/edit", isConnectionOpen, isLoggedIn, isClosedBreakdownAuthor, function (req, res) {
 	ClosedBreakdown.findById(req.params.id, function (err, breakdown) {
 		if (err || !breakdown) {
 			req.flash("error", "Error occured while fetching breakdown");
 			return res.redirect("back");
 		}
-		res.render("breakdowns/closed/edit", {breakdown: breakdown, title: "breakdowns"});
+		res.render("breakdowns/closed/edit", { breakdown: breakdown, title: "breakdowns" });
 	});
 });
 
 // 6. Update route - Puts edited info about one particular breakdown in the database
-router.put("/closedBreakdowns/:id", isLoggedIn, function (req, res) {
+router.put("/closedBreakdowns/:id", isConnectionOpen, isLoggedIn, isClosedBreakdownAuthor, function (req, res) {
 	const time = req.body.closedBreakdown.endTime.split(":");
 	const hours = Number(time[0]);
 	const minutes = Number(time[1]);
@@ -102,15 +102,15 @@ router.put("/closedBreakdowns/:id", isLoggedIn, function (req, res) {
 	endTime.setSeconds(0);
 	endTime.setMilliseconds(0);
 	req.body.closedBreakdown.endTime = endTime;
-	
+
 	ClosedBreakdown.findByIdAndUpdate(req.params.id, req.body.closedBreakdown, function (err, updatedBreakdown) {
 		if (err || !updatedBreakdown) {
 			req.flash("error", "Error occured while updating a breakdown");
-			return res.redirect("/closedBreakdowns/"+ req.params.id +"/edit");
+			return res.redirect("/closedBreakdowns/" + req.params.id + "/edit");
 		}
-		
-		updatedBreakdown.save(function(err, savedBr){
-			if(err || !savedBr){
+
+		updatedBreakdown.save(function (err, savedBr) {
+			if (err || !savedBr) {
 				req.flash("error", "Could not save updated breakdown");
 				return res.redirect("/breakdowns");
 			}
@@ -120,7 +120,7 @@ router.put("/closedBreakdowns/:id", isLoggedIn, function (req, res) {
 	});
 });
 
-router.delete("/closedBreakdowns/:id", function (req, res) {
+router.delete("/closedBreakdowns/:id", isConnectionOpen, isLoggedIn, isClosedBreakdownAuthor,  function (req, res) {
 	ClosedBreakdown.findByIdAndRemove(req.params.id, function (err) {
 		if (err) {
 			req.flash("error", "Breakdown not deleted. Something went wrong");

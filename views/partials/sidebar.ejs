@@ -10,55 +10,55 @@
             </div>
             <ul id="side-list">
                 <li class="side-item <% if (title === 'home') { %>selected <% } %>">
-                    <a <% if (title === 'home') { %>id='select'<% } %> href="/">Home</a>
+                    <a <% if (title === 'home') { %>id='select'<% } %> href="/"><strong>Home</strong></a>
                 </li>
                 <li class="side-item <% if (title === 'new-reports') { %>selected <% } %> ">
-                    <a <% if (title === 'new-reports') { %>id='select'<% } %> href="/newReport">New Report</a>
+                    <a <% if (title === 'new-reports') { %>id='select'<% } %> href="/newReport"><strong>New Report</strong></a>
                 </li>
                 <li class="side-item <% if (title === 'production-dash') { %>selected <% } %>">
-                    <a <% if (title === 'production-dash') { %>id='select'<% } %> href="/production">Production Dashboard</a>
+                    <a <% if (title === 'production-dash') { %>id='select'<% } %> href="/production"><strong>Production</strong></a>
                 </li>
                 <li class="side-item <% if (title === 'TARP-Red') { %>selected <% } %> ">
-                    <a <% if (title === 'TARP-Red') { %>id='select'<% } %> href="/redPanel">TARP Reds Dashboard</a>
+                    <a <% if (title === 'TARP-Red') { %>id='select'<% } %> href="/redPanel"><strong>TARP Red Panels</strong> </a>
                 </li>
                 <li class="side-item  <% if (title === 'sections') { %>selected <% } %>">
-                    <a <% if (title === 'sections') { %>id='select'<% } %> href="/sections">Sections</a>
+                    <a <% if (title === 'sections') { %>id='select'<% } %> href="/sections"><strong>Sections</strong></a>
                 </li>
                 
                 <li class="side-item  <% if (title === 'breakdowns') { %>selected <% } %>">
-                    <a <% if (title === 'breakdowns') { %>id='select'<% } %> href="/breakdowns">Breakdowns</a>
+                    <a <% if (title === 'breakdowns') { %>id='select'<% } %> href="/breakdowns"><strong>Breakdowns</strong></a>
                 </li>
                 
                 <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
                     <li class="side-item  <% if (title === 'assets') { %>selected <% } %>">
-                        <a <% if (title === 'assets') { %>id='select'<% } %> href="/tmms">Engineering Assets</a>
+                        <a <% if (title === 'assets') { %>id='select'<% } %> href="/tmms"><strong>Engineering Assets</strong></a>
                     </li>
                 <% } %>
                 <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
                     <li class="side-item  <% if (title === 'production-calendar') { %>selected <% } %>">
-                        <a <% if (title === 'production-calendar') { %>id='select'<% } %> href="/productionCalendar">Production Calendar</a>
+                        <a <% if (title === 'production-calendar') { %>id='select'<% } %> href="/productionCalendar"><strong>Production Calendar</strong></a>
                     </li>
                 <% } %>
                 <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
                     <li class="side-item  <% if (title === 'shifts') { %>selected <% } %>">
-                        <a <% if (title === 'shifts') { %>id='select'<% } %> href="/shifts">Shift Classes</a>
+                        <a <% if (title === 'shifts') { %>id='select'<% } %> href="/shifts"><strong>Shift Classes</strong></a>
                     </li>
                 <% } %>
                 <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
                     <li class="side-item  <% if (title === 'users') { %>selected <% } %>">
-                        <a <% if (title === 'users') { %>id='select'<% } %> href="/users">Users</a>
+                        <a <% if (title === 'users') { %>id='select'<% } %> href="/users"><strong>Users</strong></a>
                     </li>
                 <% } %>
                 <% if(!locals.currentUser){ %>
                     <li class="side-item  <% if (title === 'Login') { %>selected <% } %>">
-                        <a <% if (title === 'Login') { %>id='select'<% } %> href="/login">Log In</a>
+                        <a <% if (title === 'Login') { %>id='select'<% } %> href="/login"><strong>Log In</strong></a>
                     </li>
                     <li class="side-item <% if (title === 'Register') { %>selected <% } %>">
-                        <a <% if (title === 'Register') { %>id='select'<% } %> href="/users/new">Register</a>
+                        <a <% if (title === 'Register') { %>id='select'<% } %> href="/users/new"><strong>Register</strong></a>
                     </li>
                 <% } else { %>
                 <li class="side-item">
-                    <a href="/logout">Log Out</a>
+                    <a href="/logout"><strong>Log Out</strong></a> 
                 </li>
                 <% } %>
             </ul>

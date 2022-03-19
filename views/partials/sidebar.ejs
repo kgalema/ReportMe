@@ -16,17 +16,18 @@
                     <a <% if (title === 'new-reports') { %>id='select'<% } %> href="/newReport"><strong>New Report</strong></a>
                 </li>
                 <li class="side-item <% if (title === 'production-dash') { %>selected <% } %>">
-                    <a <% if (title === 'production-dash') { %>id='select'<% } %> href="/production"><strong>Production</strong></a>
+                    <a <% if (title === 'production-dash') { %>id='select'<% } %> href="/production"><strong>Mining Production</strong></a>
                 </li>
                 <li class="side-item <% if (title === 'TARP-Red') { %>selected <% } %> ">
                     <a <% if (title === 'TARP-Red') { %>id='select'<% } %> href="/redPanel"><strong>TARP Red Panels</strong> </a>
                 </li>
-                <li class="side-item  <% if (title === 'sections') { %>selected <% } %>">
-                    <a <% if (title === 'sections') { %>id='select'<% } %> href="/sections"><strong>Sections</strong></a>
-                </li>
-                
+
                 <li class="side-item  <% if (title === 'breakdowns') { %>selected <% } %>">
                     <a <% if (title === 'breakdowns') { %>id='select'<% } %> href="/breakdowns"><strong>Breakdowns</strong></a>
+                </li>
+
+                <li class="side-item  <% if (title === 'sections') { %>selected <% } %>">
+                    <a <% if (title === 'sections') { %>id='select'<% } %> href="/sections"><strong>Sections</strong></a>
                 </li>
                 
                 <% if(locals.currentUser && locals.currentUser.isAdmin){ %>

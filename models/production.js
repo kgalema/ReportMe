@@ -61,6 +61,30 @@ const productionSchema = new mongoose.Schema({
 			buckets: Number,
 		},
 	],
+	fleetHrs: {
+		bolters: [
+			{
+				bolterId: String,
+				engine: [Number],
+				drilling: [Number],
+				electrical: [Number]
+			}
+		],
+		drillRigs: [
+			{
+				rigId: String,
+				engine: [Number],
+				percusion: [Number],
+				electrical: [Number],
+			}
+		] ,
+		LHD: [
+			{
+				LHDId: String,
+				engine: [Number],
+			}
+		]
+	},
 	section: {
 		id: {
 			type: mongoose.Schema.Types.ObjectId,

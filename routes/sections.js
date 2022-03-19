@@ -64,13 +64,13 @@ router.get("/sections/:id", isConnectionOpen, function (req, res) {
 			req.flash("error", "Error occured while fetching shifts");
 			return res.redirect("/sections");
 		}
-		let redirect = "/";
+		let redirect = "";
 		Section.findById(req.params.id, function (err, foundSection) {
 			if (err || !foundSection) {
 				req.flash("error", "Invalid Section ID");
 				return res.redirect("back");
-			} else if (req.session.returnTo) {
-				switch (req.session.returnTo) {
+			} else if (req.session.goTo) {
+				switch (req.session.goTo) {
 					case "/sections/sectionId/production/new":
 						redirect = "/production/new";
 						break;
@@ -78,11 +78,9 @@ router.get("/sections/:id", isConnectionOpen, function (req, res) {
 						redirect = "/newReds/new";
 						break;
 				}
-				delete req.session.returnTo;
+				delete req.session.goTo;
 				return res.redirect("/sections/" + foundSection._id + redirect);
 			} else {
-				console.log(foundSection.unusableTime);
-				// console.log(shifts)
 				res.render("sections/show", { shifts, section: foundSection, title: "sections" });
 			}
 		});

@@ -79,8 +79,6 @@ router.get("/sections/:id/production/new", isConnectionOpen, isLoggedIn, isSecti
 					return res.redirect("/production")
 				}
 				const foundDates1 = foundDates.map(e => e.date)
-				console.log(foundDates)
-				console.log(foundDates1)
 				res.render("production/new", { foundDates1, section: foundSection, drillRigs, LHDs, bolters, title: "production-dash" });
 			});
 		});
@@ -102,8 +100,10 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 		}
 		const uniqueCode = section.name + dateNow + req.body.production.general[0].shift;
 		req.body.production.uniqueCode = uniqueCode;
+		
 		Production.create(req.body.production, function (err, foundProduction) {
 			if (err || !foundProduction) {
+				console.log(err);
 				req.flash("error", "Looks like you are trying to create duplicate report");
 				return res.redirect("/production");
 			}
@@ -115,10 +115,10 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 			foundProduction.author = req.user._id;
 			foundProduction.save(function (err, savedProduction) {
 				if (err || !savedProduction) {
-					req.flash("error", "Error while saving report");
+					req.flash("error", "Error while saving production report");
 					return res.redirect("back");
 				}
-				req.flash("success", "Successfully Added Production Report");
+				req.flash("success", "Successfully added production report");
 				res.redirect("/production");
 			});
 		});
@@ -140,6 +140,7 @@ router.get("/sections/:id/production/:production_id", isConnectionOpen, function
 				req.flash("error", "Looks like the report does not have author");
 				return res.redirect("back");
 			}
+			console.log(foundProduction)
 			res.render("production/showProduction", { reported: foundProduction, reportedUser: user, title: "production-dash" });
 		});
 	});

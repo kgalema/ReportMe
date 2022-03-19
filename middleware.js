@@ -7,8 +7,6 @@ const User = require("./models/user")
 const Breakdown = require("./models/breakdown")
 const ClosedBreakdown = require("./models/closedBreakdown")
 
-const exported = require("./app");
-// console.log(exported.app)
 
 const mongoose = require("mongoose");
 
@@ -17,7 +15,7 @@ mongoose.connection.on("connected", () => {
 	console.log("On connected emmited inside middlware*******************************************");
 });
 
-let isDBconnected;
+let isDBconnected = false;
 mongoose.connection.on('open', () => {
     console.log("DB live");
     isDBconnected = true;
@@ -156,7 +154,8 @@ module.exports.isAdmin = (req, res, next) => {
 module.exports.isSectionSelected = (req, res, next) => {
     Section.findById(req.params.id, function (err, foundSection) {
         if (err || !foundSection ) {
-            req.session.returnTo = req.originalUrl
+            // req.session.returnTo = req.originalUrl
+            req.session.goTo = req.originalUrl
             req.flash("warning", "Please select a section to proceed")
             return res.redirect("/sections")
         }

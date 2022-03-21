@@ -8,25 +8,11 @@
                     <h2> <%= section.name %>'s Production Report </h2>
                     <div style="display: none;" class="fromDB">
                         <p id="productionShifts">
-                            <%= JSON.stringify(foundDates1) %>
+                            <%= JSON.stringify(locals.foundDates1) %>
                         </p>
                          <p id="target">
                             <% let target = section.forecast/section.plannedAdvance %>
                          </p>   
-                         <p>
-                             <p>
-                                <% const dateNow = new Date().toDateString() %>
-                             </p>
-                             <p>
-                                <% const dateFound = new Date(foundDates1[2]).toDateString()%>
-                             </p>
-                             <p>
-                                <%= Boolean(dateNow === dateFound )%>
-                             </p>
-                             <p>
-                                <%= typeof foundDates1 %>
-                             </p>
-                         </p>
                     </div>
                     
                     <p id="call">
@@ -118,7 +104,7 @@
                                     </td>
                                     <td class="form-row">
                                         <label style="display: block;" for="bolter">Bolter/RDO</label>
-                                            <select class="used-bolter" oninput="getAllProductionTMMs(event)" name="production[support][1][machine]" id="bolter" required>
+                                            <select class="used-bolter" oninput="getAllProductionTMMs(this)" name="production[support][1][machine]" id="bolter" required>
                                                 <option selected disabled></option>
                                                 <% bolters.forEach(e => { %>
                                                     <option value="<%= e.name %>"><%= e.name %></option>
@@ -153,7 +139,7 @@
 
                                     <td class="form-row">
                                         <label style="display: block;" for="drillRig">Drill Rig</label>
-                                        <select name="production[drill][1][drillRig]" id="drillRig" class="used-drill-rig" oninput="getAllProductionTMMs(event)" required>
+                                        <select name="production[drill][1][drillRig]" id="drillRig" class="used-drill-rig" oninput="getAllProductionTMMs(this)" required>
                                             <option></option>
                                             <% drillRigs.forEach(e => { %>
                                                 <option value="<%= e.name %>"><%= e.name %></option>
@@ -226,7 +212,7 @@
 
                                     <td class="form-row">
                                         <label style="display: block;" for="LHDnumber">LHD</label>
-                                        <select name="production[LHD][1][LHDnumber]" id="LHDnumber" class="used-LHD" oninput="getAllProductionTMMs(event)" required>
+                                        <select name="production[LHD][1][LHDnumber]" id="LHDnumber" class="used-LHD" oninput="getAllProductionTMMs(this)" required>
                                             <option selected disabled></option>
                                             <% LHDs.forEach(e => { %>
                                                 <option value="<%= e.name %>"><%= e.name %></option>

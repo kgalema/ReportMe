@@ -140,7 +140,11 @@ router.get("/sections/:id/production/:production_id", isConnectionOpen, function
 				req.flash("error", "Looks like the report does not have author");
 				return res.redirect("back");
 			}
-			console.log(foundProduction)
+			console.log("foundProduction console1");
+			// These variables are necessary for triggering usage virtuals in the schema. They are all undefined
+			const LHDUsage = foundProduction.LHDUsage;
+			const bolterUsage = foundProduction.bolterUsage;
+			const drillRigUsage = foundProduction.drillRigUsage;
 			res.render("production/showProduction", { reported: foundProduction, reportedUser: user, title: "production-dash" });
 		});
 	});
@@ -169,8 +173,15 @@ router.get("/sections/:id/production/:production_id/edit", isConnectionOpen, isL
 			const drillRigs = sorted.filter((dR) => dR.category === "drillRig");
 			const LHDs = sorted.filter((LHD) => LHD.category === "LHD");
 			const bolters = sorted.filter((LHD) => LHD.category === "roofBolter");
-
-			res.render("production/edit", { production: foundProduction, drillRigs, LHDs, bolters,title: "production-dash" });
+			ProductionCalendar.find({}, {date: 1, _id: 0}, function(err, foundDates){
+				if (err || !foundDates) {
+					req.flash("error", "Error while retrieving production days");
+					return res.redirect("/production");
+				}
+				
+				const foundDates1 = foundDates.map((e) => e.date);
+				res.render("production/edit", { foundDates1, production: foundProduction, drillRigs, LHDs, bolters,title: "production-dash" });
+			})
 		})
 	});
 });
@@ -178,7 +189,7 @@ router.get("/sections/:id/production/:production_id/edit", isConnectionOpen, isL
 router.put("/sections/:id/production/:production_id", isConnectionOpen, isLoggedIn, isProductionAuthor, function (req, res) {
 	Production.findByIdAndUpdate(req.params.production_id, req.body.production, function (err, updatedProduction) {
 		if (err || !updatedProduction) {
-			req.flash("error", "Something went wrong with the database");
+			req.flash("error", "Something went wrong while updating production report");
 			return res.redirect("back");
 		}
 		req.flash("success", "Successfully Updated Production Report");

@@ -214,25 +214,131 @@
                     </tbody>
                 </table>
                 
-                <% if (reported.general[0].comments ) { %>
+                <% if (reported.general[0].comments) { %>
                     <table id="general-group" class="prod-group-item">
                         <thead>
                             <tr>
                                 <th>Comments</th>
                             </tr>
                             <tr>
-                                <th> <%= reported.general[0].shift %> shift</th>
+                                <th> <%= reported.general[0].shift[0].toUpperCase() + reported.general[0].shift.slice(1) %> Shift</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>
-                                    <p>
-                                        <%= reported.general[0].comments %>
-                                    </p>
+                                    <%= reported.general[0].comments %>
                                 </td>
                             </tr>
                         </tbody>
+                    </table>
+                <% } %>
+
+                <% if (reported.fleetHrs.drillRigs.length > 0) { %>
+                    <table id="general-group" class="prod-group-item">
+                        <tr>
+                            <th colspan="4">Drill Rigs Usage</th>
+                        </tr>
+                        <% locals.reported.fleetHrs.drillRigs.forEach((e, i) => { %>
+                            <tr>
+                                <th colspan="4"><%= e.rigId %></th>
+                            </tr>
+                            <% if (i === 0) { %>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Start (Hrs)</th>
+                                    <th>End (Hrs)</th>
+                                    <th>Usage (Hrs)</th>
+                                </tr>
+                            <% } %>
+                            
+                            <tr>
+                                <th>Engine</th>
+                                <td><%= e.engine[0] %></td>
+                                <td><%= e.engine[1] %></td>
+                                <td><%= e.engineUsage %></td>
+                            </tr>
+                            <tr>
+                                <th>Percussion</th>
+                                <td><%= e.percussion[0] %></td>
+                                <td><%= e.percussion[1] %></td>
+                                <td><%= e.percussionUsage %></td>
+                            </tr>
+                            <tr>
+                                <th>Electrical</th>
+                                <td><%= e.electrical[0] %></td>
+                                <td><%= e.electrical[1] %></td>
+                                <td><%= e.electricalUsage %></td>
+                            </tr>
+                        <% }) %>
+                    </table>
+                <% } %>
+
+                <% if (reported.fleetHrs.bolters.length > 0) { %>
+                    <table id="general-group" class="prod-group-item">
+                        <tr>
+                            <th colspan="4">Bolters Usage</th>
+                        </tr>
+                        <% locals.reported.fleetHrs.bolters.forEach((e, i) => { %>
+                            <tr>
+                                <th colspan="4"><%= e.bolterId %></th>
+                            </tr>
+                            <% if (i === 0) { %>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Start (Hrs)</th>
+                                    <th>End (Hrs)</th>
+                                    <th>Usage (Hrs)</th>
+                                </tr>
+                            <% } %>
+                            
+                            <tr>
+                                <th>Engine</th>
+                                <td><%= e.engine[0] %></td>
+                                <td><%= e.engine[1] %></td>
+                                <td><%= e.engineUsage %></td>
+                            </tr>
+                            <tr>
+                                <th>Drilling</th>
+                                <td><%= e.drilling[0] %></td>
+                                <td><%= e.drilling[1] %></td>
+                                <td><%= e.drillingUsage %></td>
+                            </tr>
+                            <tr>
+                                <th>Electrical</th>
+                                <td><%= e.electrical[0] %></td>
+                                <td><%= e.electrical[1] %></td>
+                                <td><%= e.electricalUsage %></td>
+                            </tr>
+                        <% }) %>
+                    </table>
+                <% } %>
+
+                <% if (reported.fleetHrs.LHD.length > 0) { %>
+                    <table id="general-group" class="prod-group-item">
+                        <tr>
+                            <th colspan="4">LHDs Usage</th>
+                        </tr>
+                        <% locals.reported.fleetHrs.LHD.forEach((e, i) => { %>
+                            <tr>
+                                <th colspan="4"><%= e.LHDId %></th>
+                            </tr>
+                            <% if (i === 0) { %>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Start (Hrs)</th>
+                                    <th>End (Hrs)</th>
+                                    <th>Usage (Hrs)</th>
+                                </tr>
+                            <% } %>
+                            
+                            <tr>
+                                <th>Engine</th>
+                                <td><%= e.engine[0] %></td>
+                                <td><%= e.engine[1] %></td>
+                                <td><%= e.usage %></td>
+                            </tr>
+                        <% }) %>
                     </table>
                 <% } %>
 

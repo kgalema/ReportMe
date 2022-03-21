@@ -74,7 +74,7 @@ const productionSchema = new mongoose.Schema({
 			{
 				rigId: String,
 				engine: [Number],
-				percusion: [Number],
+				percussion: [Number],
 				electrical: [Number],
 			}
 		] ,
@@ -104,9 +104,6 @@ const productionSchema = new mongoose.Schema({
 }, opts);
 
 productionSchema.virtual("blasted").get(function () {
-	// const startTimeHours = this.startTime.getHours().toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false });
-	// const startTimeMins = this.startTime.getMinutes().toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false });
-	const blastedPanels = this.blast;
 	const achievesM = this.blast.map(pl => pl.length).reduce((a, b) => a + b, 0)
 	const achievesSQM = (achievesM * this.section.plannedAdvance).toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false });
 	return achievesSQM;
@@ -119,6 +116,41 @@ productionSchema.virtual("forecast").get(function () {
 productionSchema.virtual("budget").get(function () {
 	const budget = this.section.budget;
 	return budget;
+});
+
+productionSchema.virtual("LHDUsage").get(function () {
+	const lhdHrs = this.fleetHrs.LHD;
+	lhdHrs.forEach((e, i) => {
+		const usage = e.engine[1] - e.engine[0];
+		lhdHrs[i].usage = usage;
+	})
+	return;
+});
+
+productionSchema.virtual("drillRigUsage").get(function () {
+	const drillRigsHrs = this.fleetHrs.drillRigs;
+	drillRigsHrs.forEach((e, i) => {
+		const engineUsage = e.engine[1] - e.engine[0];
+		const percussionUsage = e.percussion[1] - e.percussion[0];
+		const electricalUsage = e.electrical[1] - e.electrical[0];
+		drillRigsHrs[i].engineUsage = engineUsage;
+		drillRigsHrs[i].percussionUsage = percussionUsage;
+		drillRigsHrs[i].electricalUsage = electricalUsage;
+	})
+	return;
+});
+
+productionSchema.virtual("bolterUsage").get(function () {
+	const bolterHrs = this.fleetHrs.bolters;
+	bolterHrs.forEach((e, i) => {
+		const engineUsage = e.engine[1] - e.engine[0];
+		const drillingUsage = e.drilling[1] - e.drilling[0];
+		const electricalUsage = e.electrical[1] - e.electrical[0];
+		bolterHrs[i].engineUsage = engineUsage;
+		bolterHrs[i].drillingUsage = drillingUsage;
+		bolterHrs[i].electricalUsage = electricalUsage;
+	})
+	return;
 });
 
 

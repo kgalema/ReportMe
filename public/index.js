@@ -25,7 +25,15 @@ for (let i = 0; i < coll.length; i++) {
 }
 
 function out(e) {
-    e.parentNode.removeChild(e);
+    if(e.querySelector("select")){
+        const element = e.querySelector("select");
+        const elementId = element.id;
+        const firstSelect = document.getElementById(elementId);
+        e.parentNode.removeChild(e);
+        firstSelect.oninput();
+    } else {
+        e.parentNode.removeChild(e);
+    }
 };
 
 function addAnotherField(e) {
@@ -122,7 +130,7 @@ function addAnotherSupport(e) {
                     </td>
 
                     <td class="form-row">
-                        <select name="production[support][${num}][machine]" id="bolter" class="used-bolter" oninput="getAllProductionTMMs(event)">
+                        <select name="production[support][${num}][machine]" id="bolter" class="used-bolter" oninput="getAllProductionTMMs(this)">
                         ${stringOpts}
                         </select>
                     </td>
@@ -166,7 +174,7 @@ function addAnotherDrilled(e) {
                     </td>
 
                     <td class="form-row">
-                        <select name="production[drill][${num}][drillRig]" id="drillRig" class="used-drill-rig" oninput="getAllProductionTMMs(event)"  required>
+                        <select name="production[drill][${num}][drillRig]" id="drillRig" class="used-drill-rig" oninput="getAllProductionTMMs(this)"  required>
                             ${stringOpts}
                         </select>
                     </td>
@@ -258,7 +266,7 @@ function addAnotherLHD(e) {
                     </td>
 
                     <td class="form-row">
-                        <select name="production[LHD][${num}][LHDnumber]" id="LHDnumber" class="used-LHD" oninput="getAllProductionTMMs(event)" required>
+                        <select name="production[LHD][${num}][LHDnumber]" id="LHDnumber" class="used-LHD" oninput="getAllProductionTMMs(this)" required>
                             ${stringOpts}
                         </select>
                     </td>
@@ -279,7 +287,7 @@ function addAnotherLHD(e) {
 }
 
 // Get all machines and then paste them the fleet perfomace schedule
-function getAllProductionTMMs (e){
+function getAllProductionTMMs (yona){
     const contentDiv = document.getElementById("fleet-performance-content")
 
     // Used bolters - id = bolter
@@ -322,20 +330,19 @@ function getAllProductionTMMs (e){
 	}
 
     
-    if(usedBolters.length > 0){
-        getTable4Bolters(contentDiv, usedBolters)
-    }
+    if (usedBolters.length > 0 && yona.id === "bolter") {
+		getTable4Bolters(contentDiv, usedBolters);
+	}
 
     
-    if(usedDrillRigs.length > 0){
-        getTable4DrillRigs(contentDiv, usedDrillRigs)
-    }
+    if (usedDrillRigs.length > 0 && yona.id === "drillRig") {
+		getTable4DrillRigs(contentDiv, usedDrillRigs);
+	}
 
 
-    if(usedLHDs.length > 0){
-        getTable4LHDs(contentDiv, usedLHDs)
-    }
-    // e.style.maxHeight = e.scrollHeight + "px";
+    if (usedLHDs.length > 0 && yona.id === "LHDnumber") {
+		getTable4LHDs(contentDiv, usedLHDs);
+	}
 }
 
 function getTable4LHDs(div, arr){

@@ -6,6 +6,16 @@
                 <form class="new-production" id="new-production" action="/sections/<%= production.section.id %>/production/<%= production._id %>?_method=PUT" method="post">
 
                     <h2>Edit <%= production.section.name %>'s Production Report</h2>
+
+                    <div style="display: none;" class="fromDB">
+                        <p id="productionShifts">
+                            <%= JSON.stringify(locals.foundDates1) %>
+                        </p>
+                         <p id="target">
+                            <% let target = production.section.forecast/production.section.plannedAdvance %>
+                         </p>   
+                    </div>
+
                     <p id="call">
                         <%= production.section.forecast/production.section.plannedAdvance %>
                     </p>
@@ -28,7 +38,7 @@
 
                     <% if (production.general[0].shift === "morning") { %>
 
-                    <button id="blast-report-heading" type="button" class="collapsible">Blasted Panels Report</button>
+                    <button id="blast-report-heading" type="button" class="collapsible">Blasted Panels Report (Target = <span id="target-number"><%= target %></span>m)</button>
                     <div class="content" id="blast-report">
                         <table class="form-row">
                             <tbody>
@@ -118,7 +128,7 @@
                                             <% if(i === 0){ %>
                                                 <label style="display: block;" for="bolter">Bolter/RDO</label>
                                             <% } %>
-                                            <select id="bolter" name="production[support][<%= numSupport %>][machine]" required>
+                                            <select id="bolter" class="used-bolter" oninput="getAllProductionTMMs(event)" name="production[support][<%= numSupport %>][machine]" required>
                                                 <option selected value="<%= s.machine %>"><%= s.machine %></option>
                                                 <% bolters.forEach(e => { %>
                                                     <% if(e.name !== s.machine){ %>
@@ -167,7 +177,7 @@
                                             <% if(i === 0){ %>
                                                 <label style="display: block;" for="drillRig">Drill Rig</label>
                                             <% } %>
-                                            <select name="production[drill][<%= numDrill %>][drillRig]" id="drillRig" required>
+                                            <select name="production[drill][<%= numDrill %>][drillRig]" id="drillRig" class="used-drill-rig" oninput="getAllProductionTMMs(event)" required>
                                                 <option selected value="<%= d.drillRig %>"><%= d.drillRig %></option>
                                                 <% drillRigs.forEach(e => { %>
                                                     <% if(e.name !== d.drillRig){ %>
@@ -272,7 +282,7 @@
                                             <% if(i === 0){ %>
                                                 <label style="display: block;" for="LHDnumber">LHD</label>
                                             <% } %>
-                                            <select id="LHDnumber" name="production[LHD][<%= numLHD %>][LHDnumber]" required>
+                                            <select id="LHDnumber" name="production[LHD][<%= numLHD %>][LHDnumber]" class="used-LHD" oninput="getAllProductionTMMs()" required>
                                                 <option selected value="<%= lhd.LHDnumber %>"><%= lhd.LHDnumber %></option>
                                                 <% LHDs.forEach(e => { %>
                                                     <% if(e.name !== lhd.LHDnumber){ %>
@@ -302,6 +312,129 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <button type="button" class="collapsible" id="fleet-performance">Fleet Performance (Hour meters readings)</button>
+                    <div class="content" id="fleet-performance-content">
+                        <table class="form-row" id="bolters-performance">
+                            <% locals.production.fleetHrs.bolters.forEach((e, i) => { %>
+                                <tr class="form-row">
+                                    <td class="form-row">
+                                        <strong>
+                                            <%= e.bolterId %>
+                                        </strong>
+                                    </td>
+                                    <td class="form-row">
+                                        <input type="text" name="production[fleetHrs][bolters][<%= i %>][bolterId]" value=<%= e.bolterId %> required readonly hidden >
+                                    </td>
+                                </tr>
+                                <tr class="form-row">
+                                    <td class="form-row">
+                                        <label style="display:block;" for=""><small>Start</small></label>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][bolters][<%= i %>][engine]" value="<%= e.engine[0] %>" placeholder="engine" required>
+                                    </td>
+                                    <td class="form-row">
+                                        <label style="display:block;" for=""><small>End</small></label>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][bolters][<%= i %>][engine]" value="<%= e.engine[1] %>" placeholder="engine" required>
+                                    </td>
+                                </tr>
+                                <tr class="form-row">
+                                    <td class="form-row">
+                                        <label style="display:block;" for=""><small>Start</small></label>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][bolters][<%= i %>][drilling]" value="<%= e.drilling[0] %>" placeholder="drilling" required>
+                                    </td>
+                                    <td class="form-row">
+                                        <label style="display:block;" for=""><small>End</small></label>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][bolters][<%= i %>][drilling]" value="<%= e.drilling[1] %>" placeholder="drilling" required>
+                                    </td>
+                                </tr>
+                                <tr class="form-row">
+                                    <td class="form-row">
+                                        <label style="display:block;" for=""><small>Start</small></label>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][bolters][<%= i %>][electrical]" value="<%= e.electrical[0] %>" placeholder="electrical" required>
+                                    </td>
+                                    <td class="form-row">
+                                        <label style="display:block;" for=""><small>End</small></label>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][bolters][<%= i %>][electrical]" value="<%= e.electrical[1] %>" placeholder="electrical" required>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </table>
+
+                        <hr style="width: 100%;">
+
+                        <table class="form-row" id="rig-performance">
+                            <% locals.production.fleetHrs.drillRigs.forEach((e, i) => { %>
+                                <tr class="form-row">
+                                    <td class="form-row">
+                                        <strong>
+                                            <%= e.rigId %>
+                                        </strong>
+                                    </td>
+                                    <td class="form-row">
+                                        <input type="text" name="production[fleetHrs][drillRigs][<%= i %>][rigId]" value=<%= e.rigId %> required readonly hidden >
+                                    </td>
+                                </tr>
+                                <tr class="form-row">
+                                    <td class="form-row">
+                                        <label style="display:block;" for=""><small>Start</small></label>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][drillRigs][<%= i %>][engine]" value="<%= e.engine[0] %>" placeholder="engine" required>
+                                    </td>
+                                    <td class="form-row">
+                                        <label style="display:block;" for=""><small>End</small></label>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][drillRigs][<%= i %>][engine]" value="<%= e.engine[1] %>" placeholder="engine" required>
+                                    </td>
+                                </tr>
+                                <tr class="form-row">
+                                    <td class="form-row">
+                                        <label style="display:block;" for=""><small>Start</small></label>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][drillRigs][<%= i %>][percussion]" value="<%= e.percussion[0] %>" placeholder="drilling" required>
+                                    </td>
+                                    <td class="form-row">
+                                        <label style="display:block;" for=""><small>End</small></label>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][drillRigs][<%= i %>][percussion]" value="<%= e.percussion[1] %>" placeholder="drilling" required>
+                                    </td>
+                                </tr>
+                                <tr class="form-row">
+                                    <td class="form-row">
+                                        <label style="display:block;" for=""><small>Start</small></label>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][drillRigs][<%= i %>][electrical]" value="<%= e.electrical[0] %>" placeholder="electrical" required>
+                                    </td>
+                                    <td class="form-row">
+                                        <label style="display:block;" for=""><small>End</small></label>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][drillRigs][<%= i %>][electrical]" value="<%= e.electrical[1] %>" placeholder="electrical" required>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </table>
+
+                        <hr style="width: 100%;">
+
+                        <table class="form-row" id="LHD-performance">
+                            <% locals.production.fleetHrs.LHD.forEach((e, i) => { %>
+                                <tr class="form-row">
+                                    <td class="form-row">
+                                        <strong>
+                                            <%= e.LHDId %>
+                                        </strong>
+                                    </td>
+                                    <td class="form-row">
+                                        <input type="text" name="production[fleetHrs][LHD][<%= i %>][LHDId]" value=<%= e.LHDId %> required readonly hidden >
+                                    </td>
+                                </tr>
+                                <tr class="form-row">
+                                    <td class="form-row">
+                                        <label style="display:block;" for=""><small>Start</small></label>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][LHD][<%= i %>][engine]" value="<%= e.engine[0] %>" placeholder="engine" required>
+                                    </td>
+                                    <td class="form-row">
+                                        <label style="display:block;" for=""><small>End</small></label>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][LHD][<%= i %>][engine]" value="<%= e.engine[1] %>" placeholder="engine" required>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </table>
+                    </div>
+
                     <button type="button" class="collapsible" id="comments">Comments</button>
                     <div class="content">
                         <br>

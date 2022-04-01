@@ -10,9 +10,12 @@ const opts = {
 };
 
 const tmmSchema = new mongoose.Schema({
+	parentCategory: {
+		type: String,
+	},
 	category: {
 		type: String,
-		required: [true, "Category of TMM cannot be blank"],
+		required: [true, "Category of asset cannot be blank"],
 	},
 	name: {
 		type: String,

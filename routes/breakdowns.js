@@ -13,23 +13,22 @@ const { isLoggedIn, isBreakdownAuthor, isConnectionOpen } = require("../middlewa
 router.get("/breakdowns", isConnectionOpen, function (req, res) {
 	Breakdown.find({}, function (err, allBreakdowns) {
 		if (err || !allBreakdowns) {
-			req.flash("error", "Error occured while fetching breakdowns")
-			return res.redirect("/")
+			req.flash("error", "Error occured while fetching breakdowns");
+			return res.redirect("/");
 		}
-		closedBreakdown.find({}, function(err, closedBreakdowns){
-			if(err || !closedBreakdowns){
+		closedBreakdown.find({}, function (err, closedBreakdowns) {
+			if (err || !closedBreakdowns) {
 				req.flash("error", "Error occured while fetching closed breakdowns");
-        		return res.redirect("/");
+				return res.redirect("/");
 			}
-			Shift.find({}, {name: 1, start: 1, end: 1, _id: 0, overlap: 1}, function(err, foundShifts){
-				if(err || !foundShifts){
+			Shift.find({}, { name: 1, start: 1, end: 1, _id: 0, overlap: 1 }, function (err, foundShifts) {
+				if (err || !foundShifts) {
 					req.flash("error", "Error occured while fetching shift information");
 					return res.redirect("/");
 				}
-				console.log(foundShifts)
 				res.render("breakdowns/index", { allBreakdowns, closedBreakdowns, foundShifts, title: "breakdowns" });
-			})
-		})
+			});
+		});
 	})
 })
 

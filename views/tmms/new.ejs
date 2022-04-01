@@ -7,11 +7,11 @@
             <div class="flex-form">
                 <div class="flex-row">
                     <label for="tmm-cat">Category</label>
-                    <select name="TMM[category]" id="tmm-cat" required>
-                        <option value="" selected disabled>Select TMM Cat</option>
-                        <option value="roofBolter">Roof Bolter</option>
-                        <option value="drillRig">Drill Rig</option>
-                        <option value="LHD">LHD</option>
+                    <select name="engAsset[category]" id="tmm-cat" required>
+                        <option value="" selected disabled>Select Cat</option>
+                        <option value="bolters">Roof Bolter</option>
+                        <option value="drillRigs">Drill Rig</option>
+                        <option value="LHDs">LHD</option>
                         <option value="UV">UV</option>
                         <option value="LDV">LDV</option>
                         <option value="electrical">Electrical</option>
@@ -22,7 +22,7 @@
                 </div>
                 <div class="flex-row">
                     <label for="asset_id">Name/ID</label>
-                    <input type="text" id="asset_id" name="TMM[name]" onkeyup="validatePanelName(event)" size="7" required>
+                    <input type="text" id="asset_id" name="engAsset[name]" onkeyup="validatePanelName(event)" size="7" required>
                 </div>
                 <div class="flex-row">
                     <input type="submit" value="Submit">

@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const TMM = require("../models/tmms")
 const ClosedBreakdown = require("../models/closedBreakdown")
+const Shift = require("../models/shift")
+const Production = require("../models/production")
 const { isLoggedIn, isAdmin, isConnectionOpen } = require("../middleware");
 
 //================
@@ -25,14 +27,15 @@ router.get("/tmms", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
 			return collator.compare(a.name, b.name);
 		});
 
-		const bolters = sorted.filter((b) => b.category === "roofBolter");
-		const drillRigs = sorted.filter((dR) => dR.category === "drillRig");
-		const LHDs = sorted.filter((LHD) => LHD.category === "LHD");
+		const bolters = sorted.filter((b) => b.category === "bolters");
+		const drillRigs = sorted.filter((dR) => dR.category === "drillRigs");
+		const LHDs = sorted.filter((LHD) => LHD.category === "LHDs");
 		const UVs = sorted.filter((UV) => UV.category === "UV");
 		const LDVs = sorted.filter((LDV) => LDV.category === "LDV");
 		const ug_belts = sorted.filter((belts) => belts.category === "ug_belts");
 		const electrical = sorted.filter((elect) => elect.category === "electrical");
 		const mechanical = sorted.filter((mech) => mech.category === "mechanical");
+		console.log(allTMMs.length)
 		const tmm_length = bolters.length + drillRigs.length + LHDs.length + LDVs.length + UVs.length;
 		res.render("tmms/index", {
 			bolters,
@@ -44,7 +47,7 @@ router.get("/tmms", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
 			electrical,
 			mechanical,
 			tmm_length,
-			tmms: allTMMs,
+			tmmsLength: allTMMs.length,
 			title: "assets",
 		});
 	});
@@ -57,7 +60,12 @@ router.get("/tmms/new", isLoggedIn, isAdmin, function (req, res) {
 
 // 3. Create route - post a new TMM into the database then redirect elsewhere
 router.post("/tmms", isLoggedIn, isAdmin, function (req, res) {
-    TMM.create(req.body.TMM, function (err, newTMM) {
+	const category = req.body.engAsset.category;
+	if (category === "bolters" || category === "drillRigs" || category === "LHDs") {
+		req.body.engAsset.parentCategory = "TMM";
+	}
+
+    TMM.create(req.body.engAsset, function (err, newTMM) {
         if (err || !newTMM) {
             console.log(err)
             req.flash("error", "Something went wrong while creating new TMM");
@@ -73,6 +81,8 @@ router.post("/tmms", isLoggedIn, isAdmin, function (req, res) {
         res.redirect("/tmms");
         });
     });
+	// console.log(req.body.engAsset);
+	// res.json(req.body.engAsset);
 });
 
 
@@ -88,10 +98,29 @@ router.get("/tmm/:id", isConnectionOpen, isLoggedIn, isAdmin, function (req, res
 				req.flash("error", "Error occure while fetching breakdowns for the asset");
 				return res.redirect("/tmms");
 			}
-			const MORNING = foundBreakdowns.filter((e) => e.breakdown.shift === "morning");
-			const AFTERNOON = foundBreakdowns.filter((e) => e.breakdown.shift === "afternoon");
-			const NIGHT = foundBreakdowns.filter((e) => e.breakdown.shift === "night");
-			res.render("tmms/show", { tmm: foundTMM, MORNING, AFTERNOON, NIGHT, foundBreakdowns, title: "assets" });
+			Shift.find({}, function(err, foundShifts){
+				if(err || !foundShifts){
+					req.flash("error", "Error occured while fetching shifts")
+					return res.redirect("/tmms")
+				}
+
+				const searchObj = { 
+					$or: [
+						{ "fleetHrs.bolters.name": foundTMM.name },
+						{ "fleetHrs.drillRigs.name": foundTMM.name },
+						{ "fleetHrs.LHDs.name": foundTMM.name }
+					] 
+				};
+
+				// Create common catergory for all TMMS, and Id should be TMMid
+				Production.find(searchObj, { fleetHrs: 1, created: 1, "general.shift": 1 }, function (err, foundFleetUtils) {
+					if (err || !foundFleetUtils) {
+						req.flash("error", "Error occured while calculating utilisation for "+ foundTMM.name)
+						return res.redirect("/tmms");
+					}
+					res.render("tmms/show", { foundFleetUtils, foundShifts, tmm: foundTMM, foundBreakdowns, title: "assets" });
+				});
+			})
 		});
 	});
 });
@@ -109,7 +138,12 @@ router.get("/tmm/:id/edit", isConnectionOpen, isLoggedIn, isAdmin, function (req
 
 // 6. Update route - Puts edited info about one particular TMM in the database
 router.put("/tmm/:id", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
-	TMM.findByIdAndUpdate(req.params.id, req.body.TMM, function (err, updatedTMM) {
+	const category = req.body.engAsset.category;
+	if (category === "bolters" || category === "drillRigs" || category === "LHDs") {
+		req.body.engAsset.parentCategory = "TMM";
+	}
+	console.log(req.body.engAsset)
+	TMM.findByIdAndUpdate(req.params.id, req.body.engAsset, function (err, updatedTMM) {
 		if (err || !updatedTMM) {
 			req.flash("error", "Could not update selected TMM");
 			return res.redirect("/tmms");

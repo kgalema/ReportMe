@@ -6,12 +6,22 @@
             <p id="foundBreakdowns" style="display: none;">
                 <%= JSON.stringify(foundBreakdowns) %>
             </p>
+            <p id="foundShifts" style="display: none;">
+                <%= JSON.stringify(foundShifts) %>
+            </p>
+            <p id="foundFleetUtils" style="display: none;">
+                <%= JSON.stringify(foundFleetUtils) %>
+            </p>
+            <p id="foundTMM" style="display: none;">
+                <%= JSON.stringify(tmm) %>
+            </p>
+
             <h2><%= locals.tmm.name %></h2>
             <div>
-                <label for="">From:</label>
-                <input type="date" name="" id="startdate" onchange="drawEffGraph()" oninput="filterBreakdowns()">
-                <label for="">To:</label>
-                <input type="date" name="" id="enddate" oninput="filterBreakdowns()">
+                <!-- <label for="">From:</label> -->
+                <!-- <input type="date" name="" id="startdate" onchange="drawEffGraph()" oninput="filterBreakdowns()"> -->
+                <!-- <label for="">To:</label> -->
+                <input type="date" name="" id="enddate" onchange="drawEffGraph()" oninput="filterBreakdowns()">
             </div>
             <br>
             <table>
@@ -68,7 +78,7 @@
                 </tbody>
             </table>
             <div id="canvasDiv" style="margin-top: 20px;">
-                <canvas id="effGraph" width="393.219px">
+                <canvas id="effGraph" width="500px" height="281px">
 
                 </canvas>
             </div>

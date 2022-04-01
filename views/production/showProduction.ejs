@@ -241,7 +241,7 @@
                         </tr>
                         <% locals.reported.fleetHrs.drillRigs.forEach((e, i) => { %>
                             <tr>
-                                <th colspan="4"><%= e.rigId %></th>
+                                <th colspan="4"><%= e.name %></th>
                             </tr>
                             <% if (i === 0) { %>
                                 <tr>
@@ -281,7 +281,7 @@
                         </tr>
                         <% locals.reported.fleetHrs.bolters.forEach((e, i) => { %>
                             <tr>
-                                <th colspan="4"><%= e.bolterId %></th>
+                                <th colspan="4"><%= e.name %></th>
                             </tr>
                             <% if (i === 0) { %>
                                 <tr>
@@ -314,14 +314,14 @@
                     </table>
                 <% } %>
 
-                <% if (reported.fleetHrs.LHD.length > 0) { %>
+                <% if (reported.fleetHrs.LHDs.length > 0) { %>
                     <table id="general-group" class="prod-group-item">
                         <tr>
                             <th colspan="4">LHDs Usage</th>
                         </tr>
-                        <% locals.reported.fleetHrs.LHD.forEach((e, i) => { %>
+                        <% locals.reported.fleetHrs.LHDs.forEach((e, i) => { %>
                             <tr>
-                                <th colspan="4"><%= e.LHDId %></th>
+                                <th colspan="4"><%= e.name %></th>
                             </tr>
                             <% if (i === 0) { %>
                                 <tr>

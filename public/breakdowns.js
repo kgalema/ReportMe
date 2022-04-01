@@ -13,7 +13,14 @@ function breakdownFilter(date, data, closedData) {
     const shiftArr = [...shift]
     const shiftSelected = shiftArr.filter(e => e.checked)
     const openShiftFilteredBreakdowns = data.filter(e => e.shift === shiftSelected[0].value);
+    console.log(shiftSelected[0].value)
+    console.log(date)
+    // console.log(openShiftFilteredBreakdowns.length)
+    // openShiftFilteredBreakdowns.forEach(e => console.log(e.shift))
     const closedShiftFilteredBreakdowns = closedData.filter(e => e.breakdown.shift === shiftSelected[0].value);
+    // console.log(closedShiftFilteredBreakdowns);
+    // console.log(closedShiftFilteredBreakdowns.length);
+	// closedShiftFilteredBreakdowns.forEach((e) => console.log(e.breakdown.shift));
     
     section.innerHTML = "";
 
@@ -23,26 +30,29 @@ function breakdownFilter(date, data, closedData) {
 
     // Sort out dates for overlaps
     const today = new Date(date + "T" + overlappingShiftEndTime);
-    const nightShiftEnd = new Date(date + "T06:00");
-    const tomorrowSec = today.setDate(today.getDate() - 1);
-    const tomorrowDate = new Date(tomorrowSec);
-    const hoursCorrectSec = tomorrowDate.setHours(overlappingShiftStartHour);
-    const nightShiftStart = new Date(hoursCorrectSec);
+    const nightShiftStart2 = new Date(date + "T" + overlappingShiftStartTime);
+    const tomorrowSec2 = today.setDate(today.getDate() + 1);
+    const nightShiftEnd2 = new Date(tomorrowSec2);
+    // const nightShiftEnd = new Date(date + "T" + overlappingShiftEndTime);
+    // const tomorrowSec = today.setDate(today.getDate() - 1);
+    // const tomorrowDate = new Date(tomorrowSec);
+    // const hoursCorrectSec = tomorrowDate.setHours(overlappingShiftStartHour);
+    // const nightShiftStart = new Date(hoursCorrectSec);
 
 
     if(shiftSelected[0].value === overlappingShiftName){
         console.log("Shift selected is night shift for open breakdowns")
-        allBreakdowns = openShiftFilteredBreakdowns.filter((e) => (new Date(e.startTime)) >= nightShiftStart && (new Date(e.startTime)) <= nightShiftEnd);
+        allBreakdowns = openShiftFilteredBreakdowns.filter((e) => (new Date(e.startTime)) >= nightShiftStart2 && (new Date(e.startTime)) <= nightShiftEnd2);
     }
 
     if(shiftSelected[0].value === overlappingShiftName){
-        console.log("Shift selected is night shift for closed breakdowns")
-        closedBreakdowns = closedShiftFilteredBreakdowns.filter((e) => (new Date(e.breakdown.startTime)) >= nightShiftStart && (new Date(e.breakdown.startTime)) <= nightShiftEnd);
+        console.log("Shift selected is night shift for closed breakdowns");
+        closedBreakdowns = closedShiftFilteredBreakdowns.filter((e) => (new Date(e.breakdown.startTime)) >= nightShiftStart2 && (new Date(e.breakdown.startTime)) <= nightShiftEnd2);
     }
 
-    const LHDs = allBreakdowns.filter((e) => e.category === "LHD");
-    const drillRigs = allBreakdowns.filter((e) => e.category === "drillRig");
-    const bolters = allBreakdowns.filter((e) => e.category === "roofBolter");
+    const LHDs = allBreakdowns.filter((e) => e.category === "LHDs");
+    const drillRigs = allBreakdowns.filter((e) => e.category === "drillRigs");
+    const bolters = allBreakdowns.filter((e) => e.category === "bolters");
     const LDVs = allBreakdowns.filter((e) => e.category === "LDV");
     const UVs = allBreakdowns.filter((e) => e.category === "UV");
     const belts = allBreakdowns.filter((e) => e.category === "UGBelts");
@@ -50,9 +60,9 @@ function breakdownFilter(date, data, closedData) {
     const mechanical = allBreakdowns.filter((e) => e.category === "mechanical");
     const other = allBreakdowns.filter((e) => e.category === "other");
 
-    const closedLHDs = closedBreakdowns.filter((e) => e.breakdown.category === "LHD");
-    const closedDrillRigs = closedBreakdowns.filter((e) => e.breakdown.category === "drillRig");
-    const closedBolters = closedBreakdowns.filter((e) => e.breakdown.category === "roofBolter");
+    const closedLHDs = closedBreakdowns.filter((e) => e.breakdown.category === "LHDs");
+    const closedDrillRigs = closedBreakdowns.filter((e) => e.breakdown.category === "drillRigs");
+    const closedBolters = closedBreakdowns.filter((e) => e.breakdown.category === "bolters");
     const closedLDVs = closedBreakdowns.filter((e) => e.breakdown.category === "LDV");
     const closedUVs = closedBreakdowns.filter((e) => e.breakdown.category === "UV");
     const closedBelts = closedBreakdowns.filter((e) => e.breakdown.category === "UGBelts");
@@ -841,54 +851,103 @@ function filterItemID(e) {
 
 // Now dealing with breakdown availabilities, utilisation and reliability
 if (document.getElementById("foundBreakdowns")) {
-	document.getElementById("startdate").value = htmlStartDate;
+	// document.getElementById("startdate").value = htmlStartDate;
 	document.getElementById("enddate").value = htmlDate;
+	document.getElementById("enddate").max = htmlDate;
     filterBreakdowns()
 }
 
 // Filter machine availability , utilisation and efficiency
 function filterBreakdowns(){
-    const foundBreakdowns = document.getElementById("foundBreakdowns").innerText;
-    const parsedFoundBreakdowns = JSON.parse(foundBreakdowns);
-    const start = document.getElementById("startdate").value;
-    const end = document.getElementById("enddate").value;
-    const data = parsedFoundBreakdowns.filter((e) => moment(e.created).format("YYYY-MM-DD") >= start && moment(e.created).format("YYYY-MM-DD") <= end);
+	const foundBreakdowns = document.getElementById("foundBreakdowns").innerText;
+	const parsedFoundBreakdowns = JSON.parse(foundBreakdowns);
+	const foundShifts = document.getElementById("foundShifts").innerText;
+	const parsedFoundShifts = JSON.parse(foundShifts);
+	const foundFleetUtils = document.getElementById("foundFleetUtils").innerText;
+	const parsedFoundFleetUtils = JSON.parse(foundFleetUtils);
+	const end = document.getElementById("enddate").value;
 
-    const MORNING = data.filter((e) => e.breakdown.shift === "morning");
-	const AFTERNOON = data.filter((e) => e.breakdown.shift === "afternoon");
-	const NIGHT = data.filter((e) => e.breakdown.shift === "night");
+    // Constrcuting start date for overlapping shift
+	const overlaps = parsedFoundShifts.filter((e) => e.overlap === true);
+	const nameOfShift = overlaps[0].name;
+	const startOfShift = overlaps[0].start;
+	const endOfShift = overlaps[0].end;
+    const startDateNS = new Date(end);
+    startDateNS.setHours(startOfShift.split(":")[0])
+    startDateNS.setMinutes(startOfShift.split(":")[1])
+
+    // Constructing end date for overlapping shift
+    const endDateNS = new Date(end);
+	endDateNS.setDate(endDateNS.getDate() + 1);
+    endDateNS.setHours(endOfShift.split(":")[0]);
+    endDateNS.setMinutes(endOfShift.split(":")[1]);
+
+    // console.log("Created to be btwn these 2")
+    // console.log(startDateNS)
+    // console.log(endDateNS)
+
+    // Constrcuting a date to be used for N/S utils
+    const dateForNS = new Date(end);
+    dateForNS.setDate(dateForNS.getDate() + 1);
+
     
-    // Getting availabilty
-    const availFinalMorning = getAvailabilityForMorning(MORNING)
-    const availFinalANoon = getAvailabilityForANoon(AFTERNOON)
-    const availFinalNight = getAvailabilityForNight(NIGHT)
+	const data = parsedFoundBreakdowns.filter((e) => moment(e.breakdown.startTime).format("YYYY-MM-DD") === end);
+	const dataNight = parsedFoundBreakdowns.filter((e) => new Date(e.breakdown.startTime) >= startDateNS && new Date(e.breakdown.startTime) <= endDateNS);
 
-    // Getting utilisation
-    const utilMorning = getUtilisationForMorning(MORNING)
-    const utilANoon = getUtilisationForANoon(AFTERNOON)
-    const utilNight = getUtilisationForNight(NIGHT)
+	const dataUtil = parsedFoundFleetUtils.filter((e) => moment(e.created).format("YYYY-MM-DD") === end);
+	// const dataUtilNight = parsedFoundFleetUtils.filter((e) => e.general[0].shift === "backshift");
+	const dataUtilNight = parsedFoundFleetUtils.filter((e) => moment(e.created).format('YYYY-MM-DD') === moment(dateForNS).format('YYYY-MM-DD'));
+    
 
-    // Getting reliability
-    // const reliabilityMorning = getReliabilityForMorning(MORNING)
-    // const reliabilityANoon = getReliabilityForANoon(AFTERNOON)
-    // const reliabilityNight = getReliabilityForNight(NIGHT)
 
-    document.getElementById("morning-availability").innerText = availFinalMorning;
-    document.getElementById("afternoon-availability").innerText = availFinalANoon;
-    document.getElementById("night-availability").innerText = availFinalNight;
+	// Breakdowns. These will be used to calculate availability
+	const MORNING = data.filter((e) => e.breakdown.shift === "morning");
+	const AFTERNOON = data.filter((e) => e.breakdown.shift === "afternoon");
+	// const NIGHT = data.filter((e) => e.breakdown.shift === "night");
+	const NIGHT = dataNight.filter((e) => e.breakdown.shift === "night");
 
-    document.getElementById("morning-utilisation").innerText = utilMorning;
-    document.getElementById("afternoon-utilisation").innerText = utilANoon;
-    document.getElementById("night-utilisation").innerText = utilNight;
+	// Hour meters. These will be used to calculate utilisation
+	const morningUtil = dataUtil.filter((e) => e.general[0].shift === "morning");
+	const afternoonUtil = dataUtil.filter((e) => e.general[0].shift === "afternoon");
+	// const nightUtil = dataUtil.filter((e) => e.general[0].shift === "backshift");
+	const nightUtil = dataUtilNight.filter((e) => e.general[0].shift === "backshift");
 
-    // document.getElementById("morning-reliability").innerText = reliabilityMorning;
-    // document.getElementById("afternoon-reliability").innerText = reliabilityANoon;
-    // document.getElementById("night-reliability").innerText = reliabilityNight;
+	// Getting shift objects
+	const morningShift = parsedFoundShifts.filter((e) => e.name === "MORNING");
+	const afternoonShift = parsedFoundShifts.filter((e) => e.name === "AFTERNOON");
+	const nightShift = parsedFoundShifts.filter((e) => e.name === "NIGHT");
 
-    document.getElementById("morning-efficiency").innerText = ((availFinalMorning * utilMorning)/ 100);
-    document.getElementById("afternoon-efficiency").innerText = ((availFinalANoon * utilANoon) / 100);
-    document.getElementById("night-efficiency").innerText = ((availFinalNight * utilNight) / 100);
-    document.getElementById("startdate").oninput
+	// Getting availabilty
+	const availFinalMorning = getAvailabilityForMorning(MORNING, morningShift);
+	const availFinalANoon = getAvailabilityForANoon(AFTERNOON, afternoonShift);
+	const availFinalNight = getAvailabilityForNight(NIGHT, nightShift);
+
+	// Getting utilisation
+	const utilMorning = getUtilisationForMorning(MORNING, morningShift, morningUtil);
+	const utilANoon = getUtilisationForANoon(AFTERNOON, afternoonShift, afternoonUtil);
+	const utilNight = getUtilisationForNight(NIGHT, nightShift, nightUtil);
+
+	// Getting reliability
+	// const reliabilityMorning = getReliabilityForMorning(MORNING)
+	// const reliabilityANoon = getReliabilityForANoon(AFTERNOON)
+	// const reliabilityNight = getReliabilityForNight(NIGHT)
+
+	document.getElementById("morning-availability").innerText = availFinalMorning;
+	document.getElementById("afternoon-availability").innerText = availFinalANoon;
+	document.getElementById("night-availability").innerText = availFinalNight;
+
+	document.getElementById("morning-utilisation").innerText = utilMorning;
+	document.getElementById("afternoon-utilisation").innerText = utilANoon;
+	document.getElementById("night-utilisation").innerText = utilNight;
+
+	// document.getElementById("morning-reliability").innerText = reliabilityMorning;
+	// document.getElementById("afternoon-reliability").innerText = reliabilityANoon;
+	// document.getElementById("night-reliability").innerText = reliabilityNight;
+
+	document.getElementById("morning-efficiency").innerText = ((availFinalMorning * utilMorning) / 100).toFixed(0);
+	document.getElementById("afternoon-efficiency").innerText = ((availFinalANoon * utilANoon) / 100).toFixed(0);
+	document.getElementById("night-efficiency").innerText = ((availFinalNight * utilNight) / 100).toFixed(0);
+	document.getElementById("enddate").oninput;
 }
 
 function convertTimesToSeconds(str){
@@ -901,88 +960,284 @@ function convertTimesToSeconds(str){
 
 // Availabilty Functions
 // 1. Getting availability for morning shift
-function getAvailabilityForMorning(arr){
-    const DTs = arr.map((e) => e.downtime);
-	const DTs2 = DTs.map((e) => convertTimesToSeconds(e));
-	const DTs3 = DTs2.reduce((i, j) => i + j, 0);
-	const avail = ((8.5 * 60 * 60 - DTs3) / (8.5 * 60 * 60)) * 100;
-	let availFinal = Math.round(avail);
-	if (avail < 10) {
-		availFinal = (Math.round(avail * 100) / 100).toFixed(2);
-	}
-    return availFinal;
+function getAvailabilityForMorning(arr, shift){
+    // If no breakdowns, availability is 100%
+    if(arr.length === 0 || !arr){
+        return 100
+    }
+    
+    const shiftDuration = shift[0].duration
+    const dates = [];
+    arr.forEach(e => {
+        if (dates.indexOf(new Date(e.breakdown.startTime).toDateString()) === -1) {
+            dates.push(new Date(e.breakdown.startTime).toDateString());
+		}
+    })
+
+    const groupedArr = [];
+    dates.forEach((e) => {
+       const filtered = arr.filter(el => new Date(el.breakdown.startTime).toDateString() === e)
+       groupedArr.push(filtered)
+	});
+
+
+    const avails = [];
+    groupedArr.forEach(e => {
+        const DTs = e.map(dt => dt.downtime);
+        const DTs2 = DTs.map((e) => convertTimesToSeconds(e));
+        const DTs3 = DTs2.reduce((i, j) => i + j, 0);
+        const avail = ((shiftDuration * 60 * 60 - DTs3) / (shiftDuration * 60 * 60)) * 100;
+        avails.push(avail)
+    })
+    const sumAvails = avails.reduce((i, j) => i + j, 0);
+    const averageAvail = Number((sumAvails / avails.length).toFixed(0));
+
+    return averageAvail;
 }
 
 // 2.Getting availability for afternoon shift
-function getAvailabilityForANoon(arr){
-    const DTs = arr.map((e) => e.downtime);
-	const DTs2 = DTs.map((e) => convertTimesToSeconds(e));
-	const DTs3 = DTs2.reduce((i, j) => i + j, 0);
-	const avail = ((8.5 * 60 * 60 - DTs3) / (8.5 * 60 * 60)) * 100;
-	let availFinal = Math.round(avail);
-	if (avail < 10) {
-		availFinal = (Math.round(avail * 100) / 100).toFixed(2);
+function getAvailabilityForANoon(arr, shift){
+	// If no breakdowns, availability is 100%
+	if (arr.length === 0 || !arr) {
+		return 100;
 	}
-    return availFinal;
+
+	const shiftDuration = shift[0].duration;
+	const dates = [];
+	arr.forEach((e) => {
+		if (dates.indexOf(new Date(e.breakdown.startTime).toDateString()) === -1) {
+			dates.push(new Date(e.breakdown.startTime).toDateString());
+		}
+	});
+
+	const groupedArr = [];
+	dates.forEach((e) => {
+		const filtered = arr.filter((el) => new Date(el.breakdown.startTime).toDateString() === e);
+		groupedArr.push(filtered);
+	});
+
+	const avails = [];
+	groupedArr.forEach((e) => {
+		const DTs = e.map((dt) => dt.downtime);
+		const DTs2 = DTs.map((e) => convertTimesToSeconds(e));
+		const DTs3 = DTs2.reduce((i, j) => i + j, 0);
+		const avail = ((shiftDuration * 60 * 60 - DTs3) / (shiftDuration * 60 * 60)) * 100;
+		avails.push(avail);
+	});
+	const sumAvails = avails.reduce((i, j) => i + j, 0);
+	const averageAvail = Number((sumAvails / avails.length).toFixed(0));
+
+	return averageAvail;
 }
 
 // 3. Getting availability for night shift
-function getAvailabilityForNight(arr){
-    const DTs = arr.map((e) => e.downtime);
-	const DTs2 = DTs.map((e) => convertTimesToSeconds(e));
-	const DTs3 = DTs2.reduce((i, j) => i + j, 0);
-	const avail = ((8.5 * 60 * 60 - DTs3) / (8.5 * 60 * 60)) * 100;
-	let availFinal = Math.round(avail);
-	if (avail < 10) {
-		availFinal = (Math.round(avail * 100) / 100).toFixed(2);
+function getAvailabilityForNight(arr, shift){
+	// If no breakdowns, availability is 100%
+	if (arr.length === 0 || !arr) {
+		return 100;
 	}
-    return availFinal;
+
+    // if (shiftSelected[0].value === overlappingShiftName) {
+    //     console.log("Shift selected is night shift for open breakdowns");
+    //     arr = arr.filter((e) => new Date(e.startTime) >= nightShiftStart2 && new Date(e.startTime) <= nightShiftEnd2);
+    // }
+
+
+	const shiftDuration = shift[0].duration;
+	const dates = [];
+	arr.forEach((e) => {
+		if (dates.indexOf(new Date(e.breakdown.startTime).toDateString()) === -1) {
+			dates.push(new Date(e.breakdown.startTime).toDateString());
+		}
+	});
+
+	const groupedArr = [];
+	dates.forEach((e) => {
+		const filtered = arr.filter((el) => new Date(el.breakdown.startTime).toDateString() === e);
+		groupedArr.push(filtered);
+	});
+
+	const avails = [];
+	groupedArr.forEach((e) => {
+		const DTs = e.map((dt) => dt.downtime);
+		const DTs2 = DTs.map((e) => convertTimesToSeconds(e));
+		const DTs3 = DTs2.reduce((i, j) => i + j, 0);
+		const avail = ((shiftDuration * 60 * 60 - DTs3) / (shiftDuration * 60 * 60)) * 100;
+		avails.push(avail);
+	});
+	const sumAvails = avails.reduce((i, j) => i + j, 0);
+	const averageAvail = Number((sumAvails / avails.length).toFixed(0));
+
+	return averageAvail;
 }
 
 // Utilisation Functions
 // 1. Getting utlisation for morning shift
-function getUtilisationForMorning(arr){
-    const DTs = arr.map((e) => e.downtime);
-	const DTs2 = DTs.map((e) => convertTimesToSeconds(e));
-	const DTs3 = DTs2.reduce((i, j) => i + j, 0);
-    const standbyHours = 0
-    const totalHours = 8.5 * 60 * 60;
-	const util = ((totalHours - DTs3 - standbyHours) / (totalHours - DTs3)) * 100;
-	let utilFinal = Math.round(util);
-	if (totalHours === DTs3) {
-		utilFinal = 0;
+function getUtilisationForMorning(arr, shift, hourMeters){
+	// If no one used TMM, availability is 0%
+	if (hourMeters.length === 0 || !hourMeters) {
+		return 0;
 	}
-    return utilFinal;
+
+	const foundTMM = document.getElementById("foundTMM").innerText;
+	const parsedFoundTMM = JSON.parse(foundTMM);
+
+	const category = parsedFoundTMM.category;
+
+	const tmmName = parsedFoundTMM.name;
+	const selectedHrMeters = hourMeters[0].fleetHrs;
+	const utilArr = selectedHrMeters[category];
+	const filtered = utilArr.filter((e) => e.name === tmmName);
+
+	const engines = filtered[0].engine[1] - filtered[0].engine[0];
+	let electricals = 0;
+	if (category !== "LHDs") {
+		electricals = filtered[0].electrical[1] - filtered[0].electrical[0];
+	}
+
+	const usedHours = engines + electricals;
+
+	// Calculating downTime
+	const shiftDuration = shift[0].duration;
+	const dates = [];
+	arr.forEach((e) => {
+		if (dates.indexOf(new Date(e.breakdown.startTime).toDateString()) === -1) {
+			dates.push(new Date(e.breakdown.startTime).toDateString());
+		}
+	});
+
+	const groupedArr = [];
+	dates.forEach((e) => {
+		const filtered = arr.filter((el) => new Date(el.breakdown.startTime).toDateString() === e);
+		groupedArr.push(filtered);
+	});
+
+	const downtime = [];
+	groupedArr.forEach((e) => {
+		const DTs = e.map((dt) => dt.downtime);
+		const DTs2 = DTs.map((e) => convertTimesToSeconds(e));
+		const DTs3 = DTs2.reduce((i, j) => i + j, 0);
+		downtime.push(DTs3);
+	});
+
+	const sumDowntime = downtime.reduce((i, j) => i + j, 0);
+	const sumDowntimeHrs = sumDowntime / 3600;
+
+	const utilisation = (usedHours / (shiftDuration - sumDowntimeHrs)) * 100;
+
+	return utilisation.toFixed(0);
 }
 
 // 2. Getting utlisation for afternoon shift
-function getUtilisationForANoon(arr){
-    const DTs = arr.map((e) => e.downtime);
-	const DTs2 = DTs.map((e) => convertTimesToSeconds(e));
-	const DTs3 = DTs2.reduce((i, j) => i + j, 0);
-	const standbyHours = 0;
-	const totalHours = 8.5 * 60 * 60;
-	const util = ((totalHours - DTs3 - standbyHours) / (totalHours - DTs3)) * 100;
-	let utilFinal = Math.round(util);
-	if (totalHours === DTs3) {
-		utilFinal = 0;
+function getUtilisationForANoon(arr, shift, hourMeters){
+	// If no one used TMM, availability is 0%
+	if (hourMeters.length === 0 || !hourMeters) {
+		return 0;
 	}
-	return utilFinal;
+
+	const foundTMM = document.getElementById("foundTMM").innerText;
+	const parsedFoundTMM = JSON.parse(foundTMM);
+
+	const category = parsedFoundTMM.category;
+
+	const tmmName = parsedFoundTMM.name;
+	const selectedHrMeters = hourMeters[0].fleetHrs;
+	const utilArr = selectedHrMeters[category];
+	const filtered = utilArr.filter((e) => e.name === tmmName);
+
+	const engines = filtered[0].engine[1] - filtered[0].engine[0];
+	let electricals = 0;
+	if (category !== "LHDs") {
+		electricals = filtered[0].electrical[1] - filtered[0].electrical[0];
+	}
+
+	const usedHours = engines + electricals;
+
+	// Calculating downTime
+	const shiftDuration = shift[0].duration;
+	const dates = [];
+	arr.forEach((e) => {
+		if (dates.indexOf(new Date(e.breakdown.startTime).toDateString()) === -1) {
+			dates.push(new Date(e.breakdown.startTime).toDateString());
+		}
+	});
+
+	const groupedArr = [];
+	dates.forEach((e) => {
+		const filtered = arr.filter((el) => new Date(el.breakdown.startTime).toDateString() === e);
+		groupedArr.push(filtered);
+	});
+
+	const downtime = [];
+	groupedArr.forEach((e) => {
+		const DTs = e.map((dt) => dt.downtime);
+		const DTs2 = DTs.map((e) => convertTimesToSeconds(e));
+		const DTs3 = DTs2.reduce((i, j) => i + j, 0);
+		downtime.push(DTs3);
+	});
+
+	const sumDowntime = downtime.reduce((i, j) => i + j, 0);
+	const sumDowntimeHrs = sumDowntime / 3600;
+
+	const utilisation = (usedHours / (shiftDuration - sumDowntimeHrs)) * 100;
+
+	return utilisation.toFixed(0);
 }
 
 // 3. Getting utlisation for night shift
-function getUtilisationForNight(arr){
-    const DTs = arr.map((e) => e.downtime);
-	const DTs2 = DTs.map((e) => convertTimesToSeconds(e));
-	const DTs3 = DTs2.reduce((i, j) => i + j, 0);
-	const standbyHours = 0;
-	const totalHours = 8.5 * 60 * 60;
-	const util = ((totalHours - DTs3 - standbyHours) / (totalHours - DTs3)) * 100;
-	let utilFinal = Math.round(util);
-	if (totalHours === DTs3) {
-		utilFinal = 0;
+function getUtilisationForNight(arr, shift, hourMeters){
+	// If no one used TMM, availability is 0%
+	if (hourMeters.length === 0 || !hourMeters) {
+		return 0;
 	}
-	return utilFinal;
+
+	const foundTMM = document.getElementById("foundTMM").innerText;
+	const parsedFoundTMM = JSON.parse(foundTMM);
+
+	const category = parsedFoundTMM.category;
+
+	const tmmName = parsedFoundTMM.name;
+	const selectedHrMeters = hourMeters[0].fleetHrs;
+	const utilArr = selectedHrMeters[category];
+	const filtered = utilArr.filter((e) => e.name === tmmName);
+
+	const engines = filtered[0].engine[1] - filtered[0].engine[0];
+	let electricals = 0;
+	if (category !== "LHDs") {
+		electricals = filtered[0].electrical[1] - filtered[0].electrical[0];
+	}
+
+	const usedHours = engines + electricals;
+
+	// Calculating downTime
+	const shiftDuration = shift[0].duration;
+	const dates = [];
+	arr.forEach((e) => {
+		if (dates.indexOf(new Date(e.breakdown.startTime).toDateString()) === -1) {
+			dates.push(new Date(e.breakdown.startTime).toDateString());
+		}
+	});
+
+	const groupedArr = [];
+	dates.forEach((e) => {
+		const filtered = arr.filter((el) => new Date(el.breakdown.startTime).toDateString() === e);
+		groupedArr.push(filtered);
+	});
+
+	const downtime = [];
+	groupedArr.forEach((e) => {
+		const DTs = e.map((dt) => dt.downtime);
+		const DTs2 = DTs.map((e) => convertTimesToSeconds(e));
+		const DTs3 = DTs2.reduce((i, j) => i + j, 0);
+		downtime.push(DTs3);
+	});
+
+	const sumDowntime = downtime.reduce((i, j) => i + j, 0);
+	const sumDowntimeHrs = sumDowntime / 3600;
+
+	const utilisation = (usedHours / (shiftDuration - sumDowntimeHrs)) * 100;
+
+	return utilisation.toFixed(0);
 }
 
 // Reliability Functions

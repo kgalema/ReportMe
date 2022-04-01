@@ -320,11 +320,11 @@
                                 <tr class="form-row">
                                     <td class="form-row">
                                         <strong>
-                                            <%= e.bolterId %>
+                                            <%= e.name %>
                                         </strong>
                                     </td>
                                     <td class="form-row">
-                                        <input type="text" name="production[fleetHrs][bolters][<%= i %>][bolterId]" value=<%= e.bolterId %> required readonly hidden >
+                                        <input type="text" name="production[fleetHrs][bolters][<%= i %>][name]" value=<%= e.name %> required readonly hidden >
                                     </td>
                                 </tr>
                                 <tr class="form-row">
@@ -367,11 +367,11 @@
                                 <tr class="form-row">
                                     <td class="form-row">
                                         <strong>
-                                            <%= e.rigId %>
+                                            <%= e.name %>
                                         </strong>
                                     </td>
                                     <td class="form-row">
-                                        <input type="text" name="production[fleetHrs][drillRigs][<%= i %>][rigId]" value=<%= e.rigId %> required readonly hidden >
+                                        <input type="text" name="production[fleetHrs][drillRigs][<%= i %>][name]" value=<%= e.name %> required readonly hidden >
                                     </td>
                                 </tr>
                                 <tr class="form-row">
@@ -410,25 +410,25 @@
                         <hr style="width: 100%;">
 
                         <table class="form-row" id="LHD-performance">
-                            <% locals.production.fleetHrs.LHD.forEach((e, i) => { %>
+                            <% locals.production.fleetHrs.LHDs.forEach((e, i) => { %>
                                 <tr class="form-row">
                                     <td class="form-row">
                                         <strong>
-                                            <%= e.LHDId %>
+                                            <%= e.name %>
                                         </strong>
                                     </td>
                                     <td class="form-row">
-                                        <input type="text" name="production[fleetHrs][LHD][<%= i %>][LHDId]" value=<%= e.LHDId %> required readonly hidden >
+                                        <input type="text" name="production[fleetHrs][LHDs][<%= i %>][name]" value=<%= e.name %> required readonly hidden >
                                     </td>
                                 </tr>
                                 <tr class="form-row">
                                     <td class="form-row">
                                         <label style="display:block;" for=""><small>Start</small></label>
-                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][LHD][<%= i %>][engine]" value="<%= e.engine[0] %>" placeholder="engine" required>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][LHDs][<%= i %>][engine]" value="<%= e.engine[0] %>" placeholder="engine" required>
                                     </td>
                                     <td class="form-row">
                                         <label style="display:block;" for=""><small>End</small></label>
-                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][LHD][<%= i %>][engine]" value="<%= e.engine[1] %>" placeholder="engine" required>
+                                        <input type="number" min="0" step="0.1" name="production[fleetHrs][LHDs][<%= i %>][engine]" value="<%= e.engine[1] %>" placeholder="engine" required>
                                     </td>
                                 </tr>
                             <% }) %>

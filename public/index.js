@@ -359,7 +359,7 @@ function getTable4LHDs(div, arr){
 		const cell12 = row1.insertCell(1);
 		cell11.setAttribute("class", "form-row");
 		cell12.setAttribute("class", "form-row");
-        const input = `<input type="text" name="production[fleetHrs][LHD][${i}][LHDId]" value=${arr[i]} required readonly hidden>`;
+        const input = `<input type="text" name="production[fleetHrs][LHDs][${i}][name]" value=${arr[i]} required readonly hidden>`;
 		cell11.innerHTML = `<strong>${arr[i]}</strong>`;
         cell12.innerHTML = input;
 
@@ -372,9 +372,9 @@ function getTable4LHDs(div, arr){
 		const cell31 = row2.insertCell(1);
 		cell31.setAttribute("class", "form-row");
 		cell21.innerHTML = `<label style="display:block;" for=""><small>Start</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][LHD][${i}][engine]" placeholder="engine" required>`;
+                            <input type="number" min="0" step="0.1" name="production[fleetHrs][LHDs][${i}][engine]" placeholder="engine" required>`;
 		cell31.innerHTML = `<label style="display:block;" for=""><small>End</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][LHD][${i}][engine]" placeholder="engine" required>`;
+                            <input type="number" min="0" step="0.1" name="production[fleetHrs][LHDs][${i}][engine]" placeholder="engine" required>`;
 	});
 
     // Increase the visible height of the div housing this newly added hour meter inputs
@@ -394,7 +394,7 @@ function getTable4DrillRigs(div, arr) {
 		// Insert the the first <td> in the first row - should have only 1
 		const cell11 = row1.insertCell(0);
         const cell12 = row1.insertCell(1);
-        const input = `<input type="text" name="production[fleetHrs][drillRigs][${i}][rigId]" value=${arr[i]} required readonly hidden>`;
+        const input = `<input type="text" name="production[fleetHrs][drillRigs][${i}][name]" value=${arr[i]} required readonly hidden>`;
 		cell11.setAttribute("class", "form-row");
         cell12.setAttribute("class", "form-row");
 		cell11.innerHTML = `<strong>${arr[i]}</strong>`;
@@ -468,7 +468,7 @@ function getTable4Bolters(div, arr) {
 		// Insert the the first <td> in the first row - should have only 1
 		const cell11 = row1.insertCell(0);
         const cell12 = row1.insertCell(1);
-        const input = `<input type="text" name="production[fleetHrs][bolters][${i}][bolterId]" value=${arr[i]} required readonly hidden>`;
+        const input = `<input type="text" name="production[fleetHrs][bolters][${i}][name]" value=${arr[i]} required readonly hidden>`;
 		cell11.setAttribute("class", "form-row");
         cell12.setAttribute("class", "form-row");
 		cell11.innerHTML = `<strong>${arr[i]}</strong>`;
@@ -610,11 +610,18 @@ function dateChange(e, f) {
     // console.log(f);
     // const productions = JSON.parse(f);
     // console.log(productions);
-    selectedDate = e.value
+    const selectedDate = e.value;
+
+    // const yesterday = new Date(e.value);
+	// yesterday.setDate(yesterday.getDate() - 1);
+
+    const tomorrow = new Date(e.value);
+	tomorrow.setDate(tomorrow.getDate() + 1);
+
     let main = document.getElementById("tables")
-    let section = main.getElementsByTagName("section")
     main.innerHTML = ""
-    let prodFiltered = f.filter(prod => moment(prod.created).format('YYYY-MM-DD') === selectedDate)
+    let prodFiltered = f.filter(prod => moment(prod.created).format('YYYY-MM-DD') === selectedDate);
+    let prodFilteredNight = f.filter(prod => moment(prod.created).format('YYYY-MM-DD') === moment(tomorrow).format('YYYY-MM-DD'));
     prodFiltered.sort((a, b) => {
         if (a.section.name > b.section.name) {
             return 1
@@ -623,7 +630,8 @@ function dateChange(e, f) {
         }
     })
     let dayshift = prodFiltered.filter(prod => prod.general[0].shift === "morning")
-    let backshift = prodFiltered.filter(prod => prod.general[0].shift === "backshift")
+    // let backshift = prodFiltered.filter(prod => prod.general[0].shift === "backshift")
+    let backshift = prodFilteredNight.filter(prod => prod.general[0].shift === "backshift")
     let content = `
                     <table id="all-shift" class="filterDiv all combine" style="display: none">
                         <thead>

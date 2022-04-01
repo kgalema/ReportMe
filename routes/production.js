@@ -57,7 +57,7 @@ router.get("/sections/:id/production/new", isConnectionOpen, isLoggedIn, isSecti
 			req.flash("error", "Oops! Invalid Section ID. Section Not Found");
 			return res.redirect("/production");
 		}
-		TMM.find({ category: { $in: ["LHD", "drillRig", "roofBolter"] } }, function (err, foundTMMs) {
+		TMM.find({ category: { $in: ["LHDs", "drillRigs", "bolters"] } }, function (err, foundTMMs) {
 			if (err || !foundTMMs) {
 				req.flash("error", "Error occured while fetching TMMs");
 				return res.redirect("/production");
@@ -70,9 +70,9 @@ router.get("/sections/:id/production/new", isConnectionOpen, isLoggedIn, isSecti
 			const sorted = foundTMMs.sort(function (a, b) {
 				return collator.compare(a.name, b.name);
 			});
-			const drillRigs = sorted.filter((dR) => dR.category === "drillRig");
-			const LHDs = sorted.filter((LHD) => LHD.category === "LHD");
-			const bolters = sorted.filter((LHD) => LHD.category === "roofBolter");
+			const drillRigs = sorted.filter((dR) => dR.category === "drillRigs");
+			const LHDs = sorted.filter((LHD) => LHD.category === "LHDs");
+			const bolters = sorted.filter((LHD) => LHD.category === "bolters");
 			ProductionCalendar.find({}, {date: 1, _id: 0}, function(err, foundDates){
 				if(err || !foundDates){
 					req.flash("error", "Error while retrieving production days")

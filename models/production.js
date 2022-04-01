@@ -64,7 +64,7 @@ const productionSchema = new mongoose.Schema({
 	fleetHrs: {
 		bolters: [
 			{
-				bolterId: String,
+				name: String,
 				engine: [Number],
 				drilling: [Number],
 				electrical: [Number]
@@ -72,15 +72,15 @@ const productionSchema = new mongoose.Schema({
 		],
 		drillRigs: [
 			{
-				rigId: String,
+				name: String,
 				engine: [Number],
 				percussion: [Number],
 				electrical: [Number],
 			}
 		] ,
-		LHD: [
+		LHDs: [
 			{
-				LHDId: String,
+				name: String,
 				engine: [Number],
 			}
 		]
@@ -104,9 +104,11 @@ const productionSchema = new mongoose.Schema({
 }, opts);
 
 productionSchema.virtual("blasted").get(function () {
-	const achievesM = this.blast.map(pl => pl.length).reduce((a, b) => a + b, 0)
-	const achievesSQM = (achievesM * this.section.plannedAdvance).toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false });
-	return achievesSQM;
+	if(this.blast){
+		const achievesM = this.blast.map(pl => pl.length).reduce((a, b) => a + b, 0)
+		const achievesSQM = (achievesM * this.section.plannedAdvance).toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false });
+		return achievesSQM;
+	}
 });
 
 productionSchema.virtual("forecast").get(function () {
@@ -119,7 +121,7 @@ productionSchema.virtual("budget").get(function () {
 });
 
 productionSchema.virtual("LHDUsage").get(function () {
-	const lhdHrs = this.fleetHrs.LHD;
+	const lhdHrs = this.fleetHrs.LHDs;
 	lhdHrs.forEach((e, i) => {
 		const usage = e.engine[1] - e.engine[0];
 		lhdHrs[i].usage = usage;
@@ -141,6 +143,19 @@ productionSchema.virtual("drillRigUsage").get(function () {
 });
 
 productionSchema.virtual("bolterUsage").get(function () {
+	const bolterHrs = this.fleetHrs.bolters;
+	bolterHrs.forEach((e, i) => {
+		const engineUsage = e.engine[1] - e.engine[0];
+		const drillingUsage = e.drilling[1] - e.drilling[0];
+		const electricalUsage = e.electrical[1] - e.electrical[0];
+		bolterHrs[i].engineUsage = engineUsage;
+		bolterHrs[i].drillingUsage = drillingUsage;
+		bolterHrs[i].electricalUsage = electricalUsage;
+	})
+	return;
+});
+
+productionSchema.virtual("bolterUtil").get(function () {
 	const bolterHrs = this.fleetHrs.bolters;
 	bolterHrs.forEach((e, i) => {
 		const engineUsage = e.engine[1] - e.engine[0];

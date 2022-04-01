@@ -37,6 +37,13 @@ router.post("/breakdowns/:breakdownId/closedBreakdowns", isConnectionOpen, isLog
 	endTime.setMilliseconds(0);
 	req.body.closedBreakdown.endTime = endTime;
 
+
+	// Setting ID for a breakdown
+	// const today = new Date(date + "T" + overlappingShiftEndTime);
+	// const nightShiftStart2 = new Date(date + "T" + overlappingShiftStartTime);
+	// const tomorrowSec2 = today.setDate(today.getDate() + 1);
+	// const nightShiftEnd2 = new Date(tomorrowSec2);
+
 	Breakdown.findById(req.params.breakdownId, function (err, foundBreakdown) {
 		if (err || !foundBreakdown) {
 			req.flash("error", "Breakdown you are trying to close doesn't exist");
@@ -49,6 +56,7 @@ router.post("/breakdowns/:breakdownId/closedBreakdowns", isConnectionOpen, isLog
 			}
 			newClosedBreakdown.author.id = req.user._id;
 			newClosedBreakdown.breakdown = foundBreakdown;
+			// newClosedBreakdown.shiftId = "";
 
 			newClosedBreakdown.save(function (err, savedClosedBreakdown) {
 				if (err || !savedClosedBreakdown) {

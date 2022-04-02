@@ -77,11 +77,13 @@
                     </tr>
                 </tbody>
             </table>
-            <div id="canvasDiv" style="margin-top: 20px;">
-                <canvas id="effGraph" width="500px" height="281px">
-
-                </canvas>
-            </div>
+            <% if (locals.tmm.parentCategory) { %>
+                <div id="canvasDiv" style="margin-top: 20px;">
+                    <canvas id="effGraph" width="393.219px">
+    
+                    </canvas>
+                </div>
+            <% } %>
 
             <br>
             <p>

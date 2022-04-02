@@ -2,12 +2,10 @@ const express = require("express")
 const passport = require("passport")
 const router = express.Router()
 const User = require("../models/user")
-const nodemailer = require("nodemailer")
+const RequestAccess = require("../models/requestAccess")
 const crypto = require("crypto")
 const { isConnectionOpen } = require("../middleware")
 
-
-//@Log in routes
 
 //@log in - get the log in form
 router.get("/login", function (req, res) {
@@ -16,7 +14,6 @@ router.get("/login", function (req, res) {
 
 //@authenticate user with submitted form data
 router.post("/login", isConnectionOpen, passport.authenticate("local", { failureFlash: true, failureRedirect: "/login" }), function (req, res) {
-	console.log(req.session.returnTo)
 	const redirectUrl = req.session.returnTo || "/production";
 	delete req.session.returnTo;
 	req.flash("success", "Welcome back!");
@@ -42,7 +39,7 @@ router.post("/forgot", function (req, res, next) {
 	crypto.randomBytes(20, function (err, buf) {
 		let token = buf.toString("hex");
 
-		User.findOne({ email: req.body.email }, function (err, user) {
+		User.findOne({ username: req.body.username }, function (err, user) {
       		if (err || !user) {
         		req.flash("error", "No account with that email address exists");
         		return res.redirect("/forgot");
@@ -55,37 +52,9 @@ router.post("/forgot", function (req, res, next) {
 						req.flash("error", "Error occured while saving user. Contact admin");
 						return res.redirect("/forgot");
 					}
-					let smtpTransport = nodemailer.createTransport({
-            			service: "outlook",
-            			auth: {
-              				user: "kdlreports@outlook.com",
-              				pass: process.env.GMAILPW,
-            			}
-          			});
 
-					let mailOptions = {
-            			to: user.email,
-            			from: "KDL Reports <KDLReports@outlook.com>",
-            			subject: "KDL Reports Password Reset",
-            			text:
-             		 	"You are receiving this email because you have requested to reset the password for your account.\n\n" +
-              			"Please click the link below or copy and paste it into your browser to complete the process:\n\n" +
-              			"http://" + req.headers.host + "/reset/" + token + "\n\n" +
-              			"If you did not request password reset, please ignore this email and your password will remain unchanged.\n\n" +
-						"Regards\n" +
-						"KDL Reports Admin"
-          			};
-
-					smtpTransport.sendMail(mailOptions, function (err, info) {
-						if(err){
-							console.log(err);
-							req.flash("error", "Error occured while sending you a mail. Contact admin");
-							return res.redirect("/forgot");
-						}
-            			console.log("mail sent");
-            			req.flash("success", `An email has been sent to ${user.email} with further instructions`);
-						res.redirect("/forgot");
-			        });
+					const resetUrl = req.protocol +"://" + req.headers.host + "/reset/" + token;
+					res.render("access/forgot", {resetUrl, name: user.preferredName, title: "users" });
       		});
     	});
 	});
@@ -99,7 +68,7 @@ router.get('/reset/:token', function (req, res) {
 			req.flash('error', 'Password reset token is invalid or has expired.');
 			return res.redirect('/forgot');
 		}
-		res.render('access/reset', { token: req.params.token, title: "Login" });
+		res.render('access/reset', { token: req.params.token, name: user.preferredName, title: "Login" });
 	});
 });
 
@@ -129,42 +98,51 @@ router.post('/reset/:token', function (req, res) {
 							req.flash("error", "Error occured while logging you in. Contact admin")
 							return res.redirect("/login")
 						}
-						let smtpTransport = nodemailer.createTransport({
-							service: "outlook",
-							host: "smtp.live.com",
-							auth: {
-								user: "kdlreports@outlook.com",
-								pass: process.env.GMAILPW,
-							},
-						});
-
-						let mailOptions = {
-							to: user.email,
-							from: "KDL Reports <KDLReports@outlook.com>",
-							subject: "Your password was updated",
-							text:
-								"Hello,\n\n" +
-								"This is a confirmation that the password for your account " + user.email + " was updated.\n\n" +
-								"Regards\n" +
-								"KDL Reports Admin"
-						};
-
-						smtpTransport.sendMail(mailOptions, function (err) {
-							if(err){
-								return
-							}
-            				req.flash("success", "Your password was successfully updated.");
-            				res.redirect("/production");
-          				});
+						req.flash("success", "Your password was successfully updated.");
+						res.redirect("/production");
             		});
           		});
         	});
-
     	} else {
         	req.flash("error", "Passwords do not match.");
         	return res.redirect("back");
     	};
     });
+});
+
+
+// User requesting access routes
+router.get("/users/newRequest", isConnectionOpen, function (req, res) {
+	User.find({}, function(err, users){
+		if(err || !users){
+			req.flash("error", "Error occured while checking existing users");
+			return res.redirect("/production");
+		}
+		res.render("access/new", { users, title: "Register" });
+	})
+});
+
+
+router.post("/users/newRequest", isConnectionOpen, function (req, res) {
+	RequestAccess.create(req.body, function(err, newRequest){
+		if(err || !newRequest){
+			req.flash("error", "Error occured while requesting access")
+			return res.redirect("/users/newRequest");
+		}
+		req.flash("success", "Request for access was submitted. You will be responded shortly")
+		return res.redirect("/production");
+	});
+});
+
+
+router.get("/users/newRequest/:_id", isConnectionOpen, function (req, res) {
+	RequestAccess.findById(req.params._id, function(err, foundRequest){
+		if(err || !foundRequest){
+			req.flash("error", "Error occured while retrieving user");
+			res.return("/users");
+		}
+		res.render("users/new", { foundRequest, title: "users" });
+	});
 });
 
 module.exports = router;

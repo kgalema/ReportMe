@@ -38,6 +38,14 @@
             <form action="/user/<%= foundUser._id %>?_method=DELETE" method="POST">
                 <button id="delete" type="submit">Delete</button>
             </form>
+            <hr>
+            <small>
+                <form action="/forgot" method="post">
+                    <input id="email_address" type="email" name="username" value="<%= locals.foundUser.username%>" hidden readonly>
+                    <input type="submit" value="reset password">
+                    <!-- <a href="/forgot">Password reset</a> -->
+                </form>
+            </small>
       <% } %>
     </div>
 </div>

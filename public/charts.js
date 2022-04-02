@@ -258,10 +258,14 @@ function drawEffGraph(){
 		},
 	};
 
-	let effGraph = new Chart(document.getElementById("effGraph").getContext("2d"), configEffGraph);
-	
-	drawnEffChart(effGraph)
+	const foundTMM = document.getElementById("foundTMM").innerText;
+	const parsedFoundTMM = JSON.parse(foundTMM);
+	const tmmCat = parsedFoundTMM.parentCategory;
 
+	if (tmmCat === "TMM") {
+		let effGraph = new Chart(document.getElementById("effGraph").getContext("2d"), configEffGraph);
+		drawnEffChart(effGraph)
+	}
 }
 
 function cummulateArr(arr) {
@@ -276,6 +280,11 @@ function cummulateArr(arr) {
 }
 
 if(document.getElementById("effGraph")){
-	drawEffGraph()
+	const foundTMM = document.getElementById("foundTMM").innerText;
+	const parsedFoundTMM = JSON.parse(foundTMM);
+	const tmmCat = parsedFoundTMM.parentCategory;
+	if(tmmCat === "TMM"){
+		drawEffGraph()
+	}
 }
 

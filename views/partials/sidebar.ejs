@@ -12,9 +12,9 @@
                 <li class="side-item <% if (title === 'home') { %>selected <% } %>">
                     <a <% if (title === 'home') { %>id='select'<% } %> href="/"><strong>Home</strong></a>
                 </li>
-                <li class="side-item <% if (title === 'new-reports') { %>selected <% } %> ">
+                <!-- <li class="side-item <% if (title === 'new-reports') { %>selected <% } %> ">
                     <a <% if (title === 'new-reports') { %>id='select'<% } %> href="/newReport"><strong>New Report</strong></a>
-                </li>
+                </li> -->
                 <li class="side-item <% if (title === 'production-dash') { %>selected <% } %>">
                     <a <% if (title === 'production-dash') { %>id='select'<% } %> href="/production"><strong>Mining Production</strong></a>
                 </li>
@@ -55,7 +55,7 @@
                         <a <% if (title === 'Login') { %>id='select'<% } %> href="/login"><strong>Log In</strong></a>
                     </li>
                     <li class="side-item <% if (title === 'Register') { %>selected <% } %>">
-                        <a <% if (title === 'Register') { %>id='select'<% } %> href="/users/new"><strong>Register</strong></a>
+                        <a <% if (title === 'Register') { %>id='select'<% } %> href="/users/newRequest"><strong>Request Access</strong></a>
                     </li>
                 <% } else { %>
                 <li class="side-item">

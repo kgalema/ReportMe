@@ -4,7 +4,7 @@
     <div class="element">
         <div class="element2">
             <h2>Declaration Users</h2>
-            <p><strong>Total number of Declaration users: <%= allUsers.length%></strong></p>
+            <p><strong>Total number of users: <%= allUsers.length%></strong></p>
             <table>
                 <thead>
                     <tr>
@@ -43,6 +43,41 @@
                     <% }) %>
                 </tbody>
             </table>
+
+            <% if (locals.requests && locals.requests.length > 0) { %>
+                <p><strong>Total number of employees requesting access: <%= locals.requests.length%></strong></p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Occupation</th>
+                            <th>Department</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% locals.requests.forEach(user => { %>
+                            <tr>
+                                <td>
+                                    <a href="users/newRequest/<%= user._id %>">
+                                        <%= user.preferredName %>
+                                    </a>
+                                </td>
+                                <td>
+                                    <%= user.username %>
+                                </td>
+                                <td>
+                                    <%= user.occupation %>
+                                </td>
+                                <td>
+                                    <%= user.department %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+
             <p>
                 <a class="button" href="/users/new">Add New User</a>
             </p>

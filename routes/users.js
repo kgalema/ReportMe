@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
+const RequestAccess = require("../models/requestAccess");
 const { isLoggedIn, isAdmin, isConnectionOpen } = require("../middleware");
 const codeAdmin = process.env.secretCode
 
@@ -11,8 +12,13 @@ router.get("/users", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) 
 			req.flash("error", "Error occured while fetching all users");
 			return res.redirect("back");
 		}
-		console.log(allUsers);
-		res.render("users/index", { allUsers: allUsers, title: "users" });
+		RequestAccess.find({}, function(err, requests){
+			if(err || !requests){
+				req.flash("error", "Error occure while getting users")
+				return res.redirect("back")
+			}
+			res.render("users/index", { requests, allUsers: allUsers, title: "users" });
+		})
 	});
 });
 
@@ -24,10 +30,15 @@ router.get("/users/new", isConnectionOpen, function (req, res) {
 // 3. @Create route - post a new section into the database then redirect elsewhere
 router.post("/users", isConnectionOpen, async function (req, res, next) {
 	try {
-		const { preferredName, username, password, occupation, department } = req.body;
-		const user = new User({ preferredName, username, occupation, department });
+		const { preferredName, username, password, occupation, department, isAdmin, _id } = req.body;
+
+		const user = new User({ preferredName, username, occupation, department, isAdmin });
 
 		const registeredUser = await User.register(user, password);
+
+		// On sucessfull registering, delete new user requesting
+		const removed = await RequestAccess.findByIdAndRemove(_id);
+
 		req.login(registeredUser, (err) => {
 			if (err) return next(err);
 			req.flash("success", "You are successfully logged in");

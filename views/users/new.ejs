@@ -4,63 +4,136 @@
 <div class="main-body">
     <div class="element">
         <h2>Register New User</h2>
-        <form method="POST" action="/users">
-            <div class="flex-form">
-                <div class="flex-row">
-                    <label for="username">Preferred Name:</label>
-                    <input id="username" type="text" name="preferredName" placeholder="my_preferred_name" required>
+        <% if (locals.foundRequest) { %>
+            <form method="POST" action="/users">
+                <div class="flex-form">
+                    <div class="flex-row">
+                        <label for="username">Preferred Name:</label>
+                        <input id="username" type="text" name="preferredName" value="<%= locals.foundRequest.preferredName %>" placeholder="my_preferred_name" required>
+                    </div>
+                    <div class="flex-row">
+                        <label for="email_address">Email Address:</label>
+                        <input id="email_address" type="email" name="username" value="<%= locals.foundRequest.username %>" placeholder="my_email_address" required>
+                    </div>
+                    <div class="flex-row">
+                        <label for="password">Password:</label>
+                        <input id="password" type="password" name="password" placeholder="my_password" required>
+                    </div>
+                    <div class="flex-row">
+                        <label for="occupation">Occupation:</label>
+                        <select name="occupation" id="occupation" required>
+                            <option value="<%= locals.foundRequest.occupation %>" selected><%= locals.foundRequest.occupation %></option>
+                            <option value="Manager(General)">General Manager</option>
+                            <option value="Manager(Mine)">Mine Manager</option>
+                            <option value="Manager(MRM)">MRM Manager</option>
+                            <option value="Engineer(Mine)">Engineer (Mine)</option>
+                            <option value="Manager(Rock_Eng)">Rock Engineer</option>
+                            <option value="Manager(Production)">Production Manager</option>
+                            <option value="Geologist(Chief)">Geologist (Chief)</option>
+                            <option value="Mine_Overseer">Mine Overseer</option>
+                            <option value="GES">GES</option>
+                            <option value="Geologist(Snr)">Geologist (Snr)</option>
+                            <option value="Geologist">Geologist</option>
+                            <option value="SCO">SCO</option>
+                            <option value="Planner(Mine)">Mine Planner</option>
+                            <option value="Supervisor(Shift)">Shift Supervisor</option>
+                            <option value="Miner">Miner</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="flex-row">
+                        <label for="department">Department:</label>
+                        <select name="department" id="department">
+                            <option value="<%= locals.foundRequest.department %>" selected><%= locals.foundRequest.department %></option>
+                            <option value="Safety">Safety</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="MRM">MRM</option>
+                            <option value="Mining">Mining</option>
+                            <option value="Ventilation">Ventilation</option>
+                            <option value="Ventilation">HR</option>
+                        </select>
+                    </div>
+                    <div class="flex-row">
+                        <input type="text" name="_id" value="<%= locals.foundRequest._id %>" required readonly hidden>
+                    </div>
+                    <div class="flex-row">
+                        <label for="admin">Is Admin?:</label>
+                        <div>
+                            <label for="adminNo">No</label>
+                            <input id="adminNo" type="radio" checked name="isAdmin" value="false" autocomplete="off">
+                            <label for="adminYes">Yes</label>
+                            <input id="adminYes" type="radio" name="isAdmin" value="true" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="flex-row">
+                        <input type="submit" value="Register">
+                    </div>
                 </div>
-                <div class="flex-row">
-                    <label for="email_address">Email Address:</label>
-                    <input id="email_address" type="email" name="username" placeholder="my_email_address" required>
+            </form>
+        <% } else { %>
+            <form method="POST" action="/users">
+                <div class="flex-form">
+                    <div class="flex-row">
+                        <label for="username">Preferred Name:</label>
+                        <input id="username" type="text" name="preferredName" placeholder="my_preferred_name" required>
+                    </div>
+                    <div class="flex-row">
+                        <label for="email_address">Email Address:</label>
+                        <input id="email_address" type="email" name="username" placeholder="my_email_address" required>
+                    </div>
+                    <div class="flex-row">
+                        <label for="password">Password:</label>
+                        <input id="password" type="password" name="password" placeholder="my_password" required>
+                    </div>
+                    <div class="flex-row">
+                        <label for="occupation">Occupation:</label>
+                        <select name="occupation" id="occupation" required>
+                            <option value="" disabled selected>Select Occupation</option>
+                            <option value="Manager(General)">General Manager</option>
+                            <option value="Manager(Mine)">Mine Manager</option>
+                            <option value="Manager(MRM)">MRM Manager</option>
+                            <option value="Engineer(Mine)">Engineer (Mine)</option>
+                            <option value="Manager(Rock_Eng)">Rock Engineer</option>
+                            <option value="Manager(Production)">Production Manager</option>
+                            <option value="Geologist(Chief)">Geologist (Chief)</option>
+                            <option value="Mine_Overseer">Mine Overseer</option>
+                            <option value="GES">GES</option>
+                            <option value="Geologist(Snr)">Geologist (Snr)</option>
+                            <option value="Geologist">Geologist</option>
+                            <option value="SCO">SCO</option>
+                            <option value="Planner(Mine)">Mine Planner</option>
+                            <option value="Supervisor(Shift)">Shift Supervisor</option>
+                            <option value="Miner">Miner</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="flex-row">
+                        <label for="department">Department:</label>
+                        <select name="department" id="department">
+                            <option value="" disabled selected>Select Department</option>
+                            <option value="Safety">Safety</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="MRM">MRM</option>
+                            <option value="Mining">Mining</option>
+                            <option value="Ventilation">Ventilation</option>
+                            <option value="Ventilation">HR</option>
+                        </select>
+                    </div>
+                    <div class="flex-row">
+                        <label for="admin">Is Admin?:</label>
+                        <div>
+                            <label for="adminYes">No</label>
+                            <input id="adminYes" type="radio" checked name="admin" value="false" autocomplete="off">
+                            <label for="adminNo">Yes</label>
+                            <input id="adminNo" type="radio" name="admin" value="true" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="flex-row">
+                        <input type="submit" value="Register">
+                    </div>
                 </div>
-                <div class="flex-row">
-                    <label for="password">Password:</label>
-                    <input id="password" type="password" name="password" placeholder="my_password" required>
-                </div>
-                <div class="flex-row">
-                    <label for="occupation">Occupation:</label>
-                    <select name="occupation" id="occupation" required>
-                        <option value="" disabled selected>Select Occupation</option>
-                        <option value="Manager(General)">General Manager</option>
-                        <option value="Manager(Mine)">Mine Manager</option>
-                        <option value="Manager(MRM)">MRM Manager</option>
-                        <option value="Engineer(Mine)">Engineer (Mine)</option>
-                        <option value="Manager(Rock_Eng)">Rock Engineer</option>
-                        <option value="Manager(Production)">Production Manager</option>
-                        <option value="Geologist(Chief)">Geologist (Chief)</option>
-                        <option value="Mine_Overseer">Mine Overseer</option>
-                        <option value="GES">GES</option>
-                        <option value="Geologist(Snr)">Geologist (Snr)</option>
-                        <option value="Geologist">Geologist</option>
-                        <option value="SCO">SCO</option>
-                        <option value="Planner(Mine)">Mine Planner</option>
-                        <option value="Supervisor(Shift)">Shift Supervisor</option>
-                        <option value="Miner">Miner</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                <div class="flex-row">
-                    <label for="department">Department:</label>
-                    <select name="department" id="department">
-                        <option value="" disabled selected>Select Department</option>
-                        <option value="Safety">Safety</option>
-                        <option value="Engineering">Engineering</option>
-                        <option value="MRM">MRM</option>
-                        <option value="Mining">Mining</option>
-                        <option value="Ventilation">Ventilation</option>
-                        <option value="Ventilation">HR</option>
-                    </select>
-                </div>
-                <div class="flex-row">
-                    <label for="admin">Admin Code: <sup>*</sup></label>
-                    <input id="admin" type="text" name="admin" placeholder="admin_code" autocomplete="off">
-                </div>
-                <div class="flex-row">
-                    <input type="submit" value="Register">
-                </div>
-            </div>
-        </form>
+            </form>
+        <% } %>
         <div>
             <a href="/users">Dashboard</a>
         </div>

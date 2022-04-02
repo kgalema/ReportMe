@@ -4,17 +4,20 @@
 <div class="main-body">
     <div class="element">
         <h3>Forgot Password</h3>
-        <form method="POST" action="/forgot">
+        <!-- <form method="POST" action="/forgot">
             <div class="flex-form">
                 <div class="flex-row">
                     <label for="email_address">Email Address:</label>
-                    <input id="email_address" type="email" name="email" placeholder="my_email_address">
+                    <input id="email_address" type="email" name="username" placeholder="my_email_address">
                 </div>
                 <div class="flex-row">
                     <input style="width: 100%;" type="submit" value="Reset!">
                 </div>
             </div>
-        </form>
+        </form> -->
+        <p>
+            <%= locals.resetUrl %>
+        </p>
     </div>
 </div>
 

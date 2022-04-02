@@ -607,13 +607,7 @@ if (document.getElementById("myBtnContainer")) {
 
 // ===============date filtering=========
 function dateChange(e, f) {
-    // console.log(f);
-    // const productions = JSON.parse(f);
-    // console.log(productions);
     const selectedDate = e.value;
-
-    // const yesterday = new Date(e.value);
-	// yesterday.setDate(yesterday.getDate() - 1);
 
     const tomorrow = new Date(e.value);
 	tomorrow.setDate(tomorrow.getDate() + 1);
@@ -795,20 +789,19 @@ const todayMinutes = today.getMinutes().toLocaleString("en-US", { minimumInteger
 let todayDay = today.getDate();
 let todayMonth = today.getMonth() + 1;
 let todayYear = today.getFullYear();
+
 if (todayMonth <= 9) {
     todayMonth = "0" + todayMonth;
-    // console.log("Here")
-    // console.log(todayMonth)
 }
+
 if (todayDay <= 9) {
     todayDay = "0" + todayDay;
-    // console.log(todayDay);
 }
 
 let startDateDay = "01"
 let htmlStartDate = `${todayYear}-${todayMonth}-${startDateDay}`
 let htmlDate = `${todayYear}-${todayMonth}-${todayDay}`;
-// console.log(htmlDate);
+
 if(document.getElementById("tableDate")){
     document.getElementById("tableDate").innerHTML = htmlDate.slice(8) + "/" + htmlDate.slice(5, 7) + "/" + htmlDate.slice(0, 4)
 }
@@ -819,6 +812,7 @@ if (document.getElementById("endDate") && document.getElementById("startDate")) 
     document.getElementById("startDate").value = htmlStartDate
     document.getElementById("startDate").max = htmlDate
 }
+
 if(document.getElementById("dateFilter")){
     document.getElementById("dateFilter").max = htmlDate
 }
@@ -1069,7 +1063,6 @@ if(document.getElementById("endDate") && document.getElementById("startDate")){
 }
 
 // Making flash message disappear after few seconds
-
 if(document.getElementById("flash")){
     setTimeout(()=> document.getElementById("flash").innerHTML = "", 10000)
 }
@@ -1187,5 +1180,210 @@ if(productionForm){
     checkCallAchieved();
 }
 
-// console.log("ENd");
+
+/**TARP RED PANELS */
+
+function redpanelFilter(e){
+    const sections = document.getElementById("sections").innerText;
+	const parsedSections = JSON.parse(sections);
+
+    const selectedMO = document.getElementById("moFilter").value;
+    const selectedMOSections = parsedSections.filter((e) => e.mineOverseer.name === selectedMO);
+	const selectedMOSections2 = selectedMOSections.map((e) => e.name);
+
+    const redpanels = document.getElementById("reds").innerText;
+	const parsedRedpanels = JSON.parse(redpanels);
+
+	const newReds = document.getElementById("newReds").innerText;
+	const parsedNewReds = JSON.parse(newReds);
+
+
+    if(e.id === "moFilter"){
+        const tableAll = document.getElementById("tarp-red-tables");
+        const sectionsSelectTag = document.getElementById("sectionFilter");
+    
+        tableAll.style.display = "none";
+    
+        if(selectedMO === "allMO"){
+            tableAll.style.display = "flex";
+            sectionsSelectTag.innerHTML = "<option value='allSections' selected>--section--</option>"
+            sectionsSelectTag.disabled = true;
+            const tableFiltered = document.getElementById("filtered-tarps");
+            tableFiltered.innerText = "";
+            return
+        }
+    
+        const MOnewReds = []
+        parsedNewReds.forEach(e => {
+            if(selectedMOSections2.indexOf(e.section.name) > -1){
+                MOnewReds.push(e)
+            }
+        })
+    
+        const MOreds = []
+        parsedRedpanels.forEach((e) => {
+            if (selectedMOSections2.indexOf(e.section.name) > -1) {
+                MOreds.push(e);
+            }
+        });
+    
+        sectionsSelectTag.disabled = false;
+        let stringToAppend = ""
+        selectedMOSections2.forEach((e, i, arr) => {
+            if(i === 0 && arr.length !== 1){
+                const option = "<option value='allSections' selected>--section--</option>";
+                stringToAppend += option;
+            } else {
+                const option =  `<option value="${e}">${e}</option>`
+                stringToAppend += option
+            }
+        })
+    
+        sectionsSelectTag.innerHTML = stringToAppend;
+    
+        drawTables(MOnewReds, MOreds)
+    }
+
+    if(e.id === "sectionFilter"){
+        const selectedSection = document.getElementById("sectionFilter").value;
+        const newreds = parsedNewReds.filter(e => e.section.name === selectedSection)
+        const reds = parsedRedpanels.filter(e => e.section.name === selectedSection)
+
+        const MOreds = [];
+        const MOnewReds = [];
+
+        if (selectedSection === "allSections") {
+            parsedNewReds.forEach((e) => {
+				if (selectedMOSections2.indexOf(e.section.name) > -1) {
+					MOnewReds.push(e);
+				}
+			});
+
+            parsedRedpanels.forEach((e) => {
+				if (selectedMOSections2.indexOf(e.section.name) > -1) {
+					MOreds.push(e);
+				}
+			});
+
+            drawTables(MOnewReds, MOreds);
+			return;
+		}
+
+		newreds.forEach((e) => {
+			if (selectedMOSections2.indexOf(e.section.name) > -1) {
+				MOnewReds.push(e);
+			}
+		});
+
+		reds.forEach((e) => {
+			if (selectedMOSections2.indexOf(e.section.name) > -1) {
+				MOreds.push(e);
+			}
+		});
+
+		drawTables(MOnewReds, MOreds);
+	}
+}
+
+function drawTables(newReds, reds){
+    const totalLength = newReds.length + reds.length;
+    document.getElementById("totalLength").innerText = totalLength;
+    let newRedsRows = "";
+    newReds.forEach(e => {
+        const row = `<tr>
+                        <td>
+                            <a href="/newRedPanel/${e._id}">
+                                ${e.panel}
+                            </a>
+                        </td>
+                        <td>
+                            ${e.section.name}
+                        </td>
+                        <td class="comments_cell">
+                            ${e.triggers}
+                        </td>
+                        <td>
+                            ${new Date(e.dateDeclared).toDateString()}
+                        </td>
+                        <td>
+                            ${e.age}
+                        </td>
+                    </tr>`;
+        newRedsRows += row;
+    })
+    const newRedsTable = `<table>
+                            <colgroup>
+                                <col style="background-color: grey; width: auto;" span="5">
+                            </colgroup>
+                            <tr>
+                                <th colspan="5">
+                                    ${newReds.length} Red Panels Awaiting Visits
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Panel</th>
+                                <th>Section</th>
+                                <th>Trigger(s)</th>
+                                <th>Date Panel Declared</th>
+                                <th>Age</th>
+                            </tr>
+                            ${newRedsRows}
+    
+                        </table>`;
+
+    // const tableFiltered = document.getElementById("filtered-tarps");
+    // tableFiltered.innerHTML = newRedsTable;
+
+    let redsRows = "";
+    reds.forEach(e => {
+        const row = `<tr>
+                        <td>
+                            <a href="/redPanel/${e._id}">
+                                ${e.panel}
+                            </a>
+                        </td>
+                        <td>
+                            ${e.section.name}
+                        </td>
+                        <td class="comments_cell">
+                            ${e.trigger}
+                        </td>
+                        <td>
+                            ${new Date(e.dateDeclared).toDateString()}
+                        </td>
+                        <td>
+                            ${new Date(e.issueDate).toDateString()}
+                        </td>
+                        <td>
+                            ${e.age}
+                        </td>
+                    </tr>`;
+        redsRows += row;
+    })
+    const redsTable = `<table>
+                            <colgroup>
+                                <col style="background-color: grey; width: auto;" span="6">
+                            </colgroup>
+                            <tr>
+                                <th colspan="6">
+                                    ${reds.length} Red Panels Awaiting Visits
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Panel</th>
+                                <th>Section</th>
+                                <th>Trigger(s)</th>
+                                <th>Date Panel Declared</th>
+                                <th>Date Report Issued</th>
+                                <th>Age</th>
+                            </tr>
+                            ${redsRows}
+    
+                        </table>`;
+
+    const tableFiltered = document.getElementById("filtered-tarps");
+    tableFiltered.innerHTML = newRedsTable + "<br>" + redsTable;
+}
+
+// Constructing the TARP RED tables (new and in-progress)
 

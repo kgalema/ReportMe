@@ -5,108 +5,136 @@
         <div class="element2">
 
             <h2>TARP Red Panels</h2>
-            <h3>Total number of TARP Red Panels: <%= newRedPanels.length + redpanels.length %></h3>
+            <h3>Total number of TARP Red Panels: <span id="totalLength"><%= newRedPanels.length + redpanels.length %></span></h3>
 
+            <div id="fromDB">
+                <p id="sections">
+                    <%= JSON.stringify(sections) %> 
+                </p>
+                <p>
+                    <%= sections %>
+                    <% const MOs = [] %>
+                    <% sections.forEach(section => { %>
+                        <% if (MOs.indexOf(section.mineOverseer.name) === -1) { %>
+                                <% MOs.push(section.mineOverseer.name) %> 
+                        <% } %>
+                    <% }) %>
+                </p>
+                <p id="newReds">
+                    <%= JSON.stringify(newRedPanels) %> 
+                </p>
+                <p id="reds">
+                    <%= JSON.stringify(redpanels) %> 
+                </p>
+            </div>
 
+            <div id="filterDiv">
+                <select name="" id="moFilter" onchange="redpanelFilter(this)">
+                    <option value="allMO" selected>--MO--</option>
+                    <% MOs.forEach(mo => { %>
+                        <option value="<%= mo %>"><%= mo %></option>
+                    <% }) %>
+                </select>
+                <select name="" id="sectionFilter"  onchange="redpanelFilter(this)" disabled>
+                    <option value="allSections" selected>--section--</option>
+                </select>
+            </div>
 
-            <table>
-                <colgroup>
-                    <col style="background-color: grey; width: auto;" span="<%= 5 %>">
-                </colgroup>
-                <tr>
-                    <th colspan="5">
-                        <%= newRedPanels.length %> Red Panels Awaiting Visits
-                    </th>
-                </tr>
-                <tr>
-                    <th>Panel</th>
-                    <th>Section</th>
-                    <th>Trigger(s)</th>
-                    <th>Date Panel Declared</th>
-                    <th>Age</th>
-                </tr>
-
-                <% newRedPanels.forEach(function(red){ %>
-
-                <tr>
-                    <td>
-                        <a href="/newRedPanel/<%= red._id %>"><%= red.panel %></a>
-                    </td>
-
-                    <td>
-                        <%= red.section.name %>
-                    </td>
-
-                    <td class="comments_cell">
-                        <%= red.triggers %>
-                    </td>
-
-                    <td>
-                        <%= red.dateDeclared.toDateString() %>
-                    </td>
-                    <td>
-                        <!-- <p> -->
+            <div class="element2" id="tarp-red-tables">
+                <table>
+                    <colgroup>
+                        <col style="background-color: grey; width: auto;" span="<%= 5 %>">
+                    </colgroup>
+                    <tr>
+                        <th colspan="5">
+                            <%= newRedPanels.length %> Red Panels Awaiting Visits
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Panel</th>
+                        <th>Section</th>
+                        <th>Trigger(s)</th>
+                        <th>Date Panel Declared</th>
+                        <th>Age</th>
+                    </tr>
+    
+                    <% newRedPanels.forEach(function(red){ %>
+    
+                    <tr>
+                        <td>
+                            <a href="/newRedPanel/<%= red._id %>"><%= red.panel %></a>
+                        </td>
+    
+                        <td>
+                            <%= red.section.name %>
+                        </td>
+    
+                        <td class="comments_cell">
+                            <%= red.triggers %>
+                        </td>
+    
+                        <td>
+                            <%= red.dateDeclared.toDateString() %>
+                        </td>
+                        <td>
                             <%= red.age %>
-                        <!-- </p> -->
-                    </td>
-                </tr>
-                <% }) %>
-
-            </table>
-            <br>
-
-
-
-
-            <table>
-                <colgroup>
-                    <col style="background-color: grey; width: auto;" span="<%= 6 %>">
-                </colgroup>
-                <tr>
-                    <th colspan="6">
-                        <%= redpanels.length %> Active TARP Red panels
-                    </th>
-                </tr>
-                <tr>
-                    <th>Panel</th>
-                    <th>Section</th>
-                    <th>Trigger(s)</th>
-                    <th>Date Panel Declared</th>
-                    <th>Date Report Issued</th>
-                    <th>Age</th>
-                </tr>
-
-                <% redpanels.forEach(function(red){ %>
-
-                <tr>
-                    <td>
-                        <a href="/redPanel/<%= red._id %>"><%= red.panel %></a>
-                    </td>
-
-                    <td>
-                        <%= red.section.name %>
-                    </td>
-
-                    <td class="comments_cell">
-                        <%= red.trigger %>
-                    </td>
-
-                    <td>
-                        <%= red.declaredDate.toDateString() %>
-                    </td>
-
-                    <td>
-                        <%= red.issueDate.toDateString() %>
-                    </td>
-
-                    <td>
-                        <!-- <p> -->
+                        </td>
+                    </tr>
+                    <% }) %>
+    
+                </table>
+    
+                <br>
+    
+                <table>
+                    <colgroup>
+                        <col style="background-color: grey; width: auto;" span="<%= 6 %>">
+                    </colgroup>
+                    <tr>
+                        <th colspan="6">
+                            <%= redpanels.length %> Active TARP Red panels
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Panel</th>
+                        <th>Section</th>
+                        <th>Trigger(s)</th>
+                        <th>Date Panel Declared</th>
+                        <th>Date Report Issued</th>
+                        <th>Age</th>
+                    </tr>
+    
+                    <% redpanels.forEach(function(red){ %>
+    
+                    <tr>
+                        <td>
+                            <a href="/redPanel/<%= red._id %>"><%= red.panel %></a>
+                        </td>
+    
+                        <td>
+                            <%= red.section.name %>
+                        </td>
+    
+                        <td class="comments_cell">
+                            <%= red.trigger %>
+                        </td>
+    
+                        <td>
+                            <%= red.declaredDate.toDateString() %>
+                        </td>
+    
+                        <td>
+                            <%= red.issueDate.toDateString() %>
+                        </td>
+    
+                        <td>
                             <%= red.age %>
-                        <!-- </p> -->
-                    </td>
-                </tr>
-                <% }) %>
-            </table>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </table>
+            </div>
+            <div class="element2" id="filtered-tarps"></div>
 
             <p>
                 <a class="button" href="/sections/sectionId/newReds/new">Add New Red Panel</a>

@@ -383,6 +383,9 @@ button.collapsible {
 .filterDiv {
     display: none;
 }
+#filterDiv {
+    margin-bottom: 5px;
+}
 
 .show {
     display: block;
@@ -533,4 +536,8 @@ hr {
 
 .date3 th:hover:not(#today){
     cursor: pointer;
+}
+
+#fromDB {
+    display: none;
 }

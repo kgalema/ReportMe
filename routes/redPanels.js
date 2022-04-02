@@ -71,7 +71,13 @@ router.get("/redPanel", isConnectionOpen, function (req, res) {
 				req.flash("error", "Error occured while fetching data");
 				return res.redirect("back");
 			}
-			res.render("redPanels/index", { redpanels: redpanels, newRedPanels: newRedPanels, title: "TARP-Red" });
+			Section.find({}, function(err, sections){
+				if(err || !sections){
+					console.log(err)
+				}
+				console.log(sections)
+				res.render("redPanels/index", { sections, redpanels: redpanels, newRedPanels: newRedPanels, title: "TARP-Red" });
+			})
 		});
 	});
 });
@@ -120,43 +126,6 @@ router.post("/sections/:id/redPanels", isConnectionOpen, isLoggedIn, upload2.sin
 						req.flash("error", "Could not delete panel from awaiting visit panels");
 						return req.redirect("redPanel");
 					}
-
-					// let mailOptions = {
-					// 	to: "ronny.kgalema@gmail.com",
-					// 	from: "SCO <kdlreports@outlook.com>",
-					// 	subject: `TARP Red Panel ${doc.panel} of ${doc.section.name} Recommendations`,
-					// 	replyTo: "ronny.kgalema@gmail.com",
-					// 	text: 'Good day TARP team\n\n' +
-					// 		'TARP Red recommedations for ' + doc.panel + ' of ' + doc.section.name +' are available. Use the link below to download\n\n' +
-					// 		''+ req.headers.origin + '/sections/' + doc.section.id +'/redPanels/' + doc._id + '/download' + '\n\n' +
-					// 		'Best regards,\n' +
-					// 		'SCO \n\n',
-					// };
-
-					// let smtpTransport = nodemailer.createTransport({
-					// 	host: "smtp-mail.outlook.com",
-					// 	secureConnection: false,
-					// 	port: 587,
-					// 	tls: {
-					// 		ciphers: "SSLv3"
-					// 	},
-					// 	auth: {
-					// 		user: "kdlreports@outlook.com",
-					// 		pass: process.env.GMAILPW
-					// 	}
-					// });
-
-					// smtpTransport.sendMail(mailOptions, function (err, info) {
-					// 	if (err) {
-					// 		console.log("Error while sending mail")
-					// 		console.log(err)
-					// 		req.flash("error", "Email not sent. Please send the email manually")
-					// 		return res.redirect("redPanel")
-					// 	}
-					// 	smtpTransport.close()
-					// 	console.log(info)
-					// 	console.log("mail sent");
-					// })
 					req.flash("success", "Active Red Panel Created. Report available");
 					res.redirect("/redPanel");
 				});

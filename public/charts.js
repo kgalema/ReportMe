@@ -55,8 +55,9 @@ function drawProductionGraph(){
 	// Configuring Progressive Values
 	const cummulativeBlast = cummulateArr(dataBlasted)
 	const cummulativeForecast = cummulateArr(dataForecast)
-	console.log("Cummulative Blast")
-	console.log(cummulativeBlast)
+	
+	// Thickness of bar graphs in pixels
+	const thickness = 40;
 
 
 	// Configuration for non-cummulative graph
@@ -76,6 +77,7 @@ function drawProductionGraph(){
 					data: dataBlasted,
 					backgroundColor: "blue",
 					label: "Actual m\u00B2",
+					maxBarThickness: thickness,
 				},
 			],
 		},
@@ -139,6 +141,7 @@ function drawProductionGraph(){
 					data: cummulativeBlast,
 					backgroundColor: "green",
 					label: "Progressive Actual m\u00B2",
+					maxBarThickness: thickness,
 				},
 			],
 		},

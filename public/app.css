@@ -129,7 +129,13 @@ table.form-row {
     flex-direction: column;
     align-items: center;
     padding: 0 3px;
+    transition: all 2s;
 }
+
+/* #second-element2 {
+    transition: all 2s;
+} */
+
 .element3 {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -383,8 +389,13 @@ button.collapsible {
 .filterDiv {
     display: none;
 }
-#filterDiv {
-    margin-bottom: 5px;
+/* #filterDiv {
+    margin-bottom: 10px;
+} */
+
+
+.availableFilters {
+    margin-bottom: 10px;
 }
 
 .show {

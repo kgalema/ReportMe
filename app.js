@@ -17,6 +17,18 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user");
 require('./initDB');
 
+
+// Middleware for license will be here
+app.use((req, res, next)=> {
+	const expires = 1649018491130 + 1000 * 60 * 60 * 24 * 182;
+	console.log(new Date(expires))
+	if(Date.now() > expires){
+		console.log(Date.now())
+		return res.send("Your trial has ended. Contact declaration.co.za")
+	}
+	console.log("License still active")
+	next()
+})
 const port = process.env.PORT || 4000;
 
 const dbUrl = "mongodb://localhost/reportMe";
@@ -30,30 +42,6 @@ const DBoptions = {
 	// serverSelectionTimeoutMS: 5000,
 	// heartbeatFrequencyMS: 5000
 };
-
-
-//******************************************************************************
-//You gonna have to use the dot thens.
-// async function database (url, options) {
-// 	try {
-// 		console.log("Connecting to database using connect to DB function");
-// 		const yena = await mongoose.connect(url, options);
-// 		console.log("Connected to database")
-// 		return "Connected"
-// 	} catch (error) {
-// 		console.log("Inside catch")
-// 		console.log("That did not go well")
-// 		console.log(mongoose.connection)
-// 		return error
-// 	} finally {
-// 		console.log("Finally")
-// 	}
-// }
-
-// database(dbUrl, DBoptions)
-// 	.then(msg => console.log("DB msg: " + msg))
-// 	.catch(e => console.log("DB error: " + e))
-
 
 //***************************************************/
 const connectWithDB = () => {
@@ -69,7 +57,10 @@ const connectWithDB = () => {
 	});
 };
 
+//***************************************************/
+
 connectWithDB();
+
 
 
 //Check for connection.db

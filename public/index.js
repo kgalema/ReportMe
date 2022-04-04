@@ -545,33 +545,42 @@ function validatePanelName(e) {
 }
 
 // ================solution Showing Infomation selectively=======
-filter("combine")
+// filter("combine")
 let chartData;
-function filter(c, data = []) {
-    let chartData = data
-    let all = document.getElementsByClassName("filterDiv");
-    if (c == "all") {
-        var hideProg = c
-        c = ""
-    };
+function filter(c) {
+    if(c === "blast-progs" || c === "charts"){
+        const ronny = document.getElementById("filterDiv");
+        const ramushu = [...ronny.children];
+        ramushu.forEach((e) => e.disabled = true);
+        ronny.style.display = "none";
+    }
+
+    if(c === "day" || c === "night"){
+        const ronny = document.getElementById("filterDiv");
+        const ramushu = [...ronny.children];
+        ramushu.forEach((e, i) => {
+            if(i !== 2){
+                e.disabled = false;
+            }
+        });
+        ronny.style.display = "block";
+    }
+
+    const all = document.getElementsByClassName("filterDiv");
+
     // Add the "show" class (display:block) to the filtered elements, and remove the "show" class from the elements that are not selected
     for (let i = 0; i < all.length; i++) {
         hideItem(all[i], "show");
-        if (all[i].className.indexOf(c) > -1) showItem(all[i], "show");
-    }
-    if(hideProg == "all"){
-        let section = all[all.length-1]
-        let splitted = section.className.split(" ")
-        let spliced = splitted.splice(0, splitted.length - 1)
-        section.className = spliced.join(" ");
+        if (all[i].className.indexOf(c) > -1) {
+            showItem(all[i], "show")
+        };
     }
 }
 
-// Show filtered elements
+// Show filtered element (div/section)
 function showItem(element, name) {
-    // var i, arr1, arr2;
-    let arr1 = element.className.split(" ");
-    let arr2 = name.split(" ");
+    const arr1 = element.className.split(" ");
+    const arr2 = name.split(" ");
     for (let i = 0; i < arr2.length; i++) {
         if (arr1.indexOf(arr2[i]) == -1) {
             element.className += " " + arr2[i];
@@ -579,10 +588,10 @@ function showItem(element, name) {
     }
 }
 
-// Hide elements that are not selected
+// Hide elements (div/section) that are not selected
 function hideItem(element, name) {
-    let arr1 = element.className.split(" ");
-    let arr2 = name.split(" ");
+    const arr1 = element.className.split(" ");
+    const arr2 = name.split(" ");
     for (let i = 0; i < arr2.length; i++) {
         while (arr1.indexOf(arr2[i]) > -1) {
             arr1.splice(arr1.indexOf(arr2[i]), 1);
@@ -597,7 +606,7 @@ if (document.getElementById("myBtnContainer")) {
     const btns = btnContainer.getElementsByClassName("btn");
     for (let i = 0; i < btns.length; i++) {
         btns[i].addEventListener("click", function () {
-            let current = document.getElementsByClassName("selected");
+            const current = document.getElementsByClassName("selected");
             current[0].className = current[0].className.replace(" selected", "");
             this.className += " selected";
         });
@@ -606,76 +615,46 @@ if (document.getElementById("myBtnContainer")) {
 
 
 // ===============date filtering=========
-function dateChange(e, f) {
-    const selectedDate = e.value;
+function dateChange(e) {
+	// Getting the production data and parsing it from string to JSON object
+	const production = document.getElementById("DB").innerText;
+	const parsedProduction = JSON.parse(production);
 
-    const tomorrow = new Date(e.value);
+    // Filtering production data by selected MO and section
+    const MOandSectionProduction = fileterByMOandSections(e);
+
+	// Getting the date that the user specified
+    const selectedDate = document.getElementById("dateFilter").value
+    console.log(selectedDate)
+
+	// Creating next day so the the selected date
+	const tomorrow = new Date(selectedDate);
 	tomorrow.setDate(tomorrow.getDate() + 1);
 
-    let main = document.getElementById("tables")
-    main.innerHTML = ""
-    let prodFiltered = f.filter(prod => moment(prod.created).format('YYYY-MM-DD') === selectedDate);
-    let prodFilteredNight = f.filter(prod => moment(prod.created).format('YYYY-MM-DD') === moment(tomorrow).format('YYYY-MM-DD'));
-    prodFiltered.sort((a, b) => {
-        if (a.section.name > b.section.name) {
-            return 1
-        } else {
-            return -1
-        }
-    })
-    let dayshift = prodFiltered.filter(prod => prod.general[0].shift === "morning")
-    // let backshift = prodFiltered.filter(prod => prod.general[0].shift === "backshift")
-    let backshift = prodFilteredNight.filter(prod => prod.general[0].shift === "backshift")
-    let content = `
-                    <table id="all-shift" class="filterDiv all combine" style="display: none">
-                        <thead>
-                            <tr>
+	// This is a div where tables will be displayed in it
+	let main = document.getElementById("tables");
+	main.innerHTML = "";
 
-                            </tr>
-                            <tr>
-                                <th>All</th>
-                                <th>Blasted (m)</th>
-                                <th>Cleaned (m)</th>
-                                <th>Supported (m)</th>
-                                <th>Drilled (m)</th>
-                                <th>Prep'd (m)</th>
-                                <th>Not Cleaned (m)</th>
-                                <th>LHDs</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                    ${prodFiltered.map(function (e) {
-        return "<tr><td><a href='/sections/" + e.section.id + "/production/" + e._id + "'>" + e.section.name + "</a></td><td>" + e.blast.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.clean.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.support.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.drill.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.prep.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.notClean.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.LHD.length + "</td></tr>"
-    }).join("")}
+	let prodFiltered = MOandSectionProduction.filter((prod) => moment(prod.created).format("YYYY-MM-DD") === selectedDate);
+	let prodFilteredNight = MOandSectionProduction.filter((prod) => moment(prod.created).format("YYYY-MM-DD") === moment(tomorrow).format("YYYY-MM-DD"));
 
-                            <tr>
-                                <th>Totals</th>
-                                <td>
-                                    ${prodFiltered.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j)).reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${prodFiltered.map(b => b.clean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${prodFiltered.map(b => b.support).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${prodFiltered.map(b => b.drill).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${prodFiltered.map(b => b.prep).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${prodFiltered.map(b => b.notClean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${prodFiltered.map(b => b.LHD).map(sub1 => sub1.length).reduce((i, j) => i + j, 0)}
-                                </td>
-                            </tr>
+	// Sorting production data by section in ascending order
+	prodFiltered.sort((a, b) => {
+		if (a.section.name > b.section.name) {
+			return 1;
+		} else {
+			return -1;
+		}
+	});
 
-                        </tbody >
-                    </table>
-                    <br>
+	// Filtering only day shift data from the production array
+	const dayshift = prodFiltered.filter((prod) => prod.general[0].shift === "morning");
+
+	// Filtering only night shift data from the production array
+	const backshift = prodFilteredNight.filter((prod) => prod.general[0].shift === "backshift");
+
+    // Creating tables to be pushed into the main div/container
+	const content = `
                     <table id="day-shift" class="filterDiv day">
                         <thead>
                             <tr>
@@ -693,90 +672,264 @@ function dateChange(e, f) {
                             </tr>
                         </thead>
                         <tbody>
-                      ${dayshift.map(function (e) {
-        return "<tr><td><a href='/sections/" + e.section.id + "/production/" + e._id + "'>" + e.section.name + "</a></td><td>" + e.blast.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.clean.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.support.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.drill.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.prep.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.notClean.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.LHD.length + "</td></tr>"
-    }).join("")}
+                      ${dayshift
+							.map(function (e) {
+								return (
+									"<tr><td><a href='/sections/" +
+									e.section.id +
+									"/production/" +
+									e._id +
+									"'>" +
+									e.section.name +
+									"</a></td><td>" +
+									e.blast.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
+									"</td><td>" +
+									e.clean.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
+									"</td><td>" +
+									e.support.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
+									"</td><td>" +
+									e.drill.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
+									"</td><td>" +
+									e.prep.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
+									"</td><td>" +
+									e.notClean.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
+									"</td><td>" +
+									e.LHD.length +
+									"</td></tr>"
+								);
+							})
+							.join("")}
 
 
                             <tr>
                                 <th>Totals</th>
                                 <td>
-                                    ${dayshift.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j)).reduce((x, y) => x + y, 0)}
+                                    ${dayshift
+										.map((b) => b.blast)
+										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j))
+										.reduce((x, y) => x + y, 0)}
                                 </td>
                                 <td>
-                                    ${dayshift.map(b => b.clean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
+                                    ${dayshift
+										.map((b) => b.clean)
+										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
+										.reduce((x, y) => x + y, 0)}
                                 </td>
                                 <td>
-                                    ${dayshift.map(b => b.support).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
+                                    ${dayshift
+										.map((b) => b.support)
+										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
+										.reduce((x, y) => x + y, 0)}
                                 </td>
                                 <td>
-                                    ${dayshift.map(b => b.drill).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
+                                    ${dayshift
+										.map((b) => b.drill)
+										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
+										.reduce((x, y) => x + y, 0)}
                                 </td>
                                 <td>
-                                    ${dayshift.map(b => b.prep).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
+                                    ${dayshift
+										.map((b) => b.prep)
+										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
+										.reduce((x, y) => x + y, 0)}
                                 </td>
                                 <td>
-                                    ${dayshift.map(b => b.notClean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
+                                    ${dayshift
+										.map((b) => b.notClean)
+										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
+										.reduce((x, y) => x + y, 0)}
                                 </td>
                                 <td>
-                                    ${dayshift.map(b => b.LHD).map(sub1 => sub1.length).reduce((i, j) => i + j, 0)}
+                                    ${dayshift
+										.map((b) => b.LHD)
+										.map((sub1) => sub1.length)
+										.reduce((i, j) => i + j, 0)}
                                 </td>
                             </tr>
                         </tbody >
                     </table>
                     <br>
-                <table id="night-shift" class="filterDiv night">
-                    <thead>
-                        <tr>
+                    <table id="night-shift" class="filterDiv night">
+                        <thead>
+                            <tr>
 
-                        </tr>
-                        <tr>
-                            <th>Night</th>
-                            <th>Cleaned (m)</th>
-                            <th>Supported (m)</th>
-                            <th>Drilled (m)</th>
-                            <th>Prep'd (m)</th>
-                            <th>Not Cleaned (m)</th>
-                            <th>LHDs</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    ${backshift.map(function (e) {
-        return "<tr><td><a href='/sections/" + e.section.id + "/production/" + e._id + "'>" + e.section.name + "</a></td><td>" + e.clean.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.support.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.drill.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.prep.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.notClean.map(sub1 => sub1.length).reduce((i, j) => i + j, 0) + "</td><td>" + e.LHD.length + "</td></tr>"
-    }).join("")}
+                            </tr>
+                            <tr>
+                                <th>Night</th>
+                                <th>Cleaned (m)</th>
+                                <th>Supported (m)</th>
+                                <th>Drilled (m)</th>
+                                <th>Prep'd (m)</th>
+                                <th>Not Cleaned (m)</th>
+                                <th>LHDs</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        ${backshift
+                            .map(function (e) {
+                                return (
+                                    "<tr><td><a href='/sections/" +
+                                    e.section.id +
+                                    "/production/" +
+                                    e._id +
+                                    "'>" +
+                                    e.section.name +
+                                    "</a></td><td>" +
+                                    e.clean.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
+                                    "</td><td>" +
+                                    e.support.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
+                                    "</td><td>" +
+                                    e.drill.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
+                                    "</td><td>" +
+                                    e.prep.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
+                                    "</td><td>" +
+                                    e.notClean.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
+                                    "</td><td>" +
+                                    e.LHD.length +
+                                    "</td></tr>"
+                                );
+                            })
+                            .join("")}
+
+                            <tr>
+                                <th>Totals</th>
+                                
+                                <td>
+                                    ${backshift
+                                        .map((b) => b.clean)
+                                        .map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
+                                        .reduce((x, y) => x + y, 0)}
+                                </td>
+                                <td>
+                                    ${backshift
+                                        .map((b) => b.support)
+                                        .map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
+                                        .reduce((x, y) => x + y, 0)}
+                                </td>
+                                <td>
+                                    ${backshift
+                                        .map((b) => b.drill)
+                                        .map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
+                                        .reduce((x, y) => x + y, 0)}
+                                </td>
+                                <td>
+                                    ${backshift
+                                        .map((b) => b.prep)
+                                        .map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
+                                        .reduce((x, y) => x + y, 0)}
+                                </td>
+                                <td>
+                                    ${backshift
+                                        .map((b) => b.notClean)
+                                        .map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
+                                        .reduce((x, y) => x + y, 0)}
+                                </td>
+                                <td>
+                                    ${backshift
+                                        .map((b) => b.LHD)
+                                        .map((sub1) => sub1.length)
+                                        .reduce((i, j) => i + j, 0)}
+                                </td>
+                            </tr>
+                        </tbody >
+                    </table>`;
+
+	const all = document.createElement("section");
+	all.innerHTML = content;
+	all.setAttribute("id", "wrapper");
+	main.appendChild(all);
+	document.getElementById("morning").click();
+}
 
 
-                        <tr>
-                            <th>Totals</th>
-                            
-                            <td>
-                                ${backshift.map(b => b.clean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
-                            </td>
-                            <td>
-                                ${backshift.map(b => b.support).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
-                            </td>
-                            <td>
-                                ${backshift.map(b => b.drill).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
-                            </td>
-                            <td>
-                                ${backshift.map(b => b.prep).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
-                            </td>
-                            <td>
-                                ${backshift.map(b => b.notClean).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0)).reduce((x, y) => x + y, 0)}
-                            </td>
-                            <td>
-                                ${backshift.map(b => b.LHD).map(sub1 => sub1.length).reduce((i, j) => i + j, 0)}
-                            </td>
-                        </tr>
-                    </tbody >
-                </table>
-`
+function fileterByMOandSections(e){
+    console.log("This function runs")
+	// Get all sections and parse them to a jSON object
+	const sections = document.getElementById("DBS").innerText;
+	const parsedSections = JSON.parse(sections);
 
-    let all = document.createElement("section");
-    all.innerHTML = content;
-    all.setAttribute("id", "wrapper");
-    main.appendChild(all)
-    document.getElementById('morning_shift').click()
+	// Get selected MO and section
+	const selectedSection = document.getElementById("sectionFilter").value;
+
+	// Selected MO
+	const selectedMO = document.getElementById("moFilter").value;
+
+	// Get sections that belong to the
+	const selectedMOSections = parsedSections.filter((e) => e.mineOverseer.name === selectedMO);
+	const selectedMOSections2 = selectedMOSections.map((e) => e.name);
+
+	const production = document.getElementById("DB").innerText;
+	const parsedProduction = JSON.parse(production);
+
+    const sectionsSelectTag = document.getElementById("sectionFilter");
+
+	let MOproductions = parsedProduction;
+
+	// What to do if MO select tag is changed
+	if (e.id === "moFilter" || e.id === "dateFilter") {
+
+		if (selectedMO === "allMO") {
+			sectionsSelectTag.innerHTML = "<option value='allSections' selected>--section--</option>";
+			sectionsSelectTag.disabled = true;
+			return MOproductions;
+		}
+
+		// Clear out the original MOproductions array
+		MOproductions = [];
+
+        // Re-construct the MOproductions array with filtered data by MO
+		parsedProduction.forEach((e) => {
+			if (selectedMOSections2.indexOf(e.section.name) > -1) {
+				MOproductions.push(e);
+			}
+		});
+
+        // Enabling the filtering by section
+        sectionsSelectTag.disabled = false;
+
+        // Sections available are only those beloging to the selected mine overseer
+		let stringToAppend = "";
+		selectedMOSections2.forEach((e, i, arr) => {
+			if (i === 0 && arr.length !== 1) {
+				const option = "<option value='allSections' selected>--section--</option>";
+				const option2 = `<option value='${e}'>${e}</option>`;
+				stringToAppend += (option + option2);
+			} else {
+				const option = `<option value="${e}">${e}</option>`;
+				stringToAppend += option;
+			}
+		});
+
+		sectionsSelectTag.innerHTML = stringToAppend;
+	}
+
+	// What to do if section select tag is changed
+	if (e.id === "sectionFilter" || e.id === "dateFilter") {
+		const selectedSection = document.getElementById("sectionFilter").value;
+
+		// By this stage
+		const sectionsFiltered = parsedProduction.filter((e) => e.section.name === selectedSection);
+
+		// Clear out the original MOproductions array
+		MOproductions = [];
+
+		if (selectedSection === "allSections") {
+			parsedProduction.forEach((e) => {
+				if (selectedMOSections2.indexOf(e.section.name) > -1) {
+					MOproductions.push(e);
+				}
+			});
+			return MOproductions;
+		}
+
+		sectionsFiltered.forEach((e) => {
+			if (selectedMOSections2.indexOf(e.section.name) > -1) {
+				MOproductions.push(e);
+			}
+		});
+	}
+
+	return MOproductions;
 }
 
 
@@ -818,7 +971,8 @@ if(document.getElementById("dateFilter")){
 }
 
 if(document.getElementById("startDate")){
-    document.getElementById("startDate").value = htmlDate
+    // document.getElementById("startDate").value = htmlDate
+    document.getElementById("startDate").value = htmlStartDate
     document.getElementById("startDate").max = htmlDate
 }
 
@@ -845,18 +999,25 @@ if (document.getElementById("dateFilter")) {
 }
 
 
-function blastFilter(e, prod) {
-    let endDate = document.getElementById("endDate").value
-    let startDate = document.getElementById("startDate").value
-    document.getElementById("tableDate").innerHTML = endDate.slice(8) + "/" + endDate.slice(5, 7) + "/" + endDate.slice(0, 4)
+function blastFilter(e) {
+
+    // Getting production data and converts it into a JSON object
+    const production = document.getElementById("DB").innerText;
+	const parsedProduction = JSON.parse(production);
+
+    const endDate = document.getElementById("endDate").value;
+    const startDate = document.getElementById("startDate").value;
+
     if (endDate < startDate) {
+        console.log(today)
         e.target.value = ""
         document.getElementById("tableDate").innerHTML = endDate.slice(8) + "/" + endDate.slice(5, 7) + "/" + endDate.slice(0, 4)
+        document.getElementById("endDate").value = moment(today).format('YYYY-MM-DD');
         return alert("Start date cannot be greater than end date. Please re-select your date range")
     }
 
-    let filteredByDate = prod.filter(prod1 => { return moment(prod1.created).format('YYYY-MM-DD') >= startDate && moment(prod1.created).format('YYYY-MM-DD') <= endDate}).filter(a => a.general[0].shift === "morning")
-    let todayProduction = prod.filter(prod1 => { return moment(prod1.created).format('YYYY-MM-DD') == endDate }).filter(a => a.general[0].shift === "morning")
+    const filteredByDate = parsedProduction.filter(prod1 => { return moment(prod1.created).format('YYYY-MM-DD') >= startDate && moment(prod1.created).format('YYYY-MM-DD') <= endDate}).filter(a => a.general[0].shift === "morning")
+    const todayProduction = parsedProduction.filter(prod1 => { return moment(prod1.created).format('YYYY-MM-DD') == endDate }).filter(a => a.general[0].shift === "morning")
     todayProduction.sort((a, b) => {
         if (a.section.name > b.section.name){
             return 1
@@ -925,9 +1086,9 @@ function blastFilter(e, prod) {
 
     budgetProgTotal = filteredByDate.map(b2 => b2.section.budget).reduce((b3, b4) => b3 + b4, 0)
     forecastProgTotal = filteredByDate.map(b2 => b2.section.forecast).reduce((b3, b4) => b3 + b4, 0)
-    let advances = filteredByDate.map(b => b.section.plannedAdvance)
-    let blasts = filteredByDate.map(b5 => b5.blast.map(sub1 => sub1.length).reduce((i, j) => i + j))
-    let squareMetersProgTotal = advances.reduce((r, a, i) => r + a * blasts[i], 0)
+    const advances = filteredByDate.map(b => b.section.plannedAdvance)
+    const blasts = filteredByDate.map(b5 => b5.blast.map(sub1 => sub1.length).reduce((i, j) => i + j))
+    const squareMetersProgTotal = advances.reduce((r, a, i) => r + a * blasts[i], 0)
     varianceProgTotal = squareMetersProgTotal - forecastProgTotal
 
     if (Math.sign(varianceProgTotal) === -1) {
@@ -936,13 +1097,10 @@ function blastFilter(e, prod) {
         varianceProgTotal = varianceProgTotal.toFixed(1)
     }
 
-    let numRows = todayProduction.length + 3
+    const numRows = todayProduction.length + 3
 
     document.getElementById("progressives").innerHTML = "";
-    let content = `
-                    <thead>
-
-                    </thead>
+    const content = `
                     <tbody>
                         <tr>
                             <th colspan="2"><span id="tableDate" >18-Jan</span></th>
@@ -980,12 +1138,12 @@ function blastFilter(e, prod) {
                             budgetProg = sections.map(b2 => b2.section.budget).reduce((b3, b4) => b3 + b4, 0)
                             forecastProg = sections.map(b2 => b2.section.forecast).reduce((b3, b4) => b3 + b4, 0)
 
-                            let actual2 = sections.map(b5 => b5.blast.map(sub1 => sub1.length).reduce((i, j) => i + j, 0)).reduce((b6, b7) => b6 + b7, 0).toFixed(1)
+                            // let actual2 = sections.map(b5 => b5.blast.map(sub1 => sub1.length).reduce((i, j) => i + j, 0)).reduce((b6, b7) => b6 + b7, 0).toFixed(1)
                             let actual21 = sections.map(b5 => b5.blast.map(sub1 => sub1.length).reduce((i, j) => i + j, 0)*b5.section.plannedAdvance).reduce((b6, b7) => b6 + b7, 0).toFixed(1)
-                            let advances = sections.map(b => b.section.plannedAdvance)
+                            // let advances = sections.map(b => b.section.plannedAdvance)
                             
                             
-                            let blasts = sections.map(b5 => b5.blast.map(sub1 => sub1.length).reduce((i, j) => i+j, 0))
+                            // let blasts = sections.map(b5 => b5.blast.map(sub1 => sub1.length).reduce((i, j) => i+j, 0))
                             
                             varianceProg = Number(actual21) - forecastProg
 
@@ -1041,19 +1199,18 @@ function blastFilter(e, prod) {
 
 
     // **********Getting smileys to work**************
-    let vari = document.getElementsByClassName("variance")
+    const vari = document.getElementsByClassName("variance");
     for (let i = 0; i < vari.length; i++) {
         if (vari[i].textContent.indexOf("(") < 0) {
-            vari[i].nextElementSibling.innerHTML = "&#128578"
-            vari[i].nextElementSibling.style.backgroundColor = "green"
+            vari[i].nextElementSibling.innerHTML = "&#128578";
+            vari[i].nextElementSibling.style.backgroundColor = "green";
         } else {
-            vari[i].nextElementSibling.innerHTML = "&#128577"
-            vari[i].nextElementSibling.style.backgroundColor = "red"
-            vari[i].style.color = "red"
+            vari[i].nextElementSibling.innerHTML = "&#128577";
+            vari[i].nextElementSibling.style.backgroundColor = "red";
+            vari[i].style.color = "red";
 
         }
     }
-
 }
 
 
@@ -1181,8 +1338,7 @@ if(productionForm){
 }
 
 
-/**TARP RED PANELS */
-
+/*********************************************************TARP RED PANELS************************/
 function redpanelFilter(e){
     const sections = document.getElementById("sections").innerText;
 	const parsedSections = JSON.parse(sections);
@@ -1199,6 +1355,8 @@ function redpanelFilter(e){
 
 
     if(e.id === "moFilter"){
+        const totalLength = parsedNewReds.length + parsedRedpanels.length;
+        document.getElementById("totalLength").innerText = totalLength;
         const tableAll = document.getElementById("tarp-red-tables");
         const sectionsSelectTag = document.getElementById("sectionFilter");
     
@@ -1232,7 +1390,8 @@ function redpanelFilter(e){
         selectedMOSections2.forEach((e, i, arr) => {
             if(i === 0 && arr.length !== 1){
                 const option = "<option value='allSections' selected>--section--</option>";
-                stringToAppend += option;
+                const option2 = `<option value="${e}">${e}</option>`;
+                stringToAppend += (option + option2);
             } else {
                 const option =  `<option value="${e}">${e}</option>`
                 stringToAppend += option
@@ -1285,6 +1444,7 @@ function redpanelFilter(e){
 	}
 }
 
+// Constructing the TARP RED tables (new and in-progress)
 function drawTables(newReds, reds){
     const totalLength = newReds.length + reds.length;
     document.getElementById("totalLength").innerText = totalLength;
@@ -1385,5 +1545,5 @@ function drawTables(newReds, reds){
     tableFiltered.innerHTML = newRedsTable + "<br>" + redsTable;
 }
 
-// Constructing the TARP RED tables (new and in-progress)
+
 

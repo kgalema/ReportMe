@@ -140,7 +140,6 @@ router.get("/sections/:id/production/:production_id", isConnectionOpen, function
 				req.flash("error", "Looks like the report does not have author");
 				return res.redirect("back");
 			}
-			console.log("foundProduction console1");
 			// These variables are necessary for triggering usage virtuals in the schema. They are all undefined
 			const LHDUsage = foundProduction.LHDUsage;
 			const bolterUsage = foundProduction.bolterUsage;

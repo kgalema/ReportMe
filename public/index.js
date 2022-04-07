@@ -1327,18 +1327,17 @@ function checkCallAchieved (e) {
 }
 
 const productionForm = document.querySelector(".new-production")
-// const heading = document.querySelector("h2").innerText.includes("Edit")
-// console.log(heading)
 
-// if(heading && productionForm){
-//     checkCallAchieved()
-// }
 if(productionForm){
     checkCallAchieved();
 }
 
 
-/*********************************************************TARP RED PANELS************************/
+/*
+ *
+ *******************************TARP RED PANELS********************
+ *
+ */
 function redpanelFilter(e){
     const sections = document.getElementById("sections").innerText;
 	const parsedSections = JSON.parse(sections);
@@ -1544,6 +1543,102 @@ function drawTables(newReds, reds){
     const tableFiltered = document.getElementById("filtered-tarps");
     tableFiltered.innerHTML = newRedsTable + "<br>" + redsTable;
 }
+
+
+/*
+ *
+ *******************************REHABILITAED TARP RED PANELS********************
+ *
+ */
+
+function  rehabTARPFilters(){
+	// Getting data to work with
+	const rehabedPanels = document.getElementById("rehabed-panels").innerText;
+	const parsedRehabedPanels = JSON.parse(rehabedPanels);
+	const startDate = document.getElementById("startDate").value;
+	const endDate = document.getElementById("endDate").value;
+	const sectionSelected = document.getElementById("section-selected").value;
+
+	// Get the container to draw the table
+	const container = document.getElementById("rehabed-panels-table");
+
+	// Filtering rehabilitated panels by date range
+	const filteredByDate = parsedRehabedPanels.filter((e) => moment(e.rehabDate).format("YYYY-MM-DD") >= startDate && moment(e.rehabDate).format("YYYY-MM-DD") <= endDate);
+
+	// Filtering rehabilitated panels by section selected
+    let filteredBySection = filteredByDate;
+    if(sectionSelected !== "all-sections"){
+        filteredBySection = filteredByDate.filter(e => e.section.name === sectionSelected);
+    }
+
+    // Contruct the table
+    const tableContents = rehabedPanelsTable(filteredBySection)
+    container.innerHTML = tableContents;
+}
+
+function rehabedPanelsTable(data){
+    if(data && data.length === 0){
+        return "No Rehabilitated Panels."
+    }
+    console.log(data[0].section.name)
+
+    let stringRows = "";
+    data.forEach(e => {
+        const row = `<tr>
+                        <td>
+                            <a href="/rehabedPanel/${e._id}">
+                                ${e.panel}
+                            </a>
+                        </td>
+
+                        <td>
+                            ${e.section.name}
+                        </td>
+
+                        <td class="comments_cell">
+                            ${e.trigger}
+                        </td>
+
+                        <td>
+                            ${new Date(e.declaredDate).toDateString()}
+                        </td>
+
+                        <td>
+                            ${new Date(e.issueDate).toDateString()}
+                        </td>
+
+                        <td>
+                            ${new Date(e.rehabDate).toDateString()}
+                        </td>
+                    </tr>`;
+
+        stringRows += row
+    })
+
+    const contents = `
+                    <table>
+                        <colgroup>
+                            <col style="background-color: grey; width: auto;" span=${6}>
+                        </colgroup>
+
+                        <tr>
+                            <th colspan="7">
+                                ${data.length}  Rehabilitated Panel(s)
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Panel</th>
+                            <th>Section</th>
+                            <th>Trigger(s)</th>
+                            <th>Date Panel Declared</th>
+                            <th>Date Report Issued</th>
+                            <th>Date Rehabilitated</th>
+                        </tr>
+                        ${stringRows}
+                    </table>`;
+    return contents;
+}
+
 
 
 

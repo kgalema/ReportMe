@@ -17,8 +17,16 @@ router.get("/sections", isConnectionOpen, function (req, res) {
 			req.flash("error", "Error occured while fetching all sections");
 			return res.redirect("/");
 		}
-		res.render("sections/index", { sections: allSections, title: "sections" });
-	}).sort("name");
+		const collator = new Intl.Collator(undefined, {
+			numeric: true,
+			sensitivity: "base",
+		});
+
+		const sorted = allSections.sort(function (a, b) {
+			return collator.compare(a.name, b.name);
+		});
+		res.render("sections/index", { sections: sorted, title: "sections" });
+	})
 });
 
 // 2. New route - renders a for creating new section
@@ -37,14 +45,13 @@ router.get("/sections/new", isConnectionOpen, isLoggedIn, function (req, res) {
 router.post("/sections", isConnectionOpen, isLoggedIn, function (req, res) {
 	User.findById(req.body.section.mineOverseer, function (err, foundUser) {
 		if (err || !foundUser) {
-			console.log(foundUser);
 			req.flash("error", "Provided MO does not exist");
 			return res.redirect("sections");
 		}
 		req.body.section.author = req.user._id;
 		req.body.section.mineOverseer = {
 			_id: foundUser._id,
-			name: foundUser.username,
+			name: foundUser.preferredName,
 		};
 		Section.create(req.body.section, function (err, newSection) {
 			if (err || !newSection) {

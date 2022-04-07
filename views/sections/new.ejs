@@ -13,7 +13,7 @@
                 <div class="flex-row">
                     <label for="mineOverseer">Mine Overseer:</label>
                     <select name="section[mineOverseer]" id="mineOverseer" required>
-                        <option value="heloo" selected disabled>Select M/O</option>
+                        <option value="" selected disabled>Select M/O</option>
                         <% mineOverseers.forEach(mo => { %>
                             <option value="<%= mo._id %>"><%= mo.preferredName %></option>
                         <% }) %>

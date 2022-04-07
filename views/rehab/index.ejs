@@ -6,69 +6,34 @@
     <div class="element">
         <div class="element2">
         <h2>Rehabilitated Panels</h2>
-        <table>
-            <colgroup>
-                <col style="background-color: grey; width: auto;" span="<%= 6 %>">
-            </colgroup>
-            <tr>
-                <th colspan="7">
-                    <%= rehabedPanels.length %>  Rehabilitated Panels
-                </th>
-            </tr>
-            <tr>
-                <th>Panel</th>
-                <th>Section</th>
-                <th>Trigger(s)</th>
-                <th>Date Panel Declared</th>
-                <th>Date Report Issued</th>
-                <th>Date Rehabilitated</th>
-            </tr>
-        
-            <% rehabedPanels.forEach(function(rehabed){ %>
-        
-                <tr>
-                    <td>
-                        <a href="/rehabedPanel/<%= rehabed._id %>">
-                            <%= rehabed.panel %>
-                        </a>
-                    </td>
-        
-                    <td>
-                        <%= rehabed.section.name %>
-                    </td>
-        
-                    <td class="comments_cell">
-                        <%= rehabed.trigger %>
-                    </td>
-        
-                    <td>
-                        <% if(rehabed.declaredDate) { %>
-                            <%= rehabed.declaredDate.toDateString() %>
-                        <% } else  { %>
-                            <%= "no date" %>
-                        <% } %>
-                    </td>
-        
-                    <td>
-                        <% if(rehabed.issueDate) { %>
-                            <%= rehabed.issueDate.toDateString() %>
-                        <% } else  { %>
-                            <%= "no date" %>
-                        <% } %>
-                    </td>
-
-                    <td>
-                        <% if(rehabed.issueDate) { %>
-                            <%= rehabed.issueDate.toDateString() %>
-                        <% } else  { %>
-                            <%= "no date" %>
-                        <% } %>
-
-                    </td>
-        
-                </tr>
+        <div id="fromDB">
+            <p id="rehabed-panels">
+                <%= JSON.stringify(rehabedPanels) %> 
+            </p>
+            <p>
+                <%= rehabedPanels %>
+                <% const sections = [] %>
+                <% rehabedPanels.forEach(panel => { %>
+                    <% if (sections.indexOf(panel.section.name) === -1) { %>
+                        <% sections.push(panel.section.name) %> 
+                    <% } %>
                 <% }) %>
-        </table>
+            </p>
+        </div>
+        <div class="availableFilters">
+           <select name="" id="section-selected" onchange="rehabTARPFilters()">
+               <option value="all-sections">--all sections--</option>
+               <% sections.forEach(section => { %>
+                    <option value="<%= section %>"><%= section %></option>
+               <% }) %>
+           </select>
+           <label for="">From:</label>
+            <input type="date" id="startDate" oninput="rehabTARPFilters()">
+            <label for="">To:</label>
+            <input type="date" id="endDate" oninput="rehabTARPFilters()">
+        </div>
+
+        <div id="rehabed-panels-table"></div>
         <hr>
         <a href="/redPanel">Back</a>
         </div>

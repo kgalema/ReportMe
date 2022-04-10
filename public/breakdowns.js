@@ -5,16 +5,13 @@ function breakdownFilter(date, data, closedData) {
     const overlappingShiftName = (overlappingShift[0].name).toLowerCase();
     const overlappingShiftEndTime = overlappingShift[0].end;
     const overlappingShiftStartTime = overlappingShift[0].start;
-    const overlappingShiftStartHour = Number(overlappingShiftStartTime.split(":")[0]);
-    
     
     const section = document.getElementById("all-breakdowns");
     const shift = document.getElementsByClassName("breakdownShift");
     const shiftArr = [...shift]
     const shiftSelected = shiftArr.filter(e => e.checked)
     const openShiftFilteredBreakdowns = data.filter(e => e.shift === shiftSelected[0].value);
-    console.log(shiftSelected[0].value)
-    console.log(date)
+    
     // console.log(openShiftFilteredBreakdowns.length)
     // openShiftFilteredBreakdowns.forEach(e => console.log(e.shift))
     const closedShiftFilteredBreakdowns = closedData.filter(e => e.breakdown.shift === shiftSelected[0].value);
@@ -785,6 +782,10 @@ function breakdownFilter(date, data, closedData) {
 
 if (document.getElementById("breakdown-date")) {
   document.getElementById("breakdown-date").oninput();
+}
+
+if (document.getElementById("todayDate")) {
+  document.getElementById("todayDate").value = htmlDate;
 }
 
 //Filters Item/TMMID based on what catergory is selected

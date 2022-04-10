@@ -5,7 +5,7 @@ const User = require("../models/user");
 const Breakdown = require("../models/breakdown");
 const TMM = require("../models/tmms");
 const Shift = require("../models/shift");
-const closedBreakdown = require("../models/closedBreakdown")
+const closedBreakdown = require("../models/closedBreakdown");
 const { isLoggedIn, isBreakdownAuthor, isConnectionOpen } = require("../middleware");
 
 

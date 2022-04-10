@@ -1580,7 +1580,6 @@ function rehabedPanelsTable(data){
     if(data && data.length === 0){
         return "No Rehabilitated Panels."
     }
-    console.log(data[0].section.name)
 
     let stringRows = "";
     data.forEach(e => {

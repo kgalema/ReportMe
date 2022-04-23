@@ -357,7 +357,7 @@ app.all("*", (req, res, next) => {
 const lastMiddlware = (err, req, res, next) => {
 	console.log("Error handling middleware at app.js:278");
 	const { statusCode = 500 } = err;
-	console.log(err.name);
+	console.log("Last error handling middleware hit");
 	if (err.name === "MongoServerSelectionError") {
 		// return res.send("Database is down. Contact admin");
 		return res.render("welcomePage");

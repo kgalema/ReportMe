@@ -56,7 +56,6 @@ router.post("/breakdowns/:breakdownId/closedBreakdowns", isConnectionOpen, isLog
 			}
 			newClosedBreakdown.author.id = req.user._id;
 			newClosedBreakdown.breakdown = foundBreakdown;
-			// newClosedBreakdown.shiftId = "";
 
 			newClosedBreakdown.save(function (err, savedClosedBreakdown) {
 				if (err || !savedClosedBreakdown) {
@@ -66,7 +65,7 @@ router.post("/breakdowns/:breakdownId/closedBreakdowns", isConnectionOpen, isLog
 				Breakdown.findByIdAndDelete(req.params.breakdownId, function (err) {
 					if (err) {
 						req.flash("error", "Error occured while deleting breakdown");
-						res.redirect("/breakdowns");
+						return res.redirect("/breakdowns");
 					}
 
 					req.flash("success", "Successfully closed breakdown");

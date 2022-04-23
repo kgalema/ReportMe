@@ -9,7 +9,12 @@
             <p>Start time: - <%= breakdown.start %></p>
             <p>Description: - <%= breakdown.description %></p>
             <p>Reference number: - <%= breakdown.sapNumber %></p>
-        </div>
+            <!-- Show this 30 minutes before end of shift -->
+            
+         </div>
+         <p>
+            <a title="Move to next shift" href="/breakdowns/<%= breakdown._id %>/edit?query=next">&#128256</a>
+         </p>
         <a href="/sections/<%= breakdown.section.id %>/closedBreakdowns/new?q=<%= breakdown._id %>">Close Breakdown</a>
         <hr>
       <div>

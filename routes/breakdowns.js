@@ -117,6 +117,16 @@ router.get("/breakdowns/:id/edit", isConnectionOpen, isLoggedIn, isBreakdownAuth
 				req.flash("error", "No sections in the database");
 				return res.redirect("/breakdowns");
 			}
+			if (req.query.query && req.query.query === "next") {
+				Shift.find({}, function(err, shifts){
+					if(err || !shifts){
+						req.flash("error", "Error occured while validating production shift")
+						return res.redirect("/breakdowns")
+					}
+					return res.render("breakdowns/next", { breakdown, shifts, title: "breakdowns"});
+				})
+				return
+			}
 			res.render("breakdowns/edit", { breakdown: breakdown, sections: sections, title: "breakdowns" });
 		});
 	});
@@ -125,6 +135,73 @@ router.get("/breakdowns/:id/edit", isConnectionOpen, isLoggedIn, isBreakdownAuth
 
 // 6. Update route - Puts edited info about one particular breakdown in the database
 router.put("/breakdown/:id", isConnectionOpen, isLoggedIn, isBreakdownAuthor, function (req, res) {
+	if(req.query.query && req.query.query === "next"){
+		const nextShift = req.body.breakdown.shift.split("&")[0];
+		const nextStartTime = req.body.breakdown.shift.split("&")[1];
+		const closeEndTime = req.body.breakdown.shift.split("&")[2];
+		const bdownDate = new Date()
+		bdownDate.setHours(closeEndTime.split(":")[0]);
+		bdownDate.setMinutes(closeEndTime.split(":")[1]);
+		bdownDate.setSeconds(0);
+		bdownDate.setMilliseconds(0);
+
+		Breakdown.findById(req.params.id, {_id: 0,created: 0, createdAt: 0, updatedAt: 0, __v: 0 }, function(err, foundBreakdown){
+			if(err || !foundBreakdown){
+				req.flash("error", "Error occured while validating production shift");
+				return res.redirect("back")
+
+			}
+			// Creating an object for closed breakdown
+			const closed = { author: { id: req.user._id } };
+			closed.breakdown = foundBreakdown;
+			closed.breakdown.shift = foundBreakdown.shift;
+			closed.endTime = bdownDate;
+			closed.comments = `Moved from ${foundBreakdown.shift} to ${nextShift} shift`;
+			
+			// console.log(closed)
+			// Creating an object for open breakdown
+			const start = new Date()
+			start.setHours(nextStartTime.split(":")[0]);
+			start.setMinutes(nextStartTime.split(":")[1]);
+			start.setSeconds(0);
+			start.setMilliseconds(0);
+			// foundBreakdown.shift = nextShift;
+			// foundBreakdown.startTime = start;
+
+			const newOpen = { author: { 
+					id: req.user._id 
+				},
+				...foundBreakdown._doc
+			};
+
+			newOpen.shift = nextShift;
+			newOpen.startTime = start;
+
+			closedBreakdown.create(closed, function(err, newClosedBreakdown){
+				if(err || !newClosedBreakdown){
+					req.flash("error", "Something went wrong while closing breakdown");
+					return res.redirect("/breakdowns");
+				}
+				Breakdown.create(newOpen, function(err, newBreakdown){
+					if(err || !newBreakdown){
+						req.flash("error", `Error occured while creating new breakdown for ${nextShift} shift`)
+						return res.redirect("/breakdowns")
+					}
+					Breakdown.findByIdAndDelete(req.params.id, function(err){
+						if(err){
+							req.flash("error", "Error occured while closing breakdown");
+							return res.redirect("/breakdowns");
+						}
+						console.log("It should be deleted here")
+						req.flash("success", "Successfully move a breakdown to next shift shift");
+						return res.redirect("/breakdowns");
+					});
+				});
+			});
+		});
+		return;
+	}
+
 	const time = req.body.breakdown.startTime.split(":");
 	const hours = Number(time[0]);
 	const minutes = Number(time[1]);

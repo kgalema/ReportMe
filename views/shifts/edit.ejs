@@ -20,10 +20,17 @@
                 <div class="flex-row">
                     <label for="shift_end">Overlaps to next day?</label>
                     <div>
-                        <label for="overlap_false">No</label>
-                        <input type="radio" name="shift[overlap]" id="overlap_false" value="false" <% shiftClass.overlap ? "checked" : ""%> >
-                        <label for="overlap_true">Yes</label>
-                        <input type="radio" name="shift[overlap]" id="overlap_true" value="true" <% shiftClass.overlap ? "checked" : ""%> >
+                        <% if (locals.shiftClass.overlap) { %>
+                            <label for="overlap_false">No</label>
+                            <input type="radio" name="shift[overlap]" id="overlap_false" value="false">
+                            <label for="overlap_true">Yes</label>
+                            <input type="radio" checked name="shift[overlap]" id="overlap_true" value="true">
+                        <% } else { %>
+                            <label for="overlap_false">No</label>
+                            <input type="radio" checked name="shift[overlap]" id="overlap_false" value="false">
+                            <label for="overlap_true">Yes</label>
+                            <input type="radio" name="shift[overlap]" id="overlap_true" value="true">
+                        <% } %>
                     </div>
                 </div>
                 <div class="flex-row">
@@ -31,6 +38,9 @@
                 </div>
             </div>
         </form>
+        <p>
+            <a href="/shifts/<%= locals.shiftClass._id%>">&#11013 Back</a>
+        </p>
     </div>
 </div>
 <%- include("../partials/sidebar") %>

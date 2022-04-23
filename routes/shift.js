@@ -79,6 +79,29 @@ router.get("/shifts/:id/edit", isConnectionOpen, isLoggedIn, isAdmin, function (
 
 // 6. Update route - Puts edited info about one particular breakdown in the database
 router.put("/shifts/:id", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
+	const startTime = new Date();
+	const timeStart = req.body.shift.start.split(":");
+	const hoursStart = Number(timeStart[0]);
+	const minutesStart = Number(timeStart[1]);
+	startTime.setHours(hoursStart);
+	startTime.setMinutes(minutesStart);
+	startTime.setSeconds(0);
+	startTime.setMilliseconds(0);
+
+	// End time
+	const endTime = new Date();
+	const timeEnd = req.body.shift.end.split(":");
+	const hoursEnd = Number(timeEnd[0]);
+	const minutesEnd = Number(timeEnd[1]);
+	endTime.setHours(hoursEnd);
+	endTime.setMinutes(minutesEnd);
+	endTime.setSeconds(0);
+	endTime.setMilliseconds(0);
+
+	const duration = Math.abs((endTime - startTime) / (1000 * 60 * 60));
+
+	req.body.shift.duration = duration;
+	
 	console.log(req.params.id);
 	Shift.findByIdAndUpdate(req.params.id, req.body.shift, function (err, updatedShiftClass) {
 		if (!err || updatedShiftClass) {

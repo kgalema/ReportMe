@@ -41,7 +41,11 @@ router.post("/shifts", isConnectionOpen, isLoggedIn, isAdmin, function (req, res
 	endTime.setSeconds(0);
 	endTime.setMilliseconds(0);
 
-	const duration = Math.abs((endTime - startTime) / (1000 * 60 * 60));
+	// const duration = Math.abs((endTime - startTime) / (1000 * 60 * 60));
+	let duration = (endTime - startTime) / (1000 * 60 * 60);
+	if (duration < 0) {
+		duration = duration + 24;
+	}
 
 	req.body.shift.duration = duration;
 	req.body.shift.authorId = req.user._id;
@@ -102,7 +106,6 @@ router.put("/shifts/:id", isConnectionOpen, isLoggedIn, isAdmin, function (req, 
 	let duration = (endTime - startTime) / (1000 * 60 * 60);
 	if(duration < 0){
 		duration = duration + 24
-		console.log(duration + 24)
 	}
 
 	req.body.shift.duration = duration;

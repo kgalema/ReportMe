@@ -187,8 +187,10 @@
                     </table>
                 </div>
             </div>
-            <hr>
-            <a class="button" href="tmms/new">Add New Asset</a>
+            <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
+                <hr>
+                <a class="button" href="tmms/new">Add New Asset</a>
+            <% } %>
         </div>
     </div>
 </div>

@@ -1,4 +1,10 @@
-function breakdownFilter(date, data, closedData) {
+function breakdownFilter(date) {
+    const data1 = document.getElementById("allBreakdowns").innerText;
+    const data1Parsed = JSON.parse(data1);
+
+    const closedData1 = document.getElementById("closedBreakdowns").innerText;
+    const closedData1Parsed = JSON.parse(closedData1);
+
     const shiftData = document.getElementById('shiftData').innerText;
     const shiftDataParsed = JSON.parse(shiftData)
     const overlappingShift = shiftDataParsed.filter(e => e.overlap)
@@ -10,11 +16,11 @@ function breakdownFilter(date, data, closedData) {
     const shift = document.getElementsByClassName("breakdownShift");
     const shiftArr = [...shift]
     const shiftSelected = shiftArr.filter(e => e.checked)
-    const openShiftFilteredBreakdowns = data.filter(e => e.shift === shiftSelected[0].value);
+    const openShiftFilteredBreakdowns = data1Parsed.filter((e) => e.shift === shiftSelected[0].value);
     
     // console.log(openShiftFilteredBreakdowns.length)
     // openShiftFilteredBreakdowns.forEach(e => console.log(e.shift))
-    const closedShiftFilteredBreakdowns = closedData.filter(e => e.breakdown.shift === shiftSelected[0].value);
+    const closedShiftFilteredBreakdowns = closedData1Parsed.filter((e) => e.breakdown.shift === shiftSelected[0].value);
     // console.log(closedShiftFilteredBreakdowns);
     // console.log(closedShiftFilteredBreakdowns.length);
 	// closedShiftFilteredBreakdowns.forEach((e) => console.log(e.breakdown.shift));

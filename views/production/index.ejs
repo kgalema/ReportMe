@@ -98,8 +98,14 @@
                     </div>
                 </section>
             </div>
-            <hr>
-            <a class="button" href="sections/sectionId/production/new">Add New Production Report</a>
+
+            <% if (locals.currentUser) { %>
+                <% const occ = ["Miner", "Supervisor(Shift)", "Mine_Overseer"]%>
+                <% if (locals.currentUser.isAdmin ||  occ.indexOf(locals.currentUser.occupation) > -1) { %>
+                    <hr>
+                    <a class="button" href="sections/sectionId/production/new">Add New Production Report</a>
+                <% } %>
+            <% } %>
         </div>
     </div>
 </div>

@@ -84,12 +84,12 @@ module.exports.isBreakdownAuthor = (req, res, next) => {
     Breakdown.findById(req.params.id, function (err, foundBreakdown) {
         if (err) {
             req.flash("error", "Something went wrong")
-            return res.redirect(`/breakdowns/${req.params.id}`)
+            return res.redirect(`/breakdown/${req.params.id}`)
         }
-        
+
         if (!foundBreakdown.author.equals(req.user._id) && !req.user.isAdmin) {
             req.flash("error", "You do not have permission to do that")
-            return res.redirect(`/breakdowns/${req.params.id}`)
+            return res.redirect(`/breakdown/${req.params.id}`)
         }
         next()
     })

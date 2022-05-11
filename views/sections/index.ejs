@@ -29,9 +29,9 @@
         
 
         <br>
-        <% if(currentUser && currentUser.isAdmin){ %>
-        <a class="button" href="/sections/new">Add New Section</a>
-        <%} %>
+        <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
+            <a class="button" href="/sections/new">Add New Section</a>
+        <% } %>
     </div>
 </div>
 

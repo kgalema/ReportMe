@@ -137,7 +137,12 @@
             <div class="element2" id="filtered-tarps"></div>
 
             <p>
-                <a class="button" href="/sections/sectionId/newReds/new">Add New Red Panel</a>
+                <% if (locals.currentUser) { %>
+                    <% const occ = ["Miner", "Supervisor(Shift)", "Mine_Overseer"]%>
+                    <% if (locals.currentUser.isAdmin ||  occ.indexOf(locals.currentUser.occupation) > -1) { %>
+                        <a class="button" href="/sections/sectionId/newReds/new">Add New Red Panel</a>
+                    <% } %>
+                <% } %>  
                 <hr>
                 <a href="/rehabedPanels">Rehabilitated Panels</a>
             </p>

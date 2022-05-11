@@ -55,24 +55,24 @@
         </div>
 
 
-        <div class="show-section">
+        <!-- <div class="show-section">
             <a class="button" href="/sections/<%= locals.section._id %>/production/new">Production Report</a>
             <a class="button" href="/sections/<%= locals.section._id %>/newReds/new">Add New Red Panel</a>
-        </div>
+        </div> -->
         <hr>
         <div>
             <a href="/sections">Sections</a>
         </div>
         
-        <% if(currentUser && currentUser.isAdmin){ %>
-        <div class="admin">
-            <p>
-                <a href="/sections/<%= section._id %>/edit">Edit</a>
-            </p>
-            <form action="/sections/<%= section._id %>?_method=DELETE" method="post">
-                <button id="delete" type="submit">Delete</button>
-            </form>
-        </div>
+        <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
+            <div class="admin">
+                <p>
+                    <a href="/sections/<%= section._id %>/edit">Edit</a>
+                </p>
+                <form action="/sections/<%= section._id %>?_method=DELETE" method="post">
+                    <button id="delete" type="submit">Delete</button>
+                </form>
+            </div>
         <%}%>
 
 

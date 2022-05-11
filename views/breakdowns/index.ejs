@@ -16,7 +16,7 @@
 			</div>
 			<h2>Breakdowns</h2>
 			<div>
-				<input type="date" max="" id="breakdown-date" name="" oninput="breakdownFilter(this.value, <%= JSON.stringify(allBreakdowns) %>, <%=  JSON.stringify(closedBreakdowns) %>)" />
+				<input type="date" max="" id="breakdown-date" name="" oninput="breakdownFilter(this.value)" />
 				<input type="radio" class="breakdownShift" name="breakdownShift" id="morningBreakdowns" value="morning" checked onchange="document.getElementById('breakdown-date').oninput()" />
 				<label for="morningBreakdowns">Day Shift</label>
 				<input type="radio" class="breakdownShift" name="breakdownShift" id="afternoonBreakdowns" value="afternoon" onchange="document.getElementById('breakdown-date').oninput()" />
@@ -28,9 +28,14 @@
 
 			<section id="all-breakdowns" class="element2"></section>
 
-			<p>
-				<a class="button" href="/breakdowns/new">Add New Breakdown</a>
-			</p>
+			<% if (locals.currentUser) { %>
+				<% const occ = ["Operator(Control Room)", "Coordinator(Electrical)", "Coordinator(Mechanical)", "Coordinator(TMM)", "GES"]%>
+				<% if (locals.currentUser.isAdmin ||  occ.indexOf(locals.currentUser.occupation) > -1) { %>
+					<p>
+						<a class="button" href="/breakdowns/new">Add New Breakdown</a>
+					</p>
+				<% } %>
+            <% } %>
 		</div>
 	</div>
 </div>

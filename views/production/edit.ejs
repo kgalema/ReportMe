@@ -132,9 +132,9 @@
                                             <select id="bolter" class="used-bolter" name="production[support][<%= numSupport %>][machine]" required>
                                                 <option selected value="<%= s.machine %>"><%= s.machine %></option>
                                                 <% bolters.forEach(e => { %>
-                                                    
+                                                    <% if(e.name !== s.machine){ %>
                                                         <option value="<%= e.name %>"><%= e.name %></option>
-                                                    
+                                                    <% } %>
                                                 <% }) %>
                                                 <option value="RDO">RDO</option>
                                             </select>
@@ -185,6 +185,7 @@
                                                         <option value="<%= e.name %>"><%= e.name %></option>
                                                     <% } %>
                                                 <% }) %>
+                                                <option value="RDO">RDO</option>
                                             </select>
                                         </td>
 

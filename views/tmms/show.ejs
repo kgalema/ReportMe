@@ -18,9 +18,6 @@
 
             <h2><%= locals.tmm.name %></h2>
             <div>
-                <!-- <label for="">From:</label> -->
-                <!-- <input type="date" name="" id="startdate" onchange="drawEffGraph()" oninput="filterBreakdowns()"> -->
-                <!-- <label for="">To:</label> -->
                 <input type="date" name="" id="enddate" onchange="drawEffGraph()" oninput="filterBreakdowns()">
             </div>
             <br>
@@ -89,12 +86,14 @@
             <p>
                 <a href="/tmms">Dashboard</a>
             </p>
-            <div class="admin">
-                <a href="/tmm/<%= tmm._id %>/edit">Edit</a>
-                <form action="/tmm/<%= tmm._id %>/?_method=DELETE" method="POST">
-                    <button id="delete" type="submit">Delete!</button>
-                </form>
-            </div>
+            <% if (locals.currentUser && locals.currentUser.isAdmin) { %>
+               <div class="admin">
+                    <a href="/tmm/<%= tmm._id %>/edit">Edit</a>
+                    <form action="/tmm/<%= tmm._id %>/?_method=DELETE" method="POST">
+                        <button id="delete" type="submit">Delete!</button>
+                    </form>
+                </div>
+            <% } %>
         </div>
     </div>
 </div>

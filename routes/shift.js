@@ -5,12 +5,13 @@ const { isLoggedIn, isAdmin, isConnectionOpen } = require("../middleware");
 
 // 1. Index route -list all shift names
 router.get("/shifts", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
+	console.log("Shifts")
       Shift.find({}, function(err, shifts){
             if(!err && shifts){
                   return res.render("shifts/index", {shifts, title: "shifts"})
             }
             req.flash("error", "Error occured while fetching shift classes")
-            res.redirect("back");
+            res.redirect("/production");
       })
 });
 

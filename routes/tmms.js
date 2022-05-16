@@ -11,7 +11,7 @@ const { isLoggedIn, isAdmin, isConnectionOpen } = require("../middleware");
 //================
 
 // 1. Index route -list all TMMS
-router.get("/tmms", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
+router.get("/tmms", isConnectionOpen, isLoggedIn, function (req, res) {
 	TMM.find({}, function (err, allTMMs) {
 		if (err || !allTMMs) {
 			req.flash("error", "Error occured while fetching all TMMs");
@@ -35,7 +35,6 @@ router.get("/tmms", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
 		const ug_belts = sorted.filter((belts) => belts.category === "ug_belts");
 		const electrical = sorted.filter((elect) => elect.category === "electrical");
 		const mechanical = sorted.filter((mech) => mech.category === "mechanical");
-		console.log(allTMMs.length)
 		const tmm_length = bolters.length + drillRigs.length + LHDs.length + LDVs.length + UVs.length;
 		res.render("tmms/index", {
 			bolters,
@@ -87,7 +86,7 @@ router.post("/tmms", isLoggedIn, isAdmin, function (req, res) {
 
 
 // 4. Show route - shows/get info about one specific TMM
-router.get("/tmm/:id", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
+router.get("/tmm/:id", isConnectionOpen, isLoggedIn, function (req, res) {
 	TMM.findById(req.params.id, function (err, foundTMM) {
 		if (err || !foundTMM) {
 			req.flash("error", "TMM not found");

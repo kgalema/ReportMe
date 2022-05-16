@@ -28,11 +28,10 @@
                     <a <% if (title === 'sections') { %>id='select'<% } %> href="/sections"><strong>Sections</strong></a>
                 </li>
                 
-                <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
-                    <li class="side-item  <% if (title === 'assets') { %>selected <% } %>">
+                <li class="side-item  <% if (title === 'assets') { %>selected <% } %>">
                         <a <% if (title === 'assets') { %>id='select'<% } %> href="/tmms"><strong>Engineering Assets</strong></a>
-                    </li>
-                <% } %>
+                </li>
+                
                 <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
                     <li class="side-item  <% if (title === 'production-calendar') { %>selected <% } %>">
                         <a <% if (title === 'production-calendar') { %>id='select'<% } %> href="/productionCalendar"><strong>Production Calendar</strong></a>

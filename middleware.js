@@ -141,13 +141,14 @@ module.exports.isAdmin = (req, res, next) => {
     User.findById(req.user._id, function (err, foundUser) {
         if (err || !foundUser) {
             req.flash("error", "Something went wrong while checking user")
-            return res.redirect("back")
+            return res.redirect("/production");
         }
-
+        
         if (!req.user.isAdmin) {
-            req.flash("error", "You do not have permission to do that. Contact Admin")
-            return res.redirect("back")
-        }
+			req.flash("error", "You do not have permission to do that. Contact Admin");
+			return res.redirect("/production");
+		}
+        console.log("Hi")
         next()
     })
 }
@@ -164,8 +165,7 @@ module.exports.isSectionSelected = (req, res, next) => {
 }
 
 module.exports.isConnectionOpen = (req, res, next) => {
-	console.log("Inside middleware to check it whether DB is available");
-	console.log(isDBconnected);
+	console.log(`DB open: ${isDBconnected}`);
 	if (!isDBconnected) {
 		return res.render("welcomePage");
 	} 

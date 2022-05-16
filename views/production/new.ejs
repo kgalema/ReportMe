@@ -104,7 +104,7 @@
                                     </td>
                                     <td class="form-row">
                                         <label style="display: block;" for="bolter">Bolter/RDO</label>
-                                            <select class="used-bolter" oninput="getAllProductionTMMs(this)" name="production[support][1][machine]" id="bolter" required>
+                                            <select class="used-bolter" name="production[support][1][machine]" id="bolter" required>
                                                 <option selected disabled></option>
                                                 <% bolters.forEach(e => { %>
                                                     <option value="<%= e.name %>"><%= e.name %></option>
@@ -139,7 +139,7 @@
 
                                     <td class="form-row">
                                         <label style="display: block;" for="drillRig">Drill Rig</label>
-                                        <select name="production[drill][1][drillRig]" id="drillRig" class="used-drill-rig" oninput="getAllProductionTMMs(this)" required>
+                                        <select name="production[drill][1][drillRig]" id="drillRig" class="used-drill-rig" required>
                                             <option></option>
                                             <% drillRigs.forEach(e => { %>
                                                 <option value="<%= e.name %>"><%= e.name %></option>
@@ -212,7 +212,7 @@
 
                                     <td class="form-row">
                                         <label style="display: block;" for="LHDnumber">LHD</label>
-                                        <select name="production[LHD][1][LHDnumber]" id="LHDnumber" class="used-LHD" oninput="getAllProductionTMMs(this)" required>
+                                        <select name="production[LHD][1][LHDnumber]" id="LHDnumber" class="used-LHD" required>
                                             <option selected disabled></option>
                                             <% LHDs.forEach(e => { %>
                                                 <option value="<%= e.name %>"><%= e.name %></option>
@@ -230,14 +230,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-                    <button type="button" class="collapsible" id="fleet-performance">Fleet Performances (Hour meters readings)</button>
-                    <div class="content" id="fleet-performance-content">
-                        <table class="form-row" id="bolters-performance"></table>
-                        <hr style="width: 100%;">
-                        <table class="form-row" id="rig-performance"></table>
-                        <hr style="width: 100%;">
-                        <table class="form-row" id="LHD-performance"></table>
                     </div>
                     <button type="button" class="collapsible" id="comments">Target Not Achieved. Why?</button>
                     <div class="content">

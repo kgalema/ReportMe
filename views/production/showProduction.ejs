@@ -234,115 +234,7 @@
                     </table>
                 <% } %>
 
-                <% if (reported.fleetHrs.drillRigs.length > 0) { %>
-                    <table id="general-group" class="prod-group-item">
-                        <tr>
-                            <th colspan="4">Drill Rigs Usage</th>
-                        </tr>
-                        <% locals.reported.fleetHrs.drillRigs.forEach((e, i) => { %>
-                            <tr>
-                                <th colspan="4"><%= e.name %></th>
-                            </tr>
-                            <% if (i === 0) { %>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Start (Hrs)</th>
-                                    <th>End (Hrs)</th>
-                                    <th>Usage (Hrs)</th>
-                                </tr>
-                            <% } %>
-                            
-                            <tr>
-                                <th>Engine</th>
-                                <td><%= e.engine[0] %></td>
-                                <td><%= e.engine[1] %></td>
-                                <td><%= e.engineUsage %></td>
-                            </tr>
-                            <tr>
-                                <th>Percussion</th>
-                                <td><%= e.percussion[0] %></td>
-                                <td><%= e.percussion[1] %></td>
-                                <td><%= e.percussionUsage %></td>
-                            </tr>
-                            <tr>
-                                <th>Electrical</th>
-                                <td><%= e.electrical[0] %></td>
-                                <td><%= e.electrical[1] %></td>
-                                <td><%= e.electricalUsage %></td>
-                            </tr>
-                        <% }) %>
-                    </table>
-                <% } %>
-
-                <% if (reported.fleetHrs.bolters.length > 0) { %>
-                    <table id="general-group" class="prod-group-item">
-                        <tr>
-                            <th colspan="4">Bolters Usage</th>
-                        </tr>
-                        <% locals.reported.fleetHrs.bolters.forEach((e, i) => { %>
-                            <tr>
-                                <th colspan="4"><%= e.name %></th>
-                            </tr>
-                            <% if (i === 0) { %>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Start (Hrs)</th>
-                                    <th>End (Hrs)</th>
-                                    <th>Usage (Hrs)</th>
-                                </tr>
-                            <% } %>
-                            
-                            <tr>
-                                <th>Engine</th>
-                                <td><%= e.engine[0] %></td>
-                                <td><%= e.engine[1] %></td>
-                                <td><%= e.engineUsage %></td>
-                            </tr>
-                            <tr>
-                                <th>Drilling</th>
-                                <td><%= e.drilling[0] %></td>
-                                <td><%= e.drilling[1] %></td>
-                                <td><%= e.drillingUsage %></td>
-                            </tr>
-                            <tr>
-                                <th>Electrical</th>
-                                <td><%= e.electrical[0] %></td>
-                                <td><%= e.electrical[1] %></td>
-                                <td><%= e.electricalUsage %></td>
-                            </tr>
-                        <% }) %>
-                    </table>
-                <% } %>
-
-                <% if (reported.fleetHrs.LHDs.length > 0) { %>
-                    <table id="general-group" class="prod-group-item">
-                        <tr>
-                            <th colspan="4">LHDs Usage</th>
-                        </tr>
-                        <% locals.reported.fleetHrs.LHDs.forEach((e, i) => { %>
-                            <tr>
-                                <th colspan="4"><%= e.name %></th>
-                            </tr>
-                            <% if (i === 0) { %>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Start (Hrs)</th>
-                                    <th>End (Hrs)</th>
-                                    <th>Usage (Hrs)</th>
-                                </tr>
-                            <% } %>
-                            
-                            <tr>
-                                <th>Engine</th>
-                                <td><%= e.engine[0] %></td>
-                                <td><%= e.engine[1] %></td>
-                                <td><%= e.usage %></td>
-                            </tr>
-                        <% }) %>
-                    </table>
-                <% } %>
-
-                <% if (currentUser && currentUser.isAdmin) { %>
+                <% if (locals.currentUser && locals.currentUser.isAdmin) { %>
                     <table class="prod-group-item">
                         <thead>
                             <tr>
@@ -376,7 +268,7 @@
             <p>
                 <a href="/production">Dashboard</a>
             </p>
-            <% if( currentUser && reported.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+            <% if(locals.currentUser && reported.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
                 <div class="admin">
                     <a href="/sections/<%= reported.section.id %>/production/<%= reported._id %>/edit">Edit</a>
                     <form action="/sections/<%= reported.section.id %>/production/<%= reported._id %>?_method=DELETE" method="POST">

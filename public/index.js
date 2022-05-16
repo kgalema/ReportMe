@@ -130,7 +130,7 @@ function addAnotherSupport(e) {
                     </td>
 
                     <td class="form-row">
-                        <select name="production[support][${num}][machine]" id="bolter" class="used-bolter" oninput="getAllProductionTMMs(this)">
+                        <select name="production[support][${num}][machine]" id="bolter" class="used-bolter">
                         ${stringOpts}
                         </select>
                     </td>
@@ -174,7 +174,7 @@ function addAnotherDrilled(e) {
                     </td>
 
                     <td class="form-row">
-                        <select name="production[drill][${num}][drillRig]" id="drillRig" class="used-drill-rig" oninput="getAllProductionTMMs(this)"  required>
+                        <select name="production[drill][${num}][drillRig]" id="drillRig" class="used-drill-rig"  required>
                             ${stringOpts}
                         </select>
                     </td>
@@ -266,7 +266,7 @@ function addAnotherLHD(e) {
                     </td>
 
                     <td class="form-row">
-                        <select name="production[LHD][${num}][LHDnumber]" id="LHDnumber" class="used-LHD" oninput="getAllProductionTMMs(this)" required>
+                        <select name="production[LHD][${num}][LHDnumber]" id="LHDnumber" class="used-LHD" required>
                             ${stringOpts}
                         </select>
                     </td>
@@ -285,248 +285,6 @@ function addAnotherLHD(e) {
     body.appendChild(tr);
     e.style.maxHeight = e.scrollHeight + "px";
 }
-
-// Get all machines and then paste them the fleet perfomace schedule
-function getAllProductionTMMs (yona){
-    const contentDiv = document.getElementById("fleet-performance-content")
-
-    // Used bolters - id = bolter
-    const usedBolters = [];
-
-    // Used drill rigs - id = drillRig
-    const usedDrillRigs = [];
-
-    // Used LHDs - id = LHDnumber
-    const usedLHDs = [];
-    
-    const bolters = document.getElementsByClassName("used-bolter")
-    const drillRigs = document.getElementsByClassName("used-drill-rig")
-    const LHDs = document.getElementsByClassName("used-LHD")
-    
-    // Get the lengths of each category
-    const boltersLength = bolters.length
-    const drillRigsLength = drillRigs.length
-    const LHDsLength = LHDs.length
-
-    
-    for(let i = 0; i < boltersLength && bolters[0].value !== ""; i++){
-        if(usedBolters.indexOf(bolters[i].value) === -1){
-            usedBolters.push(bolters[i].value);
-        }
-    }
-    
-    
-    for (let i = 0; i < drillRigsLength && drillRigs[0].value !== ""; i++) {
-		if (usedDrillRigs.indexOf(drillRigs[i].value) === -1) {
-			usedDrillRigs.push(drillRigs[i].value);
-		}
-	}
-    
-    
-    for (let i = 0; i < LHDsLength && LHDs[0].value !== ""; i++) {
-		if (usedLHDs.indexOf(LHDs[i].value) === -1) {
-			usedLHDs.push(LHDs[i].value);
-		}
-	}
-
-    
-    if (usedBolters.length > 0 && yona.id === "bolter") {
-		getTable4Bolters(contentDiv, usedBolters);
-	}
-
-    
-    if (usedDrillRigs.length > 0 && yona.id === "drillRig") {
-		getTable4DrillRigs(contentDiv, usedDrillRigs);
-	}
-
-
-    if (usedLHDs.length > 0 && yona.id === "LHDnumber") {
-		getTable4LHDs(contentDiv, usedLHDs);
-	}
-}
-
-function getTable4LHDs(div, arr){
-	const tableLHDs = document.getElementById("LHD-performance");
-	arr.forEach((LHD, i) => {
-		if (i === 0) {
-			tableLHDs.innerHTML = "";
-		}
-
-		const row1 = tableLHDs.insertRow(0);
-		row1.setAttribute("class", "form-row");
-
-		const cell11 = row1.insertCell(0);
-		const cell12 = row1.insertCell(1);
-		cell11.setAttribute("class", "form-row");
-		cell12.setAttribute("class", "form-row");
-        const input = `<input type="text" name="production[fleetHrs][LHDs][${i}][name]" value=${arr[i]} required readonly hidden>`;
-		cell11.innerHTML = `<strong>${arr[i]}</strong>`;
-        cell12.innerHTML = input;
-
-		const row2 = tableLHDs.insertRow(1);
-		row2.setAttribute("class", "form-row");
-
-		const cell21 = row2.insertCell(0);
-		cell21.setAttribute("class", "form-row");
-
-		const cell31 = row2.insertCell(1);
-		cell31.setAttribute("class", "form-row");
-		cell21.innerHTML = `<label style="display:block;" for=""><small>Start</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][LHDs][${i}][engine]" placeholder="engine" required>`;
-		cell31.innerHTML = `<label style="display:block;" for=""><small>End</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][LHDs][${i}][engine]" placeholder="engine" required>`;
-	});
-
-    // Increase the visible height of the div housing this newly added hour meter inputs
-	div.style.maxHeight = div.scrollHeight + "px";
-}
-
-function getTable4DrillRigs(div, arr) {
-	const tableRigs = document.getElementById("rig-performance");
-	arr.forEach((rig, i) => {
-		if (i === 0) {
-			tableRigs.innerHTML = "";
-		}
-		// Craete first row
-		const row1 = tableRigs.insertRow(0);
-		row1.setAttribute("class", "form-row");
-
-		// Insert the the first <td> in the first row - should have only 1
-		const cell11 = row1.insertCell(0);
-        const cell12 = row1.insertCell(1);
-        const input = `<input type="text" name="production[fleetHrs][drillRigs][${i}][name]" value=${arr[i]} required readonly hidden>`;
-		cell11.setAttribute("class", "form-row");
-        cell12.setAttribute("class", "form-row");
-		cell11.innerHTML = `<strong>${arr[i]}</strong>`;
-        cell12.innerHTML = input;
-
-		// Create second row
-		const row2 = tableRigs.insertRow(1);
-		row2.setAttribute("class", "form-row");
-
-		// Create first <td> of second row
-		const cell21 = row2.insertCell(0);
-		cell21.setAttribute("class", "form-row");
-		cell21.innerHTML = `<label style="display:block;" for=""><small>Start</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][drillRigs][${i}][engine]" placeholder="engine" required>`;
-
-		// Create second <td> of second row
-		const cell22 = row2.insertCell(1);
-		cell22.setAttribute("class", "form-row");
-		cell22.innerHTML = `<label style="display:block;" for=""><small>End</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][drillRigs][${i}][engine]" placeholder="engine" required>`;
-
-		// Create third row
-		const row3 = tableRigs.insertRow(2);
-		row3.setAttribute("class", "form-row");
-
-		// Create first <td> of third row
-		const cell31 = row3.insertCell(0);
-		cell31.setAttribute("class", "form-row");
-		cell31.innerHTML = `<label style="display:block;" for=""><small>Start</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][drillRigs][${i}][percussion]" placeholder="percussion" required>`;
-
-		// Create second <td> of third row
-		const cell32 = row3.insertCell(1);
-		cell32.setAttribute("class", "form-row");
-		cell32.innerHTML = `<label style="display:block;" for=""><small>End</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][drillRigs][${i}][percussion]" placeholder="percussion" required>`;
-
-		// Create fourth row
-		const row4 = tableRigs.insertRow(3);
-		row2.setAttribute("class", "form-row");
-
-		// Create first <td> of fourth row
-		const cell41 = row4.insertCell(0);
-		cell41.setAttribute("class", "form-row");
-		cell41.innerHTML = `<label style="display:block;" for=""><small>Start</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][drillRigs][${i}][electrical]" placeholder="electrical" required>`;
-
-		// Create second <td> of fourth row
-		const cell42 = row4.insertCell(1);
-		cell42.setAttribute("class", "form-row");
-		cell42.innerHTML = `<label style="display:block;" for=""><small>End</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][drillRigs][${i}][electrical]" placeholder="electrical" required>`;
-	});
-
-	// Increase the visible height of the div housing this newly added hour meter inputs
-	div.style.maxHeight = div.scrollHeight + "px";
-}
-
-
-function getTable4Bolters(div, arr) {
-	const tableBolters = document.getElementById("bolters-performance");
-	arr.forEach((rig, i) => {
-		if (i === 0) {
-			tableBolters.innerHTML = "";
-		}
-
-		// Craete first row
-		const row1 = tableBolters.insertRow(0);
-		row1.setAttribute("class", "form-row");
-
-		// Insert the the first <td> in the first row - should have only 1
-		const cell11 = row1.insertCell(0);
-        const cell12 = row1.insertCell(1);
-        const input = `<input type="text" name="production[fleetHrs][bolters][${i}][name]" value=${arr[i]} required readonly hidden>`;
-		cell11.setAttribute("class", "form-row");
-        cell12.setAttribute("class", "form-row");
-		cell11.innerHTML = `<strong>${arr[i]}</strong>`;
-        cell12.innerHTML = input;
-
-		// Create second row
-		const row2 = tableBolters.insertRow(1);
-		row2.setAttribute("class", "form-row");
-
-		// Create first <td> of second row
-		const cell21 = row2.insertCell(0);
-		cell21.setAttribute("class", "form-row");
-		cell21.innerHTML = `<label style="display:block;" for=""><small>Start</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][bolters][${i}][engine]" placeholder="engine" required>`;
-
-		// Create second <td> of second row
-		const cell22 = row2.insertCell(1);
-		cell22.setAttribute("class", "form-row");
-		cell22.innerHTML = `<label style="display:block;" for=""><small>End</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][bolters][${i}][engine]" placeholder="engine" required>`;
-
-		// Create third row
-		const row3 = tableBolters.insertRow(2);
-		row3.setAttribute("class", "form-row");
-
-		// Create first <td> of third row
-		const cell31 = row3.insertCell(0);
-		cell31.setAttribute("class", "form-row");
-		cell31.innerHTML = `<label style="display:block;" for=""><small>Start</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][bolters][${i}][drilling]" placeholder="drilling" required>`;
-
-		// Create second <td> of third row
-		const cell32 = row3.insertCell(1);
-		cell32.setAttribute("class", "form-row");
-		cell32.innerHTML = `<label style="display:block;" for=""><small>End</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][bolters][${i}][drilling]" placeholder="drilling" required>`;
-
-		// Create fourth row
-		const row4 = tableBolters.insertRow(3);
-		row2.setAttribute("class", "form-row");
-
-		// Create first <td> of fourth row
-		const cell41 = row4.insertCell(0);
-		cell41.setAttribute("class", "form-row");
-		cell41.innerHTML = `<label style="display:block;" for=""><small>Start</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][bolters][${i}][electrical]" placeholder="electrical" required>`;
-
-		// Create second <td> of fourth row
-		const cell42 = row4.insertCell(1);
-		cell42.setAttribute("class", "form-row");
-		cell42.innerHTML = `<label style="display:block;" for=""><small>End</small></label>
-                            <input type="number" min="0" step="0.1" name="production[fleetHrs][bolters][${i}][electrical]" placeholder="electrical" required>`;
-	});
-
-	// Increase the visible height of the div housing this newly added hour meter inputs
-	div.style.maxHeight = div.scrollHeight + "px";
-}
-
 
 
 //======Making sure that panel name is all upper case and no spaces exist in between======

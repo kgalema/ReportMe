@@ -11,12 +11,16 @@
 
              <form action="/breakdown" method="POST">
                 <div class="shift">
-                    <input type="radio" name="breakdown[shift]" id="morning" value="morning" required>
+                    <% locals.shifts.forEach(shift => { %>
+                        <input style="margin: 3px;" type="radio" name="breakdown[shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" required>
+                        <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
+                    <% }) %>
+                    <!-- <input type="radio" name="breakdown[shift]" id="morning" value="morning" required>
                     <label for="morning">Morning Shift</label>
                     <input type="radio" name="breakdown[shift]" id="afternoon" value="afternoon" required>
                     <label for="afternoon">Afternoon Shift</label>
                     <input type="radio" name="breakdown[shift]" id="night" value="night" required>
-                    <label for="night">Night Shift</label>
+                    <label for="night">Night Shift</label> -->
                 </div>
                 <br>
                 <table class="form-row">

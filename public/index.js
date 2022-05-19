@@ -999,26 +999,24 @@ function shiftSelector(e) {
     
     
 
-    if(selectedShift.checked && selectedShift.id === "night"){
-        blastPanel.required = false;
-        blastPanel.value = null;
-        blastLength.required = false;
-        blastLength.value = null;
-        comments.innerText = "Comments";
-        commentsBox.required = false;
+    if ((selectedShift.checked && selectedShift.id === "night") || (selectedShift.checked && selectedShift.id === "afternoon")) {
+		blastPanel.required = false;
+		blastPanel.value = null;
+		blastLength.required = false;
+		blastLength.value = null;
+		comments.innerText = "Comments";
+		commentsBox.required = false;
 
+		if (toBeRemoved.length > 0) {
+			for (let j = 0; j < count; j++) {
+				console.log("Ronny");
+				blastBody.querySelector(".removedToggle").remove();
+			}
+		}
 
-        if (toBeRemoved.length > 0) {
-            for (let j = 0; j < count; j++) {
-                console.log("Ronny")
-                blastBody.querySelector(".removedToggle").remove();
-           }
-        }
-         
-
-        blastBody.style.display = "none";
-        blastHeading.style.display = "none";
-    }
+		blastBody.style.display = "none";
+		blastHeading.style.display = "none";
+	}
 
     if(selectedShift.checked && selectedShift.id === "morning"){
         blastPanel.required = true;

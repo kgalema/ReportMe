@@ -52,7 +52,13 @@ router.get("/breakdowns/new", isConnectionOpen, isLoggedIn, function (req, res) 
 			const sorted = allTMMs.sort(function (a, b) {
 				return collator.compare(a.name, b.name);
 			});
-			res.render("breakdowns/new", { title: "breakdowns", tmms: sorted, sections: allSections });
+			Shift.find({}, function (err, shifts) {
+				if (err || !shifts) {
+					req.flash("error", "Error occured while retrieving shifts");
+					return res.redirect("/breakdowns");
+				}
+				res.render("breakdowns/new", { title: "breakdowns", shifts, tmms: sorted, sections: allSections });
+			});
 		});
 	});
 });

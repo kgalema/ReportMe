@@ -4,6 +4,7 @@ const Section = require("../models/section")
 const Production = require("../models/production")
 const TMM = require("../models/tmms")
 const User = require("../models/user")
+const Shift = require("../models/shift")
 const ProductionCalendar = require("../models/productionCalendar")
 const { isLoggedIn, isProductionAuthor, isSectionSelected, isAdmin, isConnectionOpen } = require("../middleware")
 
@@ -78,8 +79,14 @@ router.get("/sections/:id/production/new", isConnectionOpen, isLoggedIn, isSecti
 					req.flash("error", "Error while retrieving production days")
 					return res.redirect("/production")
 				}
-				const foundDates1 = foundDates.map(e => e.date)
-				res.render("production/new", { foundDates1, section: foundSection, drillRigs, LHDs, bolters, title: "production-dash" });
+				Shift.find({}, function(err, shifts){
+					if(err || !shifts){
+						req.flash("error", "Error occured while retrieving shifts");
+						return res.redirect("/production");
+					}
+					const foundDates1 = foundDates.map(e => e.date)
+					res.render("production/new", { shifts, foundDates1, section: foundSection, drillRigs, LHDs, bolters, title: "production-dash" });
+				})
 			});
 		});
 	});

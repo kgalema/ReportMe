@@ -409,7 +409,8 @@ function dateChange(e) {
 	const dayshift = prodFiltered.filter((prod) => prod.general[0].shift === "morning");
 
 	// Filtering only night shift data from the production array
-	const backshift = prodFilteredNight.filter((prod) => prod.general[0].shift === "backshift");
+	// const backshift = prodFilteredNight.filter((prod) => prod.general[0].shift === "backshift");
+	const backshift = prodFilteredNight.filter((prod) => prod.general[0].shift === "night");
 
     // Creating tables to be pushed into the main div/container
 	const content = `
@@ -998,7 +999,7 @@ function shiftSelector(e) {
     
     
 
-    if(selectedShift.checked && selectedShift.id === "backshift"){
+    if(selectedShift.checked && selectedShift.id === "night"){
         blastPanel.required = false;
         blastPanel.value = null;
         blastLength.required = false;

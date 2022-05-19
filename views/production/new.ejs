@@ -22,10 +22,14 @@
                         <%= new Date().toDateString() %>
                     </h3>
                     <div class="shift">
+                        <!-- <% locals.shifts.forEach(shift => { %>
+                            <input style="margin: 3px;" type="radio" name="production[general][1][shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" required onchange="shiftSelector(event)">
+                            <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
+                        <% }) %> -->
                         <input type="radio" name="production[general][1][shift]" id="morning" value="morning" onchange="shiftSelector(event)" checked>
                         <label for="morning">Morning Shift</label>
-                        <input type="radio" name="production[general][1][shift]" id="backshift" value="backshift" onchange="shiftSelector(event)" required>
-                        <label for="backshift">Back Shift</label>
+                        <input type="radio" name="production[general][1][shift]" id="night" value="night" onchange="shiftSelector(event)" required>
+                        <label for="night">Night Shift</label>
                     </div>
                     <br>
                     <% if(locals.currentUser && locals.currentUser.isAdmin){ %>

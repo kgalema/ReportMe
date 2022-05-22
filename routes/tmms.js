@@ -11,7 +11,7 @@ const { isLoggedIn, isAdmin, isConnectionOpen } = require("../middleware");
 //================
 
 // 1. Index route -list all TMMS
-router.get("/tmms", isConnectionOpen, isLoggedIn, function (req, res) {
+router.get("/tmms", isConnectionOpen, function (req, res) {
 	TMM.find({}, function (err, allTMMs) {
 		if (err || !allTMMs) {
 			req.flash("error", "Error occured while fetching all TMMs");
@@ -86,7 +86,7 @@ router.post("/tmms", isLoggedIn, isAdmin, function (req, res) {
 
 
 // 4. Show route - shows/get info about one specific TMM
-router.get("/tmm/:id", isConnectionOpen, isLoggedIn, function (req, res) {
+router.get("/tmm/:id", isConnectionOpen, function (req, res) {
 	TMM.findById(req.params.id, function (err, foundTMM) {
 		if (err || !foundTMM) {
 			req.flash("error", "TMM not found");

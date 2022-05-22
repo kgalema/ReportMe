@@ -1060,7 +1060,8 @@ function checkCallAchieved (e, date) {
     const productionShifts = JSON.parse(document.getElementById("productionShifts").innerText)
     const productionShifts1 = productionShifts.map(e => new Date(e).toDateString());
     
-    const date1 = document.getElementById("todayDate").value;
+    const date1 = document.getElementById("todayDate") ? document.getElementById("todayDate").value : "";
+    // const date1 = document.getElementById("todayDate").value || "";
     const reportDate = new Date().toDateString();
     let date2;
     if ("" === date1) {

@@ -38,7 +38,7 @@
                     </div>
                     <br>
                     <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
-                        <input type="date" name="production[created]" id="todayDate">
+                        <input type="date" name="production[created]" id="todayDate" oninput="checkCallAchieved4Date(event)">
                     <% } %>
 
                     <br>

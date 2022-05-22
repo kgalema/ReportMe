@@ -540,8 +540,8 @@ if(newForm){
 }
 
 function validatePanelName(e) {
-  const newValue = e.target.value.toUpperCase().replace(/\s+/g, "");
-  e.target.value = newValue;
+    const newValue = e.target.value.toUpperCase().replace(/\s+/g, "");
+    e.target.value = newValue;
 }
 
 // ================solution Showing Infomation selectively=======
@@ -1276,6 +1276,7 @@ function shiftSelector(e) {
 
         blastBody.style.display = "block";
         blastHeading.style.display = "block";
+        checkCallAchieved();
     }
 }
 
@@ -1288,20 +1289,37 @@ if(document.getElementById("blast-report")){
     diva.addEventListener("click", checkCallAchieved)
 }
 
-function checkCallAchieved (e) {
+function checkCallAchieved4Date (e) {
+    const selectedDate = new Date(e.target.value).toDateString();
+    checkCallAchieved(0, selectedDate)
+}
+
+function checkCallAchieved (e, date) {
     const faceLengths = diva.querySelectorAll("#length");
     const panelsBlastedLength = faceLengths.length;
     // const target = Number(document.getElementById("call").innerText)
     let target = 0;
     const productionShifts = JSON.parse(document.getElementById("productionShifts").innerText)
     const productionShifts1 = productionShifts.map(e => new Date(e).toDateString());
-    const selectedDate = new Date().toDateString();
+    
+    const date1 = document.getElementById("todayDate").value;
+    const reportDate = new Date().toDateString();
+    let date2;
+    if ("" === date1) {
+        date2 = reportDate;
+	} else {
+        date2 = new Date(date1).toDateString(); 
+    }
+
+
+    // const selectedDate = date || new Date().toDateString();
+    const selectedDate = date || date2;
     // if(document.getElementById("startDate")){
     //     new Date(selectedDate = document.getElementById("startDate").value).toDateString();
     //     console.log("*********************YES*************")
     // }
     const index = productionShifts1.indexOf(selectedDate);
-    console.log(selectedDate)
+    
     if(productionShifts1[index] === selectedDate){
         target = Number(document.getElementById("call").innerText);
     }

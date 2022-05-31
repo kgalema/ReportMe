@@ -210,23 +210,23 @@ function drawEffGraph(){
 		efficiencyChart.destroy();
 	}
 	const availabilities = document.getElementsByClassName("availability");
-	const utilisations = document.getElementsByClassName("utilisation");
+	// const utilisations = document.getElementsByClassName("utilisation");
 	const efficiencies = document.getElementsByClassName("efficiency");
 
 	const availabilitiesLength = availabilities.length;
-	const utilisationsLength = utilisations.length;
+	// const utilisationsLength = utilisations.length;
 	const efficienciesLength = efficiencies.length;
 
 	const avails = [];
-	const utils = [];
+	// const utils = [];
 	const effs = [];
 
 	for( let i = 0; i < availabilitiesLength; i++){
 		avails.push(Number(availabilities[i].innerText))
 	}
-	for (let i = 0; i < utilisationsLength; i++) {
-		utils.push(Number(utilisations[i].innerText));
-	}
+	// for (let i = 0; i < utilisationsLength; i++) {
+	// 	utils.push(Number(utilisations[i].innerText));
+	// }
 	for (let i = 0; i < efficienciesLength; i++) {
 		effs.push(Number(efficiencies[i].innerText));
 	}
@@ -243,20 +243,20 @@ function drawEffGraph(){
 					label: "Availability %",
 					maxBarThickness: 40,
 				},
-				{
-					type: "bar",
-					data: utils,
-					backgroundColor: "blue",
-					label: "Utilisation %",
-					maxBarThickness: 40,
-				},
-				{
-					type: "bar",
-					data: effs,
-					backgroundColor: "green",
-					label: "Efficiency %",
-					maxBarThickness: 40,
-				},
+				// {
+				// 	type: "bar",
+				// 	data: utils,
+				// 	backgroundColor: "blue",
+				// 	label: "Utilisation %",
+				// 	maxBarThickness: 40,
+				// },
+				// {
+				// 	type: "bar",
+				// 	data: effs,
+				// 	backgroundColor: "green",
+				// 	label: "Efficiency %",
+				// 	maxBarThickness: 40,
+				// },
 			],
 		},
 	};

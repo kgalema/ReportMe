@@ -930,9 +930,9 @@ function filterBreakdowns(){
 	const availFinalNight = getAvailabilityForNight(NIGHT, nightShift);
 
 	// Getting utilisation
-	const utilMorning = getUtilisationForMorning(MORNING, morningShift, morningUtil);
-	const utilANoon = getUtilisationForANoon(AFTERNOON, afternoonShift, afternoonUtil);
-	const utilNight = getUtilisationForNight(NIGHT, nightShift, nightUtil);
+	// const utilMorning = getUtilisationForMorning(MORNING, morningShift, morningUtil);
+	// const utilANoon = getUtilisationForANoon(AFTERNOON, afternoonShift, afternoonUtil);
+	// const utilNight = getUtilisationForNight(NIGHT, nightShift, nightUtil);
 
 	// Getting reliability
 	// const reliabilityMorning = getReliabilityForMorning(MORNING)
@@ -943,17 +943,17 @@ function filterBreakdowns(){
 	document.getElementById("afternoon-availability").innerText = availFinalANoon;
 	document.getElementById("night-availability").innerText = availFinalNight;
 
-	document.getElementById("morning-utilisation").innerText = utilMorning;
-	document.getElementById("afternoon-utilisation").innerText = utilANoon;
-	document.getElementById("night-utilisation").innerText = utilNight;
+	// document.getElementById("morning-utilisation").innerText = utilMorning;
+	// document.getElementById("afternoon-utilisation").innerText = utilANoon;
+	// document.getElementById("night-utilisation").innerText = utilNight;
 
 	// document.getElementById("morning-reliability").innerText = reliabilityMorning;
 	// document.getElementById("afternoon-reliability").innerText = reliabilityANoon;
 	// document.getElementById("night-reliability").innerText = reliabilityNight;
 
-	document.getElementById("morning-efficiency").innerText = ((availFinalMorning * utilMorning) / 100).toFixed(0);
-	document.getElementById("afternoon-efficiency").innerText = ((availFinalANoon * utilANoon) / 100).toFixed(0);
-	document.getElementById("night-efficiency").innerText = ((availFinalNight * utilNight) / 100).toFixed(0);
+	// document.getElementById("morning-efficiency").innerText = ((availFinalMorning * utilMorning) / 100).toFixed(0);
+	// document.getElementById("afternoon-efficiency").innerText = ((availFinalANoon * utilANoon) / 100).toFixed(0);
+	// document.getElementById("night-efficiency").innerText = ((availFinalNight * utilNight) / 100).toFixed(0);
 	document.getElementById("enddate").oninput;
 }
 

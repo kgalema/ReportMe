@@ -59,6 +59,14 @@
                     </tr>
                     <tr>
                         <td class="form-row">
+                            <label for="operator">Operator/Reporter:</label>
+                        </td>
+                        <td class="form-row">
+                            <input type="text" name="breakdown[operator]" onkeyup="validatePanelName(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
                             <label for="section">Section:</label>
                         </td>
                         
@@ -98,11 +106,11 @@
                     </tr>
                     <tr>
                         <td class="form-row">
-                            <label for="sapNumber">Ref Number:</label>
+                            <label for="orderRef">Ref Number:</label>
                         </td>
                         
                         <td class="form-row">
-                            <input type="number" min="0" id="sapNumber" name="breakdown[sapNumber]" required>
+                            <input type="number" min="0" id="orderRef" name="breakdown[orderRef]" required>
                         </td>
                     </tr>
                     

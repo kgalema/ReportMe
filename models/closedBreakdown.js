@@ -11,6 +11,7 @@ const opts = {
 const closedBreakdownSchema = new mongoose.Schema({
     endTime: Date,
     comments: String,
+    artisan: String,
     breakdown: {},
     author: {
         id: {

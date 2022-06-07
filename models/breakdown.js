@@ -18,7 +18,8 @@ const breakdownSchema = new mongoose.Schema({
     //     name: String
     // },
     equipment: String,
-    sapNumber: Number,
+    operator: String,
+    orderRef: Number,
     description: String,
     startTime: Date,
     shift: String,

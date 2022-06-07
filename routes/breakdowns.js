@@ -133,7 +133,14 @@ router.get("/breakdowns/:id/edit", isConnectionOpen, isLoggedIn, isBreakdownAuth
 				})
 				return
 			}
-			res.render("breakdowns/edit", { breakdown: breakdown, sections: sections, title: "breakdowns" });
+			Shift.find({}, function (err, shifts) {
+				if (err || !shifts) {
+					req.flash("error", "Error occured while validating production shift");
+					return res.redirect("/breakdowns");
+				}
+				res.render("breakdowns/edit", { shifts, breakdown: breakdown, sections: sections, title: "breakdowns" });
+			});
+			
 		});
 	});
 });

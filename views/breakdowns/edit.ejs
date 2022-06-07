@@ -5,12 +5,21 @@
         <h2>Edit Breakdown: <%= breakdown.equipment %> at <%= breakdown.section.name %> </h2>
         <form action="/breakdown/<%= breakdown._id %>?_method=PUT" method="POST">
             <div class="shift">
-                <input type="radio" name="breakdown[shift]" id="morning-shift" value="morning" required>
+                <% locals.shifts.forEach(shift => { %>
+                    <% if (locals.breakdown.shift === shift.name.toLowerCase()) { %>
+                        <input style="margin: 3px;" type="radio" name="breakdown[shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" checked required>
+                        <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
+                    <% return } %>
+                    <input style="margin: 3px;" type="radio" name="breakdown[shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" required>
+                    <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
+                <% }) %>
+                <br>
+                <!-- <input type="radio" name="breakdown[shift]" id="morning-shift" value="morning" required>
                 <label for="morning">Morning Shift</label>
                 <input type="radio" name="breakdown[shift]" id="afternoon-shift" value="afternoon" required>
                 <label for="afternoon">Afternoon Shift</label>
                 <input type="radio" name="breakdown[shift]" id="night-shift" value="night" required>
-                <label for="night">Night Shift</label>
+                <label for="night">Night Shift</label> -->
             </div>
             <br>
             <table class="form-row">
@@ -46,6 +55,16 @@
                         </select>
                     </td>
                 </tr>
+
+                <tr>
+                    <td class="form-row">
+                        <label for="operator">Operator/Reporter:</label>
+                    </td>
+                    <td class="form-row">
+                        <input type="text" name="breakdown[operator]" value="<%= locals.breakdown.operator %>" onkeyup="validatePanelName(event)">
+                    </td>
+                </tr>
+
                 <tr>
                     <td class="form-row">
                         <label for="section">Section:</label>
@@ -87,11 +106,11 @@
                 </tr>
                 <tr>
                     <td class="form-row">
-                        <label for="sapNumber">Ref Number:</label>
+                        <label for="orderRef">Ref Number:</label>
                     </td>
                     
                     <td class="form-row">
-                        <input type="number" value="<%= breakdown.sapNumber %>" id="sapNumber" name="breakdown[sapNumber]" required>
+                        <input type="number" value="<%= breakdown.orderRef %>" id="orderRef" name="breakdown[sapNumber]" required>
                     </td>
                 </tr>
                 

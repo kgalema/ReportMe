@@ -10,6 +10,8 @@
                     <p>End time (hh:mm): - <%= closedBreakdown.end %> (<%= closedBreakdown.endTime.toDateString() %>)</p>
                     <p>Downtime (hh:mm): - <%= closedBreakdown.downtime %></p>
                     <p>Description: - <%= closedBreakdown.breakdown.description %></p>
+                    <p>Operator <small><em>(Reported by)</em></small> : - <%= closedBreakdown.breakdown.operator %></p>
+                    <p>Artisan: - <%= closedBreakdown.artisan %></p>
                     <p>Artisan Comments: - <%= closedBreakdown.comments %></p>
                     <p>Reference number: - <%= closedBreakdown.breakdown.sapNumber %></p>
                 </div>

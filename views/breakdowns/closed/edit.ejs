@@ -8,6 +8,15 @@
                 <table class="form-row">
                     <tr>
                         <td class="form-row">
+                            <label for="artisan">Artisan:</label><br>
+                            <small><em>(or attended by)</em></small>
+                        </td>
+                        <td class="form-row">
+                            <input  id="artisan" onkeyup="validatePanelName(event)" name="closedBreakdown[artisan]" type="text" value="<%= locals.breakdown.artisan %>" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
                             <label for="comments">Artisan comments:</label>
                         </td>
                         <td class="form-row">

@@ -46,6 +46,15 @@
                             <%= locals.foundBreakdown.startTime.toDateString() %>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="artisan">Artisan:</label><br>
+                            <small><em>(or attended by)</em></small>
+                        </td>
+                        <td class="form-row">
+                            <input  id="artisan" onkeyup="validatePanelName(event)" name="closedBreakdown[artisan]" type="text" required>
+                        </td>
+                    </tr>
 
                     <tr>
                         <td class="form-row">

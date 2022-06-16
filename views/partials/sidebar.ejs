@@ -37,6 +37,13 @@
                         <a <% if (title === 'production-calendar') { %>id='select'<% } %> href="/productionCalendar"><strong>Production Calendar</strong></a>
                     </li>
                 <% } %>
+
+                <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
+                    <li class="side-item  <% if (title === 'resource-allocation') { %>selected <% } %>">
+                        <a <% if (title === 'resource-allocation') { %>id='select'<% } %> href="/resource"><strong>Resource Allocation</strong></a>
+                    </li>
+                <% } %>
+                
                 <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
                     <li class="side-item  <% if (title === 'shifts') { %>selected <% } %>">
                         <a <% if (title === 'shifts') { %>id='select'<% } %> href="/shifts"><strong>Shift Classes</strong></a>

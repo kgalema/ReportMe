@@ -1,0 +1,119 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <h2>Edit Allocated Resources</h2>
+        <h3><%= resource.section %></h3>
+
+         <form action="/resource/<%= resource._id %>?_method=PUT" method="post">
+            <input type="text" name="dateToUse2" hidden readonly value="<%= locals.resource.date.toISOString() %>">
+            <input type="text" name="shift" hidden readonly value="<%= locals.resource.shift %>">
+
+            <div class="flex-form" >
+                <button id="LHD-allocation-heading" type="button" class="collapsible">LHD</button>
+                <div class="content" id="LHD-allocation">
+                    <table class="form-row">
+                        <tbody>
+                            <% resource.LHD.forEach((ra, index) => { %>
+                                <tr id="inputs" class="form-row">
+                                    <td class="form-row">
+                                        <select name="LHD[<%=index + 1 %>]" id="lhd-select" required>
+                                            <option selected value="<%= ra %>"><%= ra %></option>
+                                            <% locals.LHDs.forEach((LHD) => { %>
+                                                <% if (LHD.name !== ra) { %>
+                                                    <option value="<%= LHD.name %>"><%= LHD.name %></option>
+                                                <% } %>
+                                            <% }) %>
+                                        </select>
+                                    </td>
+                                    <% if (index === 0) { %>
+                                        <td class="form-row">
+                                            <a href="#" onClick="addAllocation(this)">+ LHD</a>
+                                        </td>
+                                    <% } else { %>
+                                        <td class="form-row">
+                                            <a href="#" onClick="removeAllocation(this)">remove</a>
+                                        </td>
+                                    <% } %>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="rig-allocation-heading" type="button" class="collapsible">Drill Rig</button>
+                <div class="content" id="rig-allocation">
+                    <table class="form-row">
+                        <tbody>
+                            <% resource.drillRig.forEach((ra,index) => { %>
+                                <tr class="form-row">
+                                    <td class="form-row">
+                                        <select name="drillRig[<%= index + 1 %>]" id="">
+                                            <option selected value="<%=ra%>"><%= ra %></option>
+                                            <% locals.drillRigs.forEach(rig => { %>
+                                                <% if (rig.name !== ra) { %>
+                                                    <option value="<%= rig.name %>"><%= rig.name %></option>
+                                                <% } %>
+                                            <% }) %>
+                                        </select>
+                                    </td>
+                                    <% if (index === 0) { %>
+                                        <td class="form-row">
+                                            <a href="#" onClick="addAllocation(this)">+ Drill Rig</a>
+                                        </td>
+                                    <% } else { %>
+                                        <td class="form-row">
+                                            <a href="#" onClick="removeAllocation(this)">remove</a>
+                                        </td>
+                                    <% } %>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="bolter-allocation-heading" type="button" class="collapsible">Bolter</button>
+                <div class="content" id="bolter-allocation">
+                    <table class="form-row">
+                        <tbody>
+                            <% resource.bolter.forEach((ra,index) => { %>
+                                <tr class="form-row">
+                                    <td class="form-row">
+                                        <select name="bolter[<%= index + 1 %>]" id="">
+                                            <option selected value="<%=ra%>"><%=ra%></option>
+                                            <% locals.bolters.forEach(bolter => { %>
+                                                <% if (bolter.name !== ra) { %>
+                                                    <option value="<%= bolter.name %>"><%= bolter.name %></option>
+                                                <% } %>
+                                            <% }) %>
+                                        </select>
+                                    </td>
+                                    <% if (index === 0) { %>
+                                        <td class="form-row">
+                                            <a href="#" onClick="addAllocation(this)">+ Bolter</a>
+                                        </td>
+                                    <% } else { %>
+                                        <td class="form-row">
+                                            <a href="#" onClick="removeAllocation(this)">remove</a>
+                                        </td>
+                                    <% } %>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="flex-row">
+                    <input type="submit" value="Edit">
+                </div>
+            </div>
+        </form>
+        <div>
+            <p>
+                <a href="/resource/<%= resource._id %>">&#11013 Back</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

@@ -286,6 +286,212 @@ function addAnotherLHD(e) {
     e.style.maxHeight = e.scrollHeight + "px";
 }
 
+function addAllocation(e){
+    const parentDiv = e.parentNode.parentNode.parentNode.parentNode.parentNode;
+
+    const selectTag = parentDiv.getElementsByTagName("select");
+    const machineCat = selectTag[0].name.split("[")[0];
+    
+    if(selectTag[0].value === "none") {
+        return alert(`No further ${machineCat}s can be selected if the first one is "none"`)
+    }
+    
+    let inputsCount = parentDiv.querySelectorAll("tr").length;
+	inputsCount = inputsCount + 1;
+	const num = inputsCount;
+
+    
+    const options = selectTag[0].getElementsByTagName("option");
+    const optionsAvailable = removeAlreadySelectedOptions(options, selectTag)
+
+    if(optionsAvailable.length <= 0) {
+        return alert(`All ${machineCat}s have been allocated sections`)
+    }
+
+
+    const td = document.createElement("td")
+    td.classList = "form-row";
+
+    const td2 = document.createElement("td")
+    td2.classList = "form-row";
+
+    const anchor = document.createElement("a")
+    anchor.href = "#";
+    anchor.setAttribute("onClick", "removeAllocation(this)")
+    anchor.text = "remove"
+
+
+    const select = document.createElement("select")
+    select.name = `${machineCat}[${num}]`
+
+    for (let i = 0; i < optionsAvailable.length; i++) {
+		const opt = document.createElement("option");
+        opt.value = optionsAvailable[i];
+        opt.text = optionsAvailable[i];
+        select.add(opt);
+	}
+
+    td.append(select)
+    td2.append(anchor)
+
+    const tr = document.createElement("tr");
+    tr.append(td)
+    tr.append(td2)
+
+    const bodyTag = parentDiv.querySelector("tbody")
+    
+    bodyTag.append(tr)
+    parentDiv.style.maxHeight = parentDiv.scrollHeight + "px";
+}
+
+function removeAllocation(e){
+    e.parentNode.parentNode.remove();
+}
+
+function removeAlreadySelectedOptions(opts, selects){
+    const options = [...opts];
+    const selectTags = [...selects];
+    const alreadySelected = [];
+    const notYetSelected = [];
+    selectTags.forEach(e => {
+        alreadySelected.push(e.value);
+    })
+
+    options.forEach(e => {
+        if(alreadySelected.indexOf(e.value) === -1 && e.value !== "none"){
+            notYetSelected.push(e.value)
+        }
+    })
+
+    return notYetSelected
+}
+
+if (document.querySelector("input[name = 'allocationToday']")){
+    sortAllocationIndex();
+}
+
+function sortAllocationIndex() {
+    const data = document.getElementById("allAllocatedResources").innerText;
+    const parsedData = JSON.parse(data);
+
+    let filterDate;
+    const selectedDate = document.getElementById("todayDate");
+    const today = new Date().toLocaleDateString();
+
+    if (selectedDate.value === "") {
+        filterDate = today
+	} else {
+        filterDate = new Date(selectedDate.value).toLocaleDateString();
+    }
+    
+    const dataFiltered = parsedData.filter((e) => new Date(e.date).toLocaleDateString() === filterDate);
+    createTable4Allocation(dataFiltered)
+}
+
+function createTable4Allocation(e){
+    const shifts = [];
+    e.forEach(al => {
+        if(shifts.indexOf(al.shift) === -1){
+            shifts.push(al.shift);
+        }
+    });
+
+    const shift1 = e.filter(data => data.shift === shifts[0])
+    const shift2 = e.filter(data => data.shift === shifts[1])
+    const shift3 = e.filter(data => data.shift === shifts[2])
+
+    let table;
+    if(shift1.length > 0){
+        table = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>MORNING</th>
+                            ${shift1.map(e => ("<th><a href=/resource/"+ e._id +">"+ e.section + "</a></th>")).join("")}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>LHDs</th>
+                            ${shift1.map(e => ("<td>"+ e.LHD + "</td>")).join("")}
+                        </tr>
+                        <tr>
+                            <th>Drill Rigs</th>
+                            ${shift1.map(e => ("<td>"+ e.drillRig + "</td>")).join("")}
+                        </tr>
+                        <tr>
+                            <th>Bolters</th>
+                            ${shift1.map(e => ("<td>"+ e.bolter + "</td>")).join("")}
+                        </tr>
+                    </tbody>
+                </table>`
+    } else {
+        table = "<table></table>"
+    }
+
+    let table2;
+    if(shift2.length > 0){
+        table2 = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>AFTERNOON</th>
+                            ${shift2.map(e => ("<th><a href=/resource/"+ e._id +">"+ e.section + "</a></th>")).join("")}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>LHDs</th>
+                            ${shift2.map(e => ("<td>"+ e.LHD + "</td>")).join("")}
+                        </tr>
+                        <tr>
+                            <th>Drill Rigs</th>
+                            ${shift2.map(e => ("<td>"+ e.drillRig + "</td>")).join("")}
+                        </tr>
+                        <tr>
+                            <th>Bolters</th>
+                            ${shift2.map(e => ("<td>"+ e.bolter + "</td>")).join("")}
+                        </tr>
+                    </tbody>
+                </table>`
+    } else {
+        table2 = "<table></table>"
+    }
+
+    
+    let table3;
+    if(shift3.length > 0){
+        table3 = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>NIGHT</th>
+                            ${shift3.map(e => ("<th><a href=/resource/"+ e._id +">"+ e.section + "</a></th>")).join("")}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>LHDs</th>
+                            ${shift3.map(e => ("<td>"+ e.LHD + "</td>")).join("")}
+                        </tr>
+                        <tr>
+                            <th>Drill Rigs</th>
+                            ${shift3.map(e => ("<td>"+ e.drillRig + "</td>")).join("")}
+                        </tr>
+                        <tr>
+                            <th>Bolters</th>
+                            ${shift3.map(e => ("<td>"+ e.bolter + "</td>")).join("")}
+                        </tr>
+                    </tbody>
+                </table>`
+    } else {
+        table3 = "<table></table>"
+    }
+
+    const div = document.getElementById("tablesForAllocations");
+    div.innerHTML = table + "<br>" + table2 + "<br>" + table3;
+}
+
 // Get all machines and then paste them the fleet perfomace schedule
 function getAllProductionTMMs (yona){
     const contentDiv = document.getElementById("fleet-performance-content")

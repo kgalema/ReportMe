@@ -503,6 +503,11 @@ hr {
     justify-content: space-between;
     margin: 10px 0;
 }
+.flex-row2 {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
 
 .flex-row input, .flex-row label {
     padding: 12px 20px;

@@ -64,8 +64,9 @@ connectWithDB();
 const conn1 = mongoose.connection
 
 conn1.on('connected', () => {
-	console.log("On connected emmited*******************************************")
+	console.log("********On connected emmited********")
 })
+
 conn1.once("open", function(e){
 	console.log("******Connection Open Inside Once Open Listener*******");
 
@@ -126,20 +127,18 @@ conn1.on("error", function(e){
 
 conn1.on("disconnected", function(){
 	console.log("*******Connection disconnected******")
-	// console.log(app._router.stack)
 })
 
 conn1.on("reconnected", function(){
 	console.log("*******Reconnected after losing connection DB******")
-	// console.log(app._router.stack)
 })
+
 conn1.on("reconnectFailed", function(){
 	console.log("*******Reconnecting to DB failed******")
-	// console.log(app._router.stack)
 })
+
 conn1.on("close", function(){
 	console.log("*******Connection successfuly closed******")
-	// console.log(app._router.stack)
 })
 
 process.on("SIGINT", async () => {
@@ -169,56 +168,8 @@ const breakdowns = require("./routes/breakdowns");
 const closedBreakdowns = require("./routes/closedBreakdown");
 const shiftsRoutes = require("./routes/shift");
 const productionCalendarRoutes = require("./routes/productionCalendar");
+const resourceAllocationRoutes = require("./routes/resourceAllocation");
 
-// app.use((req, res, next) => {
-// 	console.log("App dot use is working");
-// 	console.log("******************************************************");
-// 	next();
-// });
-
-// const MongoStore = require("connect-mongo")(session);
-
-// const secret = process.env.SECRET || "highSchoolCrush";
-
-
-// const store = new MongoStore({
-// 	url: dbUrl,
-// 	secret,
-// 	touchAfter: 24 * 60 * 60,
-// });
-
-// console.log("****Hello there*****")
-
-// store.on("error", function (e) {
-// 	console.log("SESSION STORE ERROR", e);
-// });
-
-
-// const sessionConfig = {
-// 	store,
-// 	name: "session",
-// 	secret,
-// 	resave: false,
-// 	saveUninitialized: true,
-// 	cookie: {
-// 		httpOnly: true,
-// 		expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-// 		maxAge: 1000 * 60 * 60 * 24 * 7,
-// 	},
-// };
-
-
-//***********Set up flash start *****/
-// app.use(session(sessionConfig))
-// app.use(flash())
-//***********flash set up complete *****/
-
-/**Configuring passport and insuring persistant loging using session */
-// app.use(passport.initialize())
-// app.use(passport.session())
-// passport.use(new LocalStrategy(User.authenticate()))
-// passport.serializeUser(User.serializeUser())
-// passport.deserializeUser(User.deserializeUser())
 
 // Parse application/x-www-form-urlencoded
 app.use(express.urlencoded({extended: true}))
@@ -236,14 +187,6 @@ app.use(methodOverride("_method"));
 
 
 app.locals.moment = require("moment");
-// app.use((req, res, next) => {
-	// res.locals.currentUser = req.user;
-	// console.log("Control middleware")
-	// res.locals.success = req.flash('success');
-	// res.locals.error = req.flash('error');
-	// res.locals.warning = req.flash('warning');
-	// next();
-// });
 
 app.use(usersRoutes);
 app.use(redPanelsRoutes);
@@ -260,6 +203,7 @@ app.use(breakdowns);
 app.use(closedBreakdowns);
 app.use(shiftsRoutes);
 app.use(productionCalendarRoutes);
+app.use(resourceAllocationRoutes);
 
 conn1.once("open", () => {
 	// console.log("Inside connection being open")
@@ -297,6 +241,7 @@ conn1.once("open", () => {
 	app.use(closedBreakdowns);
 	app.use(shiftsRoutes);
 	app.use(productionCalendarRoutes);
+	app.use(resourceAllocationRoutes);
 
 
 	// Moving an item from index to another index

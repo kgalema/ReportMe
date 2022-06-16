@@ -1,0 +1,33 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <div>
+            <h2>Allocated Resources: <%= locals.foundAllocation.section %></h2>
+            <p>Date: <%= locals.foundAllocation.date.toDateString() %> </p>
+            <p>Shift: <%= locals.foundAllocation.shift.toUpperCase() %> </p>
+            <p>LHD(s): <%= locals.foundAllocation.LHD %> </p>
+            <p>Bolter(s): <%= locals.foundAllocation.bolter %></p>
+            <p>Drill Rig(s): <%= locals.foundAllocation.drillRig %></p>
+        </div>
+
+        <hr>
+
+        <div>
+            <a href="/resource">Dashboard</a>
+        </div>
+
+        <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
+            <p>
+                <a href="/resource/<%= foundAllocation._id %>/edit">Edit</a>
+            </p>
+
+            <form action="/resource/<%= foundAllocation._id %>?_method=DELETE" method="post">
+                <button id="delete" type="submit">Delete</button>
+            </form>
+        <% } %>
+    </div>
+</div>
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

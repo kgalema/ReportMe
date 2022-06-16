@@ -1,0 +1,64 @@
+<%- include("../partials/header") %>
+
+<div class="main-body">
+    <div class="element">
+        <div id="fromDB">
+            <div id="allAllocatedResources">
+                <%= JSON.stringify(allocations) %>
+            </div>
+        </div>
+
+        <h2>Resource Allocation</h2>
+        <div>
+            <input type="date" name="allocationToday" id="todayDate" oninput="sortAllocationIndex()">
+        </div>
+        <br>
+        <div id="tablesForAllocations">
+            <table>
+                <thead>
+                    <tr>
+                        <th>MORNING</th>
+                        <% allocations.forEach(a => { %>
+                            <th>
+                                <a href="/resource/<%= a._id %>">
+                                    <%= a.section %>
+                                </a>
+                            </th>
+                        <% }) %>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>LHDs</th>
+                        <% allocations.forEach(a => { %>
+                            <td><%= a.LHD %></td>
+                        <% }) %>
+                    </tr>
+                    <tr>
+                        <th>Drill Rigs</th>
+                        <% allocations.forEach(a => { %>
+                            <td><%= a.drillRig %></td>
+                        <% }) %>
+                    </tr>
+                    <tr>
+                        <th>Bolters</th>
+                        <% allocations.forEach(a => { %>
+                            <td><%= a.bolter %></td>
+                        <% }) %>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <% if (locals.currentUser) { %>
+            <% const occ = ["Miner", "Supervisor(Shift)", "Mine_Overseer"]%>
+            <% if (locals.currentUser.isAdmin ||  occ.indexOf(locals.currentUser.occupation) > -1) { %>
+                <hr>
+                <a class="button" href="resource/new">Add New Allocation</a>
+            <% } %>
+        <% } %>
+    </div>
+</div>
+
+<%- include("../partials/sidebar") %>
+<%- include("../partials/footer") %>

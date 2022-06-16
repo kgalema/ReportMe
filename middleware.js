@@ -6,6 +6,7 @@ const Rehab = require("./models/rehab")
 const User = require("./models/user")
 const Breakdown = require("./models/breakdown")
 const ClosedBreakdown = require("./models/closedBreakdown")
+const Allocation = require("./models/resourceAllocation")
 
 
 const mongoose = require("mongoose");
@@ -171,3 +172,78 @@ module.exports.isConnectionOpen = (req, res, next) => {
 	} 
 	next();
 }
+
+
+module.exports.isResourceAlreadyAllocated = (req, res, next) => {
+    const dateToUse2 = req.body.dateToUse2;
+	Allocation.find({$and: [{shift: req.body.shift}, {date: dateToUse2}] }, {LHD: 1, drillRig: 1, bolter: 1, _id: 0}, function(err, allocations){
+		if(err || !allocations){
+			req.flash("error", "Error occured while validating allocations")
+			return res.redirect("/resource")
+		}
+
+		const tmmsPayload = [...req.body.LHD, ...req.body.drillRig, ...req.body.bolter];
+		const tmmsAllocated = [];
+		const tmmsRejected = [];
+		
+		allocations.forEach(e => {
+			e.LHD.forEach(lhd => {
+				tmmsAllocated.push(lhd)
+			})
+
+			e.drillRig.forEach(rig => {
+				tmmsAllocated.push(rig)
+			})
+
+			e.bolter.forEach(bolter => {
+				tmmsAllocated.push(bolter)
+			})
+		})
+
+		tmmsPayload.forEach(e => {
+			if(tmmsAllocated.indexOf(e) > -1){
+				console.log(e)
+				tmmsRejected.push(e)
+			}
+		});
+
+		if(tmmsRejected.length > 0){
+			req.flash("error", `${tmmsRejected} have already been allocated sections for ${req.body.shift} shift`);
+			return res.redirect("back")
+		}
+
+        next();
+    });
+};
+module.exports.checks = (req, res, next) => {
+    Allocation.findById(req.params.resource_id, function(err, foundAllocation){
+        if(err || !foundAllocation){
+            req.flash("error", "Error occured while looking up allocation")
+            return res.redirect("/back");
+        }
+        const shift = foundAllocation.shift;
+        const date = new Date(foundAllocation.date).toISOString();
+        Allocation.find({ $and: [{ shift: shift }, { date: date }] }, { LHD: 1, drillRig: 1, bolter: 1, _id: 0 }, function (err, allocationsMatched) {
+			if (err || !allocationsMatched) {
+				req.flash("error", "Error occured while looking up matched resources");
+				return res.redirect("/back");
+			}
+            const tmmsAllocated = [];
+            allocationsMatched.forEach((e) => {
+				e.LHD.forEach((lhd) => {
+					tmmsAllocated.push(lhd);
+				});
+
+				e.drillRig.forEach((rig) => {
+					tmmsAllocated.push(rig);
+				});
+
+				e.bolter.forEach((bolter) => {
+					tmmsAllocated.push(bolter);
+				});
+			});
+			req.tmmsAllocated = tmmsAllocated;
+			next();
+		});
+    })
+};

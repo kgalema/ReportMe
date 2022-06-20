@@ -25,6 +25,10 @@
                     <input type="text" id="asset_id" name="engAsset[name]" onkeyup="validatePanelName(event)" size="7" required>
                 </div>
                 <div class="flex-row">
+                    <label for="tmm-availability">Target Availability (%)</label>
+                    <input type="number" name="engAsset[availability]" id="tmm-availability" min="0" max="100"   required>
+                </div>
+                <div class="flex-row">
                     <input type="submit" value="Submit">
                 </div>
             </div>

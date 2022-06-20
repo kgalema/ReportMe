@@ -21,8 +21,12 @@
                     </select>
                 </div>
                 <div class="flex-row">
-                    <label for="tmm-name">Name</label>
+                    <label for="tmm-name">Name/ID</label>
                     <input type="text" name="engAsset[name]" id="tmm-name" onkeyup="validatePanelName(event)" size="7" value="<%= tmm.name %>" required>
+                </div>
+                <div class="flex-row">
+                    <label for="tmm-availability">Target Availability (%)</label>
+                    <input type="number" name="engAsset[availability]" id="tmm-availability" min="0" max="100" value="<%= tmm.availability %>"   required>
                 </div>
                 <div class="flex-row">
                     <input type="submit" value="Update">

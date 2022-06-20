@@ -22,6 +22,11 @@ const tmmSchema = new mongoose.Schema({
 		unique: true,
 		required: [true, "Name of TMM cannot be blank"],
 	},
+	availability: {
+		type: Number,
+		unique: true,
+		required: [true, "Target availability cannot be blank"],
+	},
 	author: {
 		id: {
 			type: mongoose.Schema.Types.ObjectId,

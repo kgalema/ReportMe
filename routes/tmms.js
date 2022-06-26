@@ -4,6 +4,7 @@ const TMM = require("../models/tmms")
 const ClosedBreakdown = require("../models/closedBreakdown")
 const Shift = require("../models/shift")
 const Production = require("../models/production")
+const Allocation = require("../models/resourceAllocation")
 const { isLoggedIn, isAdmin, isConnectionOpen } = require("../middleware");
 
 //================
@@ -92,32 +93,40 @@ router.get("/tmm/:id", isConnectionOpen, function (req, res) {
 			req.flash("error", "TMM not found");
 			return res.redirect("/tmms");
 		}
-		ClosedBreakdown.find({ "breakdown.equipment": foundTMM.name }, function (err, foundBreakdowns) {
-			if (err || !foundTMM) {
-				req.flash("error", "Error occure while fetching breakdowns for the asset");
-				return res.redirect("/tmms");
+		Shift.find({}, function(err, foundShifts){
+			if(err || !foundShifts){
+				req.flash("error", "Error occured while fetching shifts")
+				return res.redirect("/tmms")
 			}
-			Shift.find({}, function(err, foundShifts){
-				if(err || !foundShifts){
-					req.flash("error", "Error occured while fetching shifts")
-					return res.redirect("/tmms")
+
+			const searchObj = { 
+				$or: [
+					{ "fleetHrs.bolters.name": foundTMM.name },
+					{ "fleetHrs.drillRigs.name": foundTMM.name },
+					{ "fleetHrs.LHDs.name": foundTMM.name }
+				] 
+			};
+
+			// Create common catergory for all TMMS, and Id should be TMMid
+			Production.find(searchObj, { fleetHrs: 1, created: 1, "general.shift": 1 }, function (err, foundFleetUtils) {
+				if (err || !foundFleetUtils) {
+					req.flash("error", "Error occured while calculating utilisation for "+ foundTMM.name)
+					return res.redirect("/tmms");
 				}
-
-				const searchObj = { 
-					$or: [
-						{ "fleetHrs.bolters.name": foundTMM.name },
-						{ "fleetHrs.drillRigs.name": foundTMM.name },
-						{ "fleetHrs.LHDs.name": foundTMM.name }
-					] 
-				};
-
-				// Create common catergory for all TMMS, and Id should be TMMid
-				Production.find(searchObj, { fleetHrs: 1, created: 1, "general.shift": 1 }, function (err, foundFleetUtils) {
-					if (err || !foundFleetUtils) {
-						req.flash("error", "Error occured while calculating utilisation for "+ foundTMM.name)
-						return res.redirect("/tmms");
+				const cat = foundTMM.category;
+				
+				Allocation.find({[cat]:{$in:[foundTMM.name]}}, {[cat]: 1, shift: 1, date: 1}).exec(function(err, allocations){
+					if(err || !allocations){
+						req.flash("error", "Error occured while retrieving allocation")
+						return res.redirect("/tmms")
 					}
-					res.render("tmms/show", { foundFleetUtils, foundShifts, tmm: foundTMM, foundBreakdowns, title: "assets" });
+					ClosedBreakdown.find({ "breakdown.equipment": foundTMM.name }, function (err, foundBreakdowns) {
+						if (err || !foundTMM) {
+							req.flash("error", "Error occure while fetching breakdowns for the asset");
+							return res.redirect("/tmms");
+						}
+						res.render("tmms/show", { allocations, foundFleetUtils, foundShifts, tmm: foundTMM, foundBreakdowns, title: "assets" });
+					})
 				});
 			})
 		});

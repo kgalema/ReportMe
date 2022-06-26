@@ -6,7 +6,8 @@ const Breakdown = require("../models/breakdown");
 const TMM = require("../models/tmms");
 const Shift = require("../models/shift");
 const closedBreakdown = require("../models/closedBreakdown");
-const { isLoggedIn, isBreakdownAuthor, isConnectionOpen } = require("../middleware");
+const Allocation = require("../models/resourceAllocation");
+const { isLoggedIn, isBreakdownAuthor, isConnectionOpen, checkShift } = require("../middleware");
 
 
 // 1. Index route -list all breakdowns
@@ -33,7 +34,7 @@ router.get("/breakdowns", isConnectionOpen, function (req, res) {
 })
 
 // 2. New route - renders a for creating new breakdown
-router.get("/breakdowns/new", isConnectionOpen, isLoggedIn, function (req, res) {
+router.get("/breakdowns/new", isConnectionOpen, isLoggedIn, checkShift, function (req, res) {
 	TMM.find({}, function (err, allTMMs) {
 		if (err || !allTMMs) {
 			req.flash("error", "Error occured while fetching TMMs");
@@ -57,7 +58,14 @@ router.get("/breakdowns/new", isConnectionOpen, isLoggedIn, function (req, res) 
 					req.flash("error", "Error occured while retrieving shifts");
 					return res.redirect("/breakdowns");
 				}
-				res.render("breakdowns/new", { title: "breakdowns", shifts, tmms: sorted, sections: allSections });
+				Allocation.find({shift: req.shift.toLowerCase()}, function(err, allocations){
+					if(err || !allocations){
+						req.flash("error", "Error occured while fetching resource allocations for today")
+						return res.redirect("/breakdowns")
+					}
+					console.log(allocations)
+					res.render("breakdowns/new", { allocations, title: "breakdowns", shiftNow: req.shift, shifts, tmms: sorted, sections: allSections });
+				})
 			});
 		});
 	});
@@ -76,13 +84,15 @@ router.post("/breakdown", isConnectionOpen, isLoggedIn, function (req, res) {
 	req.body.breakdown.startTime = startTime;
 
 	Section.findById(req.body.breakdown.sectionId, function (err, foundSection) {
-		if (err) {
+		if (err || !foundSection) {
 			req.flash("error", "Something went wrong while creating new breakdown");
 			return res.redirect("breakdowns/new");
 		}
 		req.body.breakdown.section = { id: foundSection._id, name: foundSection.name };
+		console.log(req.body.breakdown)
 		Breakdown.create(req.body.breakdown, function (err, newBreakdown) {
 			if (err || !newBreakdown) {
+				console.log(err)
 				req.flash("error", "Something went wrong while creating new breakdown");
 				return res.redirect("breakdowns/new");
 			}

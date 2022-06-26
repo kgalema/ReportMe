@@ -795,26 +795,52 @@ if (document.getElementById("todayDate")) {
 }
 
 //Filters Item/TMMID based on what catergory is selected
-function filterItem(el, tmms){ //triggered by onchange listener
+function filterItem(el){ //triggered by onchange listener
     //el is the select tag category
+    const tmms = document.getElementById("allAssets").innerText
     const allTMMs = JSON.parse(tmms);
+
+    const cat = el.value
+    const assetsToUse = selectEngAssets();
+    if (assetsToUse.length <= 0){
+        alert(`No ${cat} allocated for this section`); 
+    }
+
     const itemsSelect = document.getElementById("equipment"); //This is a select tag for items
     const itemsInput = document.getElementById("equipment2"); //This is an input tag for other items
-    const selectedCatItems = allTMMs.filter(e => e.category === el.value);
+    // const selectedCatItems = allTMMs.filter(e => e.category === el.value);
+    
+    
+    // const c = cat.replace("s", "");
+
+    const selectedCatItems = assetsToUse.map(e => e[cat]);
+    // const selectedCatItems2 = ;
+    const items = []
+    const sele2 = selectedCatItems.map((e) => {
+        if(!e) return
+        e.forEach(i => {
+            items.push(i)
+        })
+    })
+    console.log(items)
+
     if(el.value !== "other"){
         itemsSelect.disabled = false;
         itemsSelect.hidden = false;
         const fragment = document.createDocumentFragment();
-        for (let i = 0; i < selectedCatItems.length; i++) {
+        // for (let i = 0; i < selectedCatItems.length; i++) {
+        for (let i = 0; i < items.length; i++) {
             const option = document.createElement("option");
-            option.value = selectedCatItems[i].name;
-            option.innerText = selectedCatItems[i].name;
+            // option.value = selectedCatItems[i].name;
+            option.value = items[i];
+            // option.innerText = selectedCatItems[i].name;
+            option.innerText = items[i];
             fragment.append(option);
         }
-        const optionOther = document.createElement("option");
-        optionOther.value = "other";
-        optionOther.innerText = "other";
-        fragment.append(optionOther);
+        // const optionOther = document.createElement("option");
+        // optionOther.value = "other";
+        // optionOther.innerText = "other";
+        // fragment.append(optionOther);
         itemsSelect.innerHTML = "";
         itemsSelect.setAttribute("name", "breakdown[equipment]");
         itemsSelect.append(fragment);
@@ -851,9 +877,10 @@ function filterItemID(e) {
         return;
 	}
 
-	if (e.value !== "other") {
-		console.log("Inside filter itemID. Item is not  other");
-	}
+	// if (e.value !== "other") {
+    //     console.log(e.value)
+	// 	console.log("Inside filter itemID. Item is not  other");
+	// }
 }
 
 // Now dealing with breakdown availabilities, utilisation and reliability
@@ -866,13 +893,18 @@ if (document.getElementById("foundBreakdowns")) {
 
 // Filter machine availability , utilisation and efficiency
 function filterBreakdowns(){
+    filterBreakdowns2()
 	const foundBreakdowns = document.getElementById("foundBreakdowns").innerText;
 	const parsedFoundBreakdowns = JSON.parse(foundBreakdowns);
+
 	const foundShifts = document.getElementById("foundShifts").innerText;
 	const parsedFoundShifts = JSON.parse(foundShifts);
+
 	const foundFleetUtils = document.getElementById("foundFleetUtils").innerText;
 	const parsedFoundFleetUtils = JSON.parse(foundFleetUtils);
+
 	const end = document.getElementById("enddate").value;
+	const start = document.getElementById("startdate").value;
 
     // Constrcuting start date for overlapping shift
 	const overlaps = parsedFoundShifts.filter((e) => e.overlap === true);
@@ -1300,4 +1332,158 @@ function getReliabilityForNight(arr){
 }
 
 
-// Creating chart for the table
+function selectEngAssets(cat){
+    // Get section name, date and shift. NAd then contruct tmms allowed. Return none if no allocation made
+    const allocations = document.getElementById("allocations").innerText;
+    const parsedAllocations = JSON.parse(allocations)
+
+    const section = document.getElementById("section")
+    const sectionName = section.options[section.selectedIndex].text;
+
+    const date = new Date()
+
+    const shift = document.querySelectorAll("input[name='breakdown[shift]']")
+    let selectedShift;
+    shift.forEach(e => {
+        if(e.checked){
+            selectedShift = e.value
+        }
+    })
+
+    const selectorCode = sectionName + date.toLocaleDateString() + selectedShift;
+
+    const engAssets = [];
+    parsedAllocations.forEach(e => {
+        const selectorCode2 = e.section + new Date(e.date).toLocaleDateString() + e.shift;
+        if(selectorCode2 === selectorCode){
+            engAssets.push(e)
+        }
+    })
+
+    return engAssets;
+}
+
+function toogleTMMCategory(){
+    const cat = document.getElementById("category");
+    const catValue = cat.options[cat.selectedIndex].text;
+
+    if(catValue !== "select section first"){
+        console.log("Re-render item")
+        cat.onchange()
+    }
+
+    const section = document.getElementById("section");
+    const sectionName = section.options[section.selectedIndex].text;
+
+    if(sectionName !== "select section"){
+        cat.disabled = false;
+    } else {
+        cat.disabled = true;
+        cat.selectedIndex = cat.options[0]
+    }
+}
+
+
+function filterBreakdowns2(){
+    const shifts = document.getElementById("shifts");
+	const shift = shifts.options[shifts.selectedIndex].text.toLowerCase();
+
+    const end = new Date(document.getElementById("enddate").value);
+    const start = new Date(document.getElementById("startdate").value);
+    // console.log(start)
+    // console.log(end)
+
+    const foundBreakdowns = document.getElementById("foundBreakdowns").innerText;
+	const parsedFoundBreakdowns = JSON.parse(foundBreakdowns);
+    const shiftFilteredBDowns = parsedFoundBreakdowns.filter(e => e.breakdown.shift === shift);
+    const filteredByDates = shiftFilteredBDowns.filter((e) => new Date(e.breakdown.startTime.split("T")[0]) >= start && new Date(e.breakdown.startTime.split("T")[0]) <= end);
+    
+    // console.log(new Date(shiftFilteredBDowns[11].breakdown.startTime))
+    // console.log(new Date(shiftFilteredBDowns[11].breakdown.startTime.split('T')[0]))
+
+    // console.log(filteredByDates)
+    console.log(shiftFilteredBDowns)
+
+	const foundShifts = document.getElementById("foundShifts").innerText;
+	const parsedFoundShifts = JSON.parse(foundShifts);
+    const shiftObjToUse = parsedFoundShifts.filter(e => e.name === shift.toUpperCase())
+
+	const foundAllocations = document.getElementById("allocations").innerText;
+	const parsedAllocations = JSON.parse(foundAllocations);
+
+    const filtered = parsedAllocations.filter(e => e.shift === shift)
+    const filtered2 = filtered.filter((e) => new Date(e.date) >= start && new Date(e.date) <= end);
+    const lables2 = filtered2.map((e) => `${new Date(e.date).toLocaleDateString()}`).sort();
+    console.log(lables2)
+
+    const lables = filtered.map((e) => `${new Date(e.date).toLocaleDateString()}`).sort();
+
+     const obj = {};
+
+    for (const key of lables2) {
+    // for (const key of lables) {
+        // obj[key] = shiftFilteredBDowns.filter(e => new Date(key).toLocaleDateString() === new Date(e.created).toLocaleDateString()).map(e => e.downtime);
+        obj[key] = filteredByDates.filter(e => new Date(key).toLocaleDateString() === new Date(e.created).toLocaleDateString()).map(e => e.downtime);
+    }
+
+    const vals = Object.values(obj);
+    console.log(vals)
+    const hello = vals.map(e => {
+        const hi = getAvailability(e, shiftObjToUse)
+        return hi
+    })
+
+    // console.log(lables)
+    // console.log(obj)
+    
+    createTable(lables2, hello)
+    // createTable(lables, hello)
+    // drawEffGraph2(lables, hello)
+}
+
+
+function getAvailability(arr, shift) {
+	// If no breakdowns, availability is 100%
+	if (arr.length === 0 || !arr) {
+		return 100;
+	}
+
+	const shiftDuration = shift[0].duration;
+    const DTs = arr.map((e) => convertTimesToSeconds(e));
+    const DTs2 = DTs.reduce((i, j) => i + j, 0);
+
+    const avail = ((shiftDuration * 60 * 60 - DTs2) / (shiftDuration * 60 * 60)) * 100;
+
+	return Number(avail.toFixed(0));
+}
+
+// Create a table and graph
+function createTable(lables, data){
+    const table = `<table>
+                    <tbody>
+                        <tr>
+                            <th>
+                                <small>Date</small>
+                            </th>
+                            ${
+                                lables.map(e => {
+                                    return ('<td><small class=date>'+ e + '</small></td>')
+                                }).join("")
+                            }
+                        </tr>
+                        <tr>
+                            <th>
+                                <small>Avail</small>
+                            </th>
+                            ${
+                                data.map(e => {
+                                    return ('<td><small class=avail>'+ e + '</small></td>')
+                                }).join("")
+                            }
+                        </tr>
+                    </tbody>
+                </table>`
+
+    const tableDiv = document.getElementById("table");
+    tableDiv.innerHTML = table
+}

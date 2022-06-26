@@ -14,40 +14,7 @@
         </div>
         <br>
         <div id="tablesForAllocations">
-            <table>
-                <thead>
-                    <tr>
-                        <th>MORNING</th>
-                        <% allocations.forEach(a => { %>
-                            <th>
-                                <a href="/resource/<%= a._id %>">
-                                    <%= a.section %>
-                                </a>
-                            </th>
-                        <% }) %>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th>LHDs</th>
-                        <% allocations.forEach(a => { %>
-                            <td><%= a.LHD %></td>
-                        <% }) %>
-                    </tr>
-                    <tr>
-                        <th>Drill Rigs</th>
-                        <% allocations.forEach(a => { %>
-                            <td><%= a.drillRig %></td>
-                        <% }) %>
-                    </tr>
-                    <tr>
-                        <th>Bolters</th>
-                        <% allocations.forEach(a => { %>
-                            <td><%= a.bolter %></td>
-                        <% }) %>
-                    </tr>
-                </tbody>
-            </table>
+            
         </div>
 
         <% if (locals.currentUser) { %>

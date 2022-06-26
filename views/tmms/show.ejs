@@ -15,13 +15,29 @@
             <p id="foundTMM" style="display: none;">
                 <%= JSON.stringify(tmm) %>
             </p>
+            <p id="allocations" style="display: none;">
+                <%= JSON.stringify(allocations) %>
+            </p>
 
             <h2><%= locals.tmm.name %></h2>
             <div>
-                <input type="date" name="" id="enddate" onchange="drawEffGraph()" oninput="filterBreakdowns()">
+                <label for=""><small>From:</small></label>
+                <input type="date" name="" id="startdate" value="2022-06-01" onchange="drawEffGraph2()" oninput="filterBreakdowns2()">
+                <label for=""><small>To:</small></label>
+                <input type="date" name="" id="enddate" onchange="drawEffGraph2()" oninput="filterBreakdowns2()">
+                <label for=""><small>Shift:</small></label>
+                <select name="" id="shifts" onchange="drawEffGraph2()" oninput="filterBreakdowns2()">
+                    <% locals.foundShifts.forEach(el => { %>
+                        <option value="<%=el.name%>"><%=el.name%></option>
+                    <% }) %>
+                </select>
             </div>
             <br>
-            <table>
+            <div id="table">
+
+            </div>
+
+            <table style="display: none;">
                 <thead>
                     <tr>
                         <th>Shift</th>
@@ -76,7 +92,10 @@
             </table>
             <% if (locals.tmm.parentCategory) { %>
                 <div id="canvasDiv" style="margin-top: 20px;">
-                    <canvas id="effGraph" width="393.219px">
+                    <canvas style="display: none;" id="effGraph" width="393.219px">
+    
+                    </canvas>
+                    <canvas id="effGraph2" width="393.219px">
     
                     </canvas>
                 </div>

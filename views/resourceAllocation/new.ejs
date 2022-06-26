@@ -32,7 +32,7 @@
                         <tbody>
                             <tr class="form-row">
                                 <td class="form-row">
-                                    <select name="LHD[1]" id="lhd-select" required>
+                                    <select name="LHDs[1]" id="lhd-select" required>
                                         <option selected value="none">none</option>
                                         <% locals.LHDs.forEach(LHD => { %>
                                             <option value="<%= LHD.name %>"><%= LHD.name %></option>
@@ -52,7 +52,7 @@
                         <tbody>
                             <tr class="form-row">
                                 <td class="form-row">
-                                    <select name="drillRig[1]">
+                                    <select name="drillRigs[1]">
                                         <option selected value="none">none</option>
                                         <% locals.drillRigs.forEach(rig => { %>
                                             <option value="<%= rig.name %>"><%= rig.name %></option>
@@ -72,7 +72,7 @@
                         <tbody>
                             <tr class="form-row">
                                 <td class="form-row">
-                                    <select name="bolter[1]" id="">
+                                    <select name="bolters[1]" id="">
                                         <option selected value="none">none</option>
                                         <% locals.bolters.forEach(bolter => { %>
                                             <option value="<%= bolter.name %>"><%= bolter.name %></option>

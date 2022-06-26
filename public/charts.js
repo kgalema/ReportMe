@@ -1,6 +1,7 @@
 let chartCreated;
 let progChart;
 let efficiencyChart;
+let efficiencyChart2;
 
 function drawnChart(chart){
     chartCreated = chart;
@@ -15,6 +16,10 @@ function drawnProgChart(chart){
 function drawnEffChart(chart){
     efficiencyChart = chart;
     return efficiencyChart;
+}
+function drawnEffChart2(chart){
+    efficiencyChart2 = chart;
+    return efficiencyChart2;
 }
 
 
@@ -271,6 +276,56 @@ function drawEffGraph(){
 	}
 }
 
+function drawEffGraph2(){
+	const dates = document.getElementsByClassName("date");
+	const dates2 = [...dates]
+	const labels = dates2.map(e => e.innerText)
+
+	const avail = document.getElementsByClassName("avail");
+	const avail2 = [...avail];
+	const data = avail2.map((e) => e.innerText);
+
+	console.log("Graph2 is triggered")
+	if (efficiencyChart2) {
+		console.log("Chart efficiency chart exist");
+		efficiencyChart2.destroy();
+	}
+
+	const configEffGraph2 = {
+		data: {
+			labels: labels,
+			datasets: [
+				{
+					type: "bar",
+					data: data,
+					borderColor: "#777",
+					borderWidth: "1",
+					label: "Availability %",
+					maxBarThickness: 40,
+				},
+				// {
+				// 	type: "line",
+				// 	data: [],
+				// 	backgroundColor: "blue",
+				// 	borderColor: "green",
+				// 	borderWidth: 1,
+				// 	label: "Target %",
+				// },
+			],
+		},
+	};
+
+	const foundTMM = document.getElementById("foundTMM").innerText;
+	const parsedFoundTMM = JSON.parse(foundTMM);
+	const tmmCat = parsedFoundTMM.parentCategory;
+
+	if (tmmCat === "TMM") {
+		console.log("Graph 2 is working")
+		let effGraph2 = new Chart(document.getElementById("effGraph2").getContext("2d"), configEffGraph2);
+		drawnEffChart2(effGraph2)
+	}
+}
+
 function cummulateArr(arr) {
 	const arrLength = arr.length;
 	const arr2 = [];
@@ -291,3 +346,11 @@ if(document.getElementById("effGraph")){
 	}
 }
 
+if(document.getElementById("effGraph2")){
+	const foundTMM = document.getElementById("foundTMM").innerText;
+	const parsedFoundTMM = JSON.parse(foundTMM);
+	const tmmCat = parsedFoundTMM.parentCategory;
+	if(tmmCat === "TMM"){
+		drawEffGraph2()
+	}
+}

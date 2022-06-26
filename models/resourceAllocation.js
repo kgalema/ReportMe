@@ -7,9 +7,11 @@ const opts = {
 };
 
 const resourceSchema = new mongoose.Schema({
-    LHD: [String],
-    drillRig: [String],
-    bolter: [String],
+    LHDs: [String],
+    drillRigs: [String],
+    bolters: {
+        type: [String]
+    },
     shift: String,
     date: Date,
     uniqueCode: { 

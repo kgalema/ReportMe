@@ -9,7 +9,7 @@ const { isLoggedIn, isAdmin, isConnectionOpen, checks } = require("../middleware
 
 // 1. Index route
 router.get("/resource", isConnectionOpen, function (req, res) {
-	Allocation.find({}, { _id: 1, LHD: 1, bolter: 1, drillRig: 1, section: 1, date: 1, shift: 1 }, function (err, allocation) {
+	Allocation.find({}, { _id: 1, LHDs: 1, bolters: 1, drillRigs: 1, section: 1, date: 1, shift: 1 }, function (err, allocation) {
 		if (err || !allocation) {
 			req.flash("error", "Error occured while retriving all allocations");
 			return res.redirect("/production");
@@ -73,33 +73,32 @@ router.post("/resource", isConnectionOpen, isLoggedIn, isAdmin, function (req, r
 
 	req.body.author = { _id: req.user._id }
 
-	Allocation.find({$and: [{shift: req.body.shift}, {date: dateToUse2}] }, {LHD: 1, drillRig: 1, bolter: 1, _id: 0}, function(err, allocations){
+	Allocation.find({$and: [{shift: req.body.shift}, {date: dateToUse2}] }, {LHDs: 1, drillRigs: 1, bolters: 1, _id: 0}, function(err, allocations){
 		if(err || !allocations){
 			req.flash("error", "Error occured while validating allocations")
 			return res.redirect("/resource")
 		}
 
-		const tmmsPayload = [...req.body.LHD, ...req.body.drillRig, ...req.body.bolter];
+		const tmmsPayload = [...req.body.LHDs, ...req.body.drillRigs, ...req.body.bolters];
 		const tmmsAllocated = [];
 		const tmmsRejected = [];
 		
 		allocations.forEach(e => {
-			e.LHD.forEach(lhd => {
+			e.LHDs.forEach(lhd => {
 				tmmsAllocated.push(lhd)
 			})
 
-			e.drillRig.forEach(rig => {
+			e.drillRigs.forEach(rig => {
 				tmmsAllocated.push(rig)
 			})
 
-			e.bolter.forEach(bolter => {
+			e.bolters.forEach(bolter => {
 				tmmsAllocated.push(bolter)
 			})
 		})
 
 		tmmsPayload.forEach(e => {
 			if(tmmsAllocated.indexOf(e) > -1){
-				console.log(e)
 				tmmsRejected.push(e)
 			}
 		});

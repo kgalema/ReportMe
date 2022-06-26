@@ -389,6 +389,7 @@ function sortAllocationIndex() {
 }
 
 function createTable4Allocation(e){
+    console.log(e)
     const shifts = [];
     e.forEach(al => {
         if(shifts.indexOf(al.shift) === -1){
@@ -413,15 +414,15 @@ function createTable4Allocation(e){
                     <tbody>
                         <tr>
                             <th>LHDs</th>
-                            ${shift1.map(e => ("<td>"+ e.LHD + "</td>")).join("")}
+                            ${shift1.map(e => ("<td>"+ e.LHDs + "</td>")).join("")}
                         </tr>
                         <tr>
                             <th>Drill Rigs</th>
-                            ${shift1.map(e => ("<td>"+ e.drillRig + "</td>")).join("")}
+                            ${shift1.map(e => ("<td>"+ e.drillRigs + "</td>")).join("")}
                         </tr>
                         <tr>
                             <th>Bolters</th>
-                            ${shift1.map(e => ("<td>"+ e.bolter + "</td>")).join("")}
+                            ${shift1.map(e => ("<td>"+ e.bolters + "</td>")).join("")}
                         </tr>
                     </tbody>
                 </table>`
@@ -442,15 +443,15 @@ function createTable4Allocation(e){
                     <tbody>
                         <tr>
                             <th>LHDs</th>
-                            ${shift2.map(e => ("<td>"+ e.LHD + "</td>")).join("")}
+                            ${shift2.map(e => ("<td>"+ e.LHDs + "</td>")).join("")}
                         </tr>
                         <tr>
                             <th>Drill Rigs</th>
-                            ${shift2.map(e => ("<td>"+ e.drillRig + "</td>")).join("")}
+                            ${shift2.map(e => ("<td>"+ e.drillRigs + "</td>")).join("")}
                         </tr>
                         <tr>
                             <th>Bolters</th>
-                            ${shift2.map(e => ("<td>"+ e.bolter + "</td>")).join("")}
+                            ${shift2.map(e => ("<td>"+ e.bolters + "</td>")).join("")}
                         </tr>
                     </tbody>
                 </table>`
@@ -472,15 +473,15 @@ function createTable4Allocation(e){
                     <tbody>
                         <tr>
                             <th>LHDs</th>
-                            ${shift3.map(e => ("<td>"+ e.LHD + "</td>")).join("")}
+                            ${shift3.map(e => ("<td>"+ e.LHDs + "</td>")).join("")}
                         </tr>
                         <tr>
                             <th>Drill Rigs</th>
-                            ${shift3.map(e => ("<td>"+ e.drillRig + "</td>")).join("")}
+                            ${shift3.map(e => ("<td>"+ e.drillRigs + "</td>")).join("")}
                         </tr>
                         <tr>
                             <th>Bolters</th>
-                            ${shift3.map(e => ("<td>"+ e.bolter + "</td>")).join("")}
+                            ${shift3.map(e => ("<td>"+ e.bolters + "</td>")).join("")}
                         </tr>
                     </tbody>
                 </table>`

@@ -7,6 +7,7 @@ const User = require("./models/user")
 const Breakdown = require("./models/breakdown")
 const ClosedBreakdown = require("./models/closedBreakdown")
 const Allocation = require("./models/resourceAllocation")
+const Shift = require("./models/shift")
 
 
 const mongoose = require("mongoose");
@@ -245,5 +246,30 @@ module.exports.checks = (req, res, next) => {
 			req.tmmsAllocated = tmmsAllocated;
 			next();
 		});
+    })
+};
+
+module.exports.checkShift = (req, res, next) => {
+    Shift.find({}, function(err, shifts){
+        if(err || !shifts){
+            req.flash("error", "Error occured while validating current shift")
+            return res.redirect("/back");
+        }
+        const now = new Date();
+        const hr = now.getHours();
+        const mins = (now.getMinutes()/60);
+        const timeNow = hr + mins;
+        req.shift = 'NONE';
+        shifts.forEach(shift => {
+            const timeStart = Number(shift.start.split(":")[0]) + (Number(shift.start.split(":")[1]))/60;
+            const timeEnd = Number(shift.end.split(":")[0]) + (Number(shift.end.split(":")[1]))/60;
+            if(shift.overlap){
+                
+            }
+            if(timeNow >= timeStart && timeNow <= timeEnd){
+                req.shift = shift.name;
+            }
+        })
+		next();
     })
 };

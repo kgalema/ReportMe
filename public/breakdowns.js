@@ -44,12 +44,10 @@ function breakdownFilter(date) {
 
 
     if(shiftSelected[0].value === overlappingShiftName){
-        console.log("Shift selected is night shift for open breakdowns")
         allBreakdowns = openShiftFilteredBreakdowns.filter((e) => (new Date(e.startTime)) >= nightShiftStart2 && (new Date(e.startTime)) <= nightShiftEnd2);
     }
 
     if(shiftSelected[0].value === overlappingShiftName){
-        console.log("Shift selected is night shift for closed breakdowns");
         closedBreakdowns = closedShiftFilteredBreakdowns.filter((e) => (new Date(e.breakdown.startTime)) >= nightShiftStart2 && (new Date(e.breakdown.startTime)) <= nightShiftEnd2);
     }
 
@@ -822,7 +820,6 @@ function filterItem(el){ //triggered by onchange listener
             items.push(i)
         })
     })
-    console.log(items)
 
     if(el.value !== "other"){
         itemsSelect.disabled = false;
@@ -1292,7 +1289,6 @@ function getReliabilityForMorning(arr){
     if(failures > 0){
         reliability = ((((totalHours - DTs3 - standbyHours) / (failures))) / 3600).toFixed(2);
     }
-    console.log(reliability)
 	
     return reliability;
 }
@@ -1309,7 +1305,6 @@ function getReliabilityForANoon(arr){
     if(failures > 0){
         reliability = ((totalHours - DTs3 - standbyHours) / (failures)).toFixed(2);
     }
-    console.log(reliability)
 	
     return reliability;
 }
@@ -1326,7 +1321,6 @@ function getReliabilityForNight(arr){
     if(failures > 0){
         reliability = ((totalHours - DTs3 - standbyHours) / (failures)).toFixed(2);
     }
-    console.log(reliability)
 	
     return reliability;
 }
@@ -1341,6 +1335,8 @@ function selectEngAssets(cat){
     const sectionName = section.options[section.selectedIndex].text;
 
     const date = new Date()
+    const data2 = document.getElementById("todayDate").value;
+    const date2 = new Date(data2)
 
     const shift = document.querySelectorAll("input[name='breakdown[shift]']")
     let selectedShift;
@@ -1350,7 +1346,8 @@ function selectEngAssets(cat){
         }
     })
 
-    const selectorCode = sectionName + date.toLocaleDateString() + selectedShift;
+    // const selectorCode = sectionName + date.toLocaleDateString() + selectedShift;
+    const selectorCode = sectionName + date2.toLocaleDateString() + selectedShift;
 
     const engAssets = [];
     parsedAllocations.forEach(e => {
@@ -1368,7 +1365,6 @@ function toogleTMMCategory(){
     const catValue = cat.options[cat.selectedIndex].text;
 
     if(catValue !== "select section first"){
-        console.log("Re-render item")
         cat.onchange()
     }
 
@@ -1402,7 +1398,6 @@ function filterBreakdowns2(){
     // console.log(new Date(shiftFilteredBDowns[11].breakdown.startTime.split('T')[0]))
 
     // console.log(filteredByDates)
-    console.log(shiftFilteredBDowns)
 
 	const foundShifts = document.getElementById("foundShifts").innerText;
 	const parsedFoundShifts = JSON.parse(foundShifts);
@@ -1414,11 +1409,10 @@ function filterBreakdowns2(){
     const filtered = parsedAllocations.filter(e => e.shift === shift)
     const filtered2 = filtered.filter((e) => new Date(e.date) >= start && new Date(e.date) <= end);
     const lables2 = filtered2.map((e) => `${new Date(e.date).toLocaleDateString()}`).sort();
-    console.log(lables2)
 
     const lables = filtered.map((e) => `${new Date(e.date).toLocaleDateString()}`).sort();
 
-     const obj = {};
+    const obj = {};
 
     for (const key of lables2) {
     // for (const key of lables) {
@@ -1427,15 +1421,12 @@ function filterBreakdowns2(){
     }
 
     const vals = Object.values(obj);
-    console.log(vals)
     const hello = vals.map(e => {
         const hi = getAvailability(e, shiftObjToUse)
         return hi
     })
 
     // console.log(lables)
-    // console.log(obj)
-    
     createTable(lables2, hello)
     // createTable(lables, hello)
     // drawEffGraph2(lables, hello)
@@ -1486,4 +1477,8 @@ function createTable(lables, data){
 
     const tableDiv = document.getElementById("table");
     tableDiv.innerHTML = table
+}
+
+function resetItems(){
+    document.getElementById("category").onchange()
 }

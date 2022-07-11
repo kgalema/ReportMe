@@ -73,6 +73,9 @@ function addAnotherClean(e) {
     // fieldNumber = fieldNumber + 1;
     // let num = fieldNumber;
     let body = (e.childNodes[1].childNodes[1]);
+    // <td class="form-row">
+    //    <input type="number" min="0" id="advance" name="production[clean][${num}][advance]" placeholder="advance" step="0.1" required>
+    //</td>
 
     let newField = `<td class="form-row">
                         <input type="text" id="panel" name="production[clean][${num}][panel]" placeholder=${panelInput.placeholder} required onkeyup="validatePanelName(event)">
@@ -82,9 +85,7 @@ function addAnotherClean(e) {
                         <input type="number" min="0" id="length" name="production[clean][${num}][length]" placeholder=${quantityInput.placeholder} required>
                     </td>
 
-                    <td class="form-row">
-                        <input type="number" min="0" id="advance" name="production[clean][${num}][advance]" placeholder="advance" step="0.1" required>
-                    </td>
+                    
 
                     <td class="form-row">
                         <a href="#" onclick="out(this.parentNode.parentNode)" id="out">Delete</a>
@@ -389,7 +390,6 @@ function sortAllocationIndex() {
 }
 
 function createTable4Allocation(e){
-    console.log(e)
     const shifts = [];
     e.forEach(al => {
         if(shifts.indexOf(al.shift) === -1){
@@ -407,7 +407,7 @@ function createTable4Allocation(e){
                 <table>
                     <thead>
                         <tr>
-                            <th>MORNING</th>
+                            <th>${shifts[0].toUpperCase()}</th>
                             ${shift1.map(e => ("<th><a href=/resource/"+ e._id +">"+ e.section + "</a></th>")).join("")}
                         </tr>
                     </thead>
@@ -436,7 +436,7 @@ function createTable4Allocation(e){
                 <table>
                     <thead>
                         <tr>
-                            <th>AFTERNOON</th>
+                            <th>${shifts[1].toUpperCase()}</th>
                             ${shift2.map(e => ("<th><a href=/resource/"+ e._id +">"+ e.section + "</a></th>")).join("")}
                         </tr>
                     </thead>
@@ -466,7 +466,7 @@ function createTable4Allocation(e){
                 <table>
                     <thead>
                         <tr>
-                            <th>NIGHT</th>
+                            <th>${shifts[2].toUpperCase()}</th>
                             ${shift3.map(e => ("<th><a href=/resource/"+ e._id +">"+ e.section + "</a></th>")).join("")}
                         </tr>
                     </thead>
@@ -591,7 +591,6 @@ function dateChange(e) {
 
 	// Getting the date that the user specified
     const selectedDate = document.getElementById("dateFilter").value
-    console.log(selectedDate)
 
 	// Creating next day so the the selected date
 	const tomorrow = new Date(selectedDate);
@@ -810,7 +809,6 @@ function dateChange(e) {
 
 
 function fileterByMOandSections(e){
-    console.log("This function runs")
 	// Get all sections and parse them to a jSON object
 	const sections = document.getElementById("DBS").innerText;
 	const parsedSections = JSON.parse(sections);
@@ -936,6 +934,9 @@ if (document.getElementById("endDate") && document.getElementById("startDate")) 
 if(document.getElementById("dateFilter")){
     document.getElementById("dateFilter").max = htmlDate
 }
+if(document.getElementById("startdate")){
+    document.getElementById("startdate").value = htmlStartDate;
+}
 
 if(document.getElementById("startDate")){
     // document.getElementById("startDate").value = htmlDate
@@ -976,7 +977,6 @@ function blastFilter(e) {
     const startDate = document.getElementById("startDate").value;
 
     if (endDate < startDate) {
-        console.log(today)
         e.target.value = ""
         document.getElementById("tableDate").innerHTML = endDate.slice(8) + "/" + endDate.slice(5, 7) + "/" + endDate.slice(0, 4)
         document.getElementById("endDate").value = moment(today).format('YYYY-MM-DD');
@@ -1217,7 +1217,6 @@ function shiftSelector(e) {
 
 		if (toBeRemoved.length > 0) {
 			for (let j = 0; j < count; j++) {
-				console.log("Ronny");
 				blastBody.querySelector(".removedToggle").remove();
 			}
 		}

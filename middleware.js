@@ -224,22 +224,22 @@ module.exports.checks = (req, res, next) => {
         }
         const shift = foundAllocation.shift;
         const date = new Date(foundAllocation.date).toISOString();
-        Allocation.find({ $and: [{ shift: shift }, { date: date }] }, { LHD: 1, drillRig: 1, bolter: 1, _id: 0 }, function (err, allocationsMatched) {
+        Allocation.find({ $and: [{ shift: shift }, { date: date }] }, { LHDs: 1, drillRigs: 1, bolters: 1, _id: 0 }, function (err, allocationsMatched) {
 			if (err || !allocationsMatched) {
 				req.flash("error", "Error occured while looking up matched resources");
 				return res.redirect("/back");
 			}
             const tmmsAllocated = [];
             allocationsMatched.forEach((e) => {
-				e.LHD.forEach((lhd) => {
+				e.LHDs.forEach((lhd) => {
 					tmmsAllocated.push(lhd);
 				});
 
-				e.drillRig.forEach((rig) => {
+				e.drillRigs.forEach((rig) => {
 					tmmsAllocated.push(rig);
 				});
 
-				e.bolter.forEach((bolter) => {
+				e.bolters.forEach((bolter) => {
 					tmmsAllocated.push(bolter);
 				});
 			});
@@ -263,11 +263,11 @@ module.exports.checkShift = (req, res, next) => {
         shifts.forEach(shift => {
             const timeStart = Number(shift.start.split(":")[0]) + (Number(shift.start.split(":")[1]))/60;
             const timeEnd = Number(shift.end.split(":")[0]) + (Number(shift.end.split(":")[1]))/60;
-            if(shift.overlap){
-                
-            }
+            
             if(timeNow >= timeStart && timeNow <= timeEnd){
                 req.shift = shift.name;
+            } else if((timeNow + 24) >= timeStart && (timeNow + 24) <= (timeEnd + 24) && shift.overlap) {
+                req.shift = shift.name
             }
         })
 		next();

@@ -58,12 +58,12 @@ router.get("/breakdowns/new", isConnectionOpen, isLoggedIn, checkShift, function
 					req.flash("error", "Error occured while retrieving shifts");
 					return res.redirect("/breakdowns");
 				}
-				Allocation.find({shift: req.shift.toLowerCase()}, function(err, allocations){
+				// Allocation.find({shift: req.shift.toLowerCase()}, function(err, allocations){
+				Allocation.find({}, function(err, allocations){
 					if(err || !allocations){
 						req.flash("error", "Error occured while fetching resource allocations for today")
 						return res.redirect("/breakdowns")
 					}
-					console.log(allocations)
 					res.render("breakdowns/new", { allocations, title: "breakdowns", shiftNow: req.shift, shifts, tmms: sorted, sections: allSections });
 				})
 			});

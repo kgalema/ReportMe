@@ -147,11 +147,28 @@ router.get("/sections/:id/production/:production_id", isConnectionOpen, function
 				req.flash("error", "Looks like the report does not have author");
 				return res.redirect("back");
 			}
+			// console.log(foundProduction)
+			const dateCreated = foundProduction.created;
+			const time = foundProduction.createdAt;
+			const currentTime = new Date()
+			
+			dateCreated.setHours(time.getHours());
+			dateCreated.setMinutes(time.getMinutes());
+			dateCreated.setSeconds(time.getSeconds());
+			
+			const expiredat1 = new Date(dateCreated);
+
+			const expiresAt = new Date(expiredat1.setHours(expiredat1.getHours() + 1));
+			let expired = false;
+			if (currentTime > expiresAt) {
+				expired = true
+			}
+			console.log(expired)
 			// These variables are necessary for triggering usage virtuals in the schema. They are all undefined
 			const LHDUsage = foundProduction.LHDUsage;
 			const bolterUsage = foundProduction.bolterUsage;
 			const drillRigUsage = foundProduction.drillRigUsage;
-			res.render("production/showProduction", { reported: foundProduction, reportedUser: user, title: "production-dash" });
+			res.render("production/showProduction", {expired, reported: foundProduction, reportedUser: user, title: "production-dash" });
 		});
 	});
 });

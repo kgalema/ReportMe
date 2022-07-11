@@ -268,13 +268,18 @@
             <p>
                 <a href="/production">Dashboard</a>
             </p>
-            <% if(locals.currentUser && reported.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
-                <div class="admin">
+            <% if(locals.expired && locals.currentUser.isAdmin) { %>
                     <a href="/sections/<%= reported.section.id %>/production/<%= reported._id %>/edit">Edit</a>
                     <form action="/sections/<%= reported.section.id %>/production/<%= reported._id %>?_method=DELETE" method="POST">
                         <button id="delete" type="submit">Delete!</button>
                     </form>
-                </div>
+
+            <% } else if (!expired && locals.currentUser && reported.author.equals(currentUser._id)){ %>
+                    <a href="/sections/<%= reported.section.id %>/production/<%= reported._id %>/edit">Edit</a>
+                    <form action="/sections/<%= reported.section.id %>/production/<%= reported._id %>?_method=DELETE" method="POST">
+                        <button id="delete" type="submit">Delete!</button>
+                    </form>
+
             <% } %>
         </div>
     </div>

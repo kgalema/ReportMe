@@ -14,6 +14,7 @@ const shiftSchema = new mongoose.Schema({
 	end: String,
 	duration: Number,
 	overlap: Boolean,
+	isBlasting: Boolean,
 	authorId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User",

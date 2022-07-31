@@ -14,6 +14,11 @@ const { isLoggedIn, isProductionAuthor, isSectionSelected, isAdmin, isConnection
 // Production Reports Routes
 //===========================
 
+const collator = new Intl.Collator(undefined, {
+	numeric: true,
+	sensitivity: "base",
+});
+
 // 1. Landing Route
 router.get("/", function (req, res) {
 	res.redirect("/production")
@@ -32,7 +37,10 @@ router.get("/production", isConnectionOpen, function (req, res) {
 				req.flash("error", "Error occured while fetching sections");
 				return res.redirect("back");
 			}
-			res.render("production/index", { production: allProduction, sections, title: "production-dash" });
+			const sortedProductions = allProduction.sort(function (a, b) {
+				return collator.compare(a.section.name, b.section.name);
+			});
+			res.render("production/index", { production: sortedProductions, sections, title: "production-dash" });
 		})
 	});
 });
@@ -40,7 +48,6 @@ router.get("/production", isConnectionOpen, function (req, res) {
 router.get("/api/production", isConnectionOpen, function (req, res) {
 	Production.find({}, function (err, allProduction) {
 		if (err) {
-			console.log(err);
 			req.flash("error", "Oops! Seems like the database is down. Please contact admin");
 			return res.redirect("back");
 		} else {
@@ -85,7 +92,18 @@ router.get("/sections/:id/production/new", isConnectionOpen, isLoggedIn, isSecti
 						return res.redirect("/production");
 					}
 					const foundDates1 = foundDates.map(e => e.date)
-					res.render("production/new", { shifts, foundDates1, section: foundSection, drillRigs, LHDs, bolters, title: "production-dash" });
+					const blasting = shifts.filter(s => s.isBlasting).map(arr => arr.name.toLowerCase()).reduce((a, b) => a + b,"")
+
+					Production.find({ "section.name": foundSection.name, "general.shift": blasting, "blast.isMeasured": false }, { blast: 1 }, function (err, productionFound) {
+						const panelsAdvanced = [];
+						productionFound.forEach((e) => {
+							e.blast.forEach((b) => {
+								panelsAdvanced.push(b);
+							});
+						});
+						res.render("production/new", { panelsAdvanced, shifts, foundDates1, section: foundSection, drillRigs, LHDs, bolters, title: "production-dash" });
+					});
+						
 				})
 			});
 		});
@@ -107,26 +125,66 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 		}
 		const uniqueCode = section.name + dateNow + req.body.production.general[0].shift;
 		req.body.production.uniqueCode = uniqueCode;
-		
+
 		Production.create(req.body.production, function (err, foundProduction) {
 			if (err || !foundProduction) {
-				console.log(err);
 				req.flash("error", "Looks like you are trying to create duplicate report");
 				return res.redirect("/production");
 			}
+
+			if(foundProduction.general[0].shift === "night"){
+				const cr = foundProduction.created
+				const yesterday = new Date(cr);
+				yesterday.setDate(yesterday.getDate() - 1);
+				foundProduction.general[0].shiftStart = yesterday;
+			} else {
+				foundProduction.general[0].shiftStart = foundProduction.created;
+			}
+
 			foundProduction.section.id = section._id;
 			foundProduction.section.name = section.name;
-			foundProduction.section.budget = section.budget;
-			foundProduction.section.forecast = section.forecast;
+			if (foundProduction.general[0].isProduction) {
+				foundProduction.section.budget = section.budget;
+				foundProduction.section.forecast = section.forecast;
+			}
+
+			foundProduction.blast.forEach((b) => {
+				b.advance = section.plannedAdvance;
+			});
 			foundProduction.section.plannedAdvance = section.plannedAdvance;
 			foundProduction.author = req.user._id;
+
+
 			foundProduction.save(function (err, savedProduction) {
 				if (err || !savedProduction) {
 					req.flash("error", "Error while saving production report");
 					return res.redirect("back");
 				}
-				req.flash("success", "Successfully added production report");
-				res.redirect("/production");
+
+				if (req.body.advanceEdit) {
+					const ids = req.body.advanceEdit.blast.map((e) => e.id);
+					const arr = req.body.advanceEdit.blast;
+					Production.find({ "section.name": section.name, "blast._id": { $in: ids } }, { blast: 1 }, function (err, foundBlast) {
+						foundBlast[0].blast.forEach((b, i) => {
+							if (b._id == arr[i].id && b.panel === arr[i].panel && b.length === Number(arr[i].length)) {
+								b.isMeasured = true;
+								b.advance = arr[i].advance;
+							}
+						});
+
+						foundBlast.save(function (err, saved) {
+							if (err || !saved) {
+								req.flash("error", "Error occured while updating advances of previously blasted areas");
+								return res.redirect("/production");
+							}
+							req.flash("success", "Successfully added production report");
+							res.redirect("/production");
+						});
+					});
+				} else {
+					req.flash("success", "Successfully added production report");
+					res.redirect("/production");
+				}
 			});
 		});
 	});
@@ -147,7 +205,6 @@ router.get("/sections/:id/production/:production_id", isConnectionOpen, function
 				req.flash("error", "Looks like the report does not have author");
 				return res.redirect("back");
 			}
-			// console.log(foundProduction)
 			const dateCreated = foundProduction.created;
 			const time = foundProduction.createdAt;
 			const currentTime = new Date()
@@ -163,7 +220,22 @@ router.get("/sections/:id/production/:production_id", isConnectionOpen, function
 			if (currentTime > expiresAt) {
 				expired = true
 			}
-			console.log(expired)
+			// const cr = foundProduction.created
+			// const yesterday = new Date(cr);
+			// yesterday.setDate(yesterday.getDate() - 1);
+			// foundProduction.general[0].shiftStart = yesterday;
+			// foundProduction.save(function(err, saved){
+			// 	if(err || !saved){
+			// 		console.log("Error occured**********************************")
+			// 		console.log(err)
+			// 	}
+			// 	const LHDUsage = foundProduction.LHDUsage;
+			// 	const bolterUsage = foundProduction.bolterUsage;
+			// 	const drillRigUsage = foundProduction.drillRigUsage;
+			// 	return res.render("production/showProduction", { expired, reported: foundProduction, reportedUser: user, title: "production-dash" });
+			// })
+			console.log(foundProduction.general[0].shiftStart);
+			console.log(foundProduction.created);
 			// These variables are necessary for triggering usage virtuals in the schema. They are all undefined
 			const LHDUsage = foundProduction.LHDUsage;
 			const bolterUsage = foundProduction.bolterUsage;

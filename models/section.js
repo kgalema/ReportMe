@@ -27,6 +27,7 @@ const sectionSchema = new mongoose.Schema({
 	meetingDuration: String,
 	EEEDuration: String,
 	travelingTime: String,
+	blasted: [],
 	author: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User",

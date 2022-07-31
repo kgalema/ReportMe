@@ -24,17 +24,14 @@
                     <div class="shift">
                         <% locals.shifts.forEach(shift => { %>
                             <% if (shift.name === "MORNING") { %>
-                                <input style="margin: 3px;" type="radio" name="production[general][1][shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" checked required onchange="shiftSelector(event)">
+                                <input style="margin: 3px;" type="radio" name="production[general][1][shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" checked required data-blast="<%= shift.isBlasting %>" onchange="shiftSelector(event)">
                                 <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
                             <% } else { %>
-                                <input style="margin: 3px;" type="radio" name="production[general][1][shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" required onchange="shiftSelector(event)">
+                                <input style="margin: 3px;" type="radio" name="production[general][1][shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" required data-blast="<%= shift.isBlasting %>" onchange="shiftSelector(event)">
                                 <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
                             <% } %>
                         <% }) %>
-                        <!-- <input type="radio" name="production[general][1][shift]" id="morning" value="morning" onchange="shiftSelector(event)" checked>
-                        <label for="morning">Morning Shift</label>
-                        <input type="radio" name="production[general][1][shift]" id="night" value="night" onchange="shiftSelector(event)" required>
-                        <label for="night">Night Shift</label> -->
+                        
                     </div>
                     <br>
                     <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
@@ -42,7 +39,32 @@
                     <% } %>
 
                     <br>
-
+                    <% if (locals.panelsAdvanced.length > 0) { %>
+                        <button id="advance-report-heading" type="button" class="collapsible">Advanced Panels Report (<small>panels blasted by previous shift)</small></button>
+                        <div class="content" id="advance-report">
+                            <table class="form-row">
+                                <tbody>
+                                    <% locals.panelsAdvanced.forEach((p, i) => { %>
+                                        <tr id="inputs" class="form-row">
+                                            <td class="form-row">
+                                                <input type="text" id="panel" name="advanceEdit[blast][<%= i %>][panel]" value="<%= p.panel %>" readonly required>
+                                            </td>
+                                            <td class="form-row">
+                                                <input type="number" min="0" id="length" name="advanceEdit[blast][<%= i %>][length]" value="<%= p.length %>" readonly required>
+                                            </td>
+                                            <td class="form-row">
+                                                <input type="text" id="id" name="advanceEdit[blast][<%= i %>][id]" value="<%= p.id %>" readonly hidden required>
+                                            </td>
+                                            <td class="form-row">
+                                                <input type="number" min="0" step="0.1" id="advance" name="advanceEdit[blast][<%= i %>][advance]" placeholder="advance" required>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } %>
+                    <input type="text" hidden value="false" name="production[general][1][isProduction]" id="isProductionShift" readonly>
                     <button id="blast-report-heading" type="button" class="collapsible">Blasted Panels Report (Target = <span id="target-number"><%= target %></span>m)</button>
                     <div class="content" id="blast-report">
                         <table class="form-row">
@@ -72,13 +94,8 @@
                                             placeholder="panel_name" required>
                                     </td>
                                     <td class="form-row">
-                                        <input type="number" min="0" id="length" name="production[clean][1][length]"
-                                            placeholder="metres" required>
+                                        <input type="number" min="0" id="length" name="production[clean][1][length]" placeholder="metres" required>
                                     </td>
-                                    <!-- <td class="form-row">
-                                        <input type="number" min="0" id="advance" name="production[clean][1][advance]"
-                                            placeholder="advance" step="0.1" required>
-                                    </td> -->
                                     <td class="form-row">
                                         <input type="button" id="add"
                                             onClick="addAnotherClean(parentNode.parentNode.parentNode.parentNode.parentNode)"

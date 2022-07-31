@@ -52,6 +52,12 @@
                                         <td class="form-row">
                                             <input type="number" id="length" name="production[blast][<%= numBlast %>][length]" placeholder="metres" min="0" value="<%= b.length %>" required>
                                         </td>
+                                        <td class="form-row">
+                                            <input type="number" id="advance" name="production[blast][<%= numBlast %>][advance]" placeholder="metres" min="0" step="0.1" value="<%= b.advance %>" required>
+                                        </td>
+                                        <td class="form-row">
+                                            <input type="text" id="isMeasured" name="production[blast][<%= numBlast %>][isMeasured]" placeholder="metres" value="<%= b.isMeasured %>" readonly hidden required>
+                                        </td>
                                         <% if(c === 0){ %>
                                             <td class="form-row">
                                                 <input type="button" id="addPanel" value="+ panel" onClick="addAnotherField(parentNode.parentNode.parentNode.parentNode.parentNode)">
@@ -85,9 +91,6 @@
                                         <td class="form-row">
                                             <input type="number" id="length" name="production[clean][<%= numClean %>][length]" min="0" placeholder="metres" value="<%= c.length %>" required>
                                         </td>
-                                        <!-- <td class="form-row">
-                                            <input type="number" id="advance" name="production[clean][<%= numClean %>][advance]" placeholder="advance" min="0" step="0.1" value="<%= c.advance%>" required>
-                                        </td> -->
                                         <% if(i === 0){ %>
                                             <td class="form-row">
                                                 <input type="button" id="add" onClick="addAnotherClean(parentNode.parentNode.parentNode.parentNode.parentNode)" value="+ panel">

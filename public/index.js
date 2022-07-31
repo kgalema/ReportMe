@@ -1,14 +1,14 @@
 console.time();
-let fieldNumber = 1;
-let panelInput = document.querySelector("#panel");
-let quantityInput = document.querySelector("#length");
-let boltsInput = document.querySelector("#bolts");
-let anchorsInput = document.querySelector("#anchors");
-let holesInput = document.querySelector("#holes");
-let coyNumber = document.querySelector("#coyNumber");
-let buckets = document.querySelector("#LHDbuckets");
-let gl = document.querySelector("#LHDnumber");
-let tbody = document.querySelector("tbody");
+// let fieldNumber = 1;
+// let panelInput = document.querySelector("#panel");
+// let quantityInput = document.querySelector("#length");
+// let boltsInput = document.querySelector("#bolts");
+// let anchorsInput = document.querySelector("#anchors");
+// let holesInput = document.querySelector("#holes");
+// let coyNumber = document.querySelector("#coyNumber");
+// let buckets = document.querySelector("#LHDbuckets");
+// let gl = document.querySelector("#LHDnumber");
+// let tbody = document.querySelector("tbody");
 
 const coll = document.getElementsByClassName("collapsible");
 
@@ -37,21 +37,21 @@ function out(e) {
 };
 
 function addAnotherField(e) {
-    // let inputsCount = document.getElementById("blast-report").querySelectorAll("tr").length 
-    // fieldNumber = fieldNumber + 1;
-    // console.log(inputsCount)
-    // let num = fieldNumber;
+    const panelPlaceHolder = e.querySelector("#panel").placeholder;
+    const lengthPlaceHolder = e.querySelector("#length").placeholder;
+
     let inputsCount = e.querySelectorAll("tr").length
     inputsCount = inputsCount + 1
     let num = inputsCount;
+
     let body = e.childNodes[1].childNodes[1];
 
     let newField = `<td class="form-row removeToggle">
-                        <input type="text" id="panel" name="production[blast][${num}][panel]" placeholder=${panelInput.placeholder} required onkeyup="validatePanelName(event)">
+                        <input type="text" id="panel" name="production[blast][${num}][panel]" placeholder=${panelPlaceHolder} required onkeyup="validatePanelName(event)">
                         </td>
 
                         <td class="form-row removeToggle">
-                        <input type="number" min="0" id="length" name="production[blast][${num}][length]" placeholder=${quantityInput.placeholder} oninput="checkCallAchieved(event)" required>
+                        <input type="number" min="0" id="length" name="production[blast][${num}][length]" placeholder=${lengthPlaceHolder} oninput="checkCallAchieved(event)" required>
                         </td>
 
                         <td class="form-row removeToggle">
@@ -67,25 +67,22 @@ function addAnotherField(e) {
 }
 
 function addAnotherClean(e) {
+    const panelPlaceHolder = e.querySelector("#panel").placeholder;
+	const lengthPlaceHolder = e.querySelector("#length").placeholder;
+
     let inputsCount = e.querySelectorAll("tr").length;
     inputsCount = inputsCount + 1;
     let num = inputsCount;
-    // fieldNumber = fieldNumber + 1;
-    // let num = fieldNumber;
+    
     let body = (e.childNodes[1].childNodes[1]);
-    // <td class="form-row">
-    //    <input type="number" min="0" id="advance" name="production[clean][${num}][advance]" placeholder="advance" step="0.1" required>
-    //</td>
 
     let newField = `<td class="form-row">
-                        <input type="text" id="panel" name="production[clean][${num}][panel]" placeholder=${panelInput.placeholder} required onkeyup="validatePanelName(event)">
+                        <input type="text" id="panel" name="production[clean][${num}][panel]" placeholder=${panelPlaceHolder} required onkeyup="validatePanelName(event)">
                     </td>
 
                     <td class="form-row">
-                        <input type="number" min="0" id="length" name="production[clean][${num}][length]" placeholder=${quantityInput.placeholder} required>
+                        <input type="number" min="0" id="length" name="production[clean][${num}][length]" placeholder=${lengthPlaceHolder} required>
                     </td>
-
-                    
 
                     <td class="form-row">
                         <a href="#" onclick="out(this.parentNode.parentNode)" id="out">Delete</a>
@@ -100,6 +97,11 @@ function addAnotherClean(e) {
 }
 
 function addAnotherSupport(e) {
+    const panelPlaceHolder = e.querySelector("#panel").placeholder;
+	const lengthPlaceHolder = e.querySelector("#length").placeholder;
+	const boltsPlaceHolder = e.querySelector("#bolts").placeholder;
+	const anchorsPlaceHolder = e.querySelector("#anchors").placeholder;
+
     let inputsCount = e.querySelectorAll("tr").length;
     inputsCount = inputsCount + 1;
     let num = inputsCount;
@@ -110,24 +112,22 @@ function addAnotherSupport(e) {
         stringOpts = stringOpts + `<option value=${options[i].value}>${options[i].value}</option>`;
     }
 
-    // fieldNumber = fieldNumber + 1;
-    // let num = fieldNumber;
     let body = (e.childNodes[1].childNodes[1]);
 
     let newField = `<td class="form-row">
-                        <input type="text" id="panel" name="production[support][${num}][panel]" placeholder=${panelInput.placeholder} required onkeyup="validatePanelName(event)">
+                        <input type="text" id="panel" name="production[support][${num}][panel]" placeholder=${panelPlaceHolder} required onkeyup="validatePanelName(event)">
                     </td>
 
                     <td class="form-row">
-                        <input type="number" min="0" id="length" name="production[support][${num}][length]" placeholder=${quantityInput.placeholder} required>
+                        <input type="number" min="0" id="length" name="production[support][${num}][length]" placeholder=${lengthPlaceHolder} required>
                     </td>
 
                     <td class="form-row">
-                        <input type="number" min="0" id="bolts" name="production[support][${num}][bolts]" placeholder=${boltsInput.placeholder} required>
+                        <input type="number" min="0" id="bolts" name="production[support][${num}][bolts]" placeholder=${boltsPlaceHolder} required>
                     </td>
 
                     <td class="form-row">
-                        <input type="number" min="0" id="anchors" name="production[support][${num}][anchors]" placeholder=${anchorsInput.placeholder} required>
+                        <input type="number" min="0" id="anchors" name="production[support][${num}][anchors]" placeholder=${anchorsPlaceHolder} required>
                     </td>
 
                     <td class="form-row">
@@ -148,6 +148,10 @@ function addAnotherSupport(e) {
 }
 
 function addAnotherDrilled(e) {
+    const panelPlaceHolder = e.querySelector("#panel").placeholder;
+	const lengthPlaceHolder = e.querySelector("#length").placeholder;
+	const holesPlaceHolder = e.querySelector("#holes").placeholder;
+
     let inputsCount = e.querySelectorAll("tr").length;
     inputsCount = inputsCount + 1;
     let num = inputsCount;
@@ -158,20 +162,18 @@ function addAnotherDrilled(e) {
 		stringOpts = stringOpts + `<option value=${options[i].value}>${options[i].value}</option>`;
 	}
 
-    // fieldNumber = fieldNumber + 1;
-    // let num = fieldNumber;
     let body = (e.childNodes[1].childNodes[1]);
 
     let newField = `<td class="form-row">
-                        <input type="text" id="panel" name="production[drill][${num}][panel]" placeholder=${panelInput.placeholder} required onkeyup="validatePanelName(event)">
+                        <input type="text" id="panel" name="production[drill][${num}][panel]" placeholder=${panelPlaceHolder} required onkeyup="validatePanelName(event)">
                     </td>
 
                     <td class="form-row">
-                        <input type="number" min="0" id="length" name="production[drill][${num}][length]" placeholder=${quantityInput.placeholder} required>
+                        <input type="number" min="0" id="length" name="production[drill][${num}][length]" placeholder=${lengthPlaceHolder} required>
                     </td>
 
                     <td class="form-row">
-                        <input type="number" min="0" id="holes" name="production[drill][${num}][holes]" placeholder=${holesInput.placeholder} required>
+                        <input type="number" min="0" id="holes" name="production[drill][${num}][holes]" placeholder=${holesPlaceHolder} required>
                     </td>
 
                     <td class="form-row">
@@ -192,19 +194,20 @@ function addAnotherDrilled(e) {
 }
 
 function addAnotherPrepared(e) {
+    const panelPlaceHolder = e.querySelector("#panel").placeholder;
+	const lengthPlaceHolder = e.querySelector("#length").placeholder;
+
     let inputsCount = e.querySelectorAll("tr").length;
     inputsCount = inputsCount + 1;
     let num = inputsCount;
-    // fieldNumber = fieldNumber + 1;
-    // let num = fieldNumber;
     let body = (e.childNodes[1].childNodes[1]);
 
     let newField = `<td class="form-row">
-                        <input type="text" id="panel" name="production[prep][${num}][panel]" placeholder=${panelInput.placeholder} required onkeyup="validatePanelName(event)">
+                        <input type="text" id="panel" name="production[prep][${num}][panel]" placeholder=${panelPlaceHolder} required onkeyup="validatePanelName(event)">
                     </td>
 
                     <td class="form-row">
-                        <input type="number" min="0" id="length" name="production[prep][${num}][length]" placeholder=${quantityInput.placeholder} required>
+                        <input type="number" min="0" id="length" name="production[prep][${num}][length]" placeholder=${lengthPlaceHolder} required>
                     </td>
 
                     <td class="form-row">
@@ -220,19 +223,20 @@ function addAnotherPrepared(e) {
 
 
 function addAnotherNC(e) {
+    const panelPlaceHolder = e.querySelector("#panel").placeholder;
+	const lengthPlaceHolder = e.querySelector("#length").placeholder;
+
     let inputsCount = e.querySelectorAll("tr").length;
     inputsCount = inputsCount + 1;
     let num = inputsCount;
-    // fieldNumber = fieldNumber + 1;
-    // let num = fieldNumber;
     let body = (e.childNodes[1].childNodes[1]);
 
     let newField = `<td class="form-row">
-                        <input type="text" id="panel" name="production[notClean][${num}][panel]" placeholder=${panelInput.placeholder} required onkeyup="validatePanelName(event)">
+                        <input type="text" id="panel" name="production[notClean][${num}][panel]" placeholder=${panelPlaceHolder} required onkeyup="validatePanelName(event)">
                     </td>
 
                     <td class="form-row">
-                        <input type="number" min="0" id="length" name="production[notClean][${num}][length]" placeholder=${quantityInput.placeholder} required>
+                        <input type="number" min="0" id="length" name="production[notClean][${num}][length]" placeholder=${lengthPlaceHolder} required>
                     </td>
 
                     <td class="form-row">
@@ -248,6 +252,9 @@ function addAnotherNC(e) {
 
 
 function addAnotherLHD(e) {
+    const operatorPlaceHolder = e.querySelector("#coyNumber").placeholder;
+	const bucketsPlaceHolder = e.querySelector("#LHDbuckets").placeholder;
+
     let inputsCount = e.querySelectorAll("tr").length;
     inputsCount = inputsCount + 1;
     let num = inputsCount;
@@ -257,13 +264,10 @@ function addAnotherLHD(e) {
 	for (let i = 0; i < options.length; i++) {
 		stringOpts = stringOpts + `<option value=${options[i].value}>${options[i].value}</option>`;
 	}
-    // console.log(stringOpts)
-    // fieldNumber = fieldNumber + 1;
-    // let num = fieldNumber;
     let body = (e.childNodes[1].childNodes[1]);
 
     let newField = `<td class="form-row">
-                        <input type="number" min="0" id="coyNumber" name="production[LHD][${num}][coyNumber]" placeholder=${coyNumber.placeholder} required>
+                        <input type="number" min="0" id="coyNumber" name="production[LHD][${num}][coyNumber]" placeholder=${operatorPlaceHolder} required>
                     </td>
 
                     <td class="form-row">
@@ -273,7 +277,7 @@ function addAnotherLHD(e) {
                     </td>
 
                     <td class="form-row">
-                        <input type="number" min="0" id="LHDbuckets" name="production[LHD][${num}][buckets]" placeholder=${buckets.placeholder} required>
+                        <input type="number" min="0" id="LHDbuckets" name="production[LHD][${num}][buckets]" placeholder=${bucketsPlaceHolder} required>
                     </td>
 
                     <td class="form-row">
@@ -514,22 +518,32 @@ function validatePanelName(e) {
 // filter("combine")
 let chartData;
 function filter(c) {
+    const container = document.getElementById("myBtnContainer");
+    const current = container.getElementsByClassName("selected");
+    if(current.length !== 0){
+        current[0].className = current[0].className.replace(" selected", "");
+    }
+
+    const selectedBtn = document.getElementById(c);
+
+    selectedBtn.className += " " + "selected";
+
     if(c === "blast-progs" || c === "charts"){
+        // Hiding MO and section filters
         const ronny = document.getElementById("filterDiv");
         const ramushu = [...ronny.children];
         ramushu.forEach((e) => e.disabled = true);
         ronny.style.display = "none";
-    }
-
-    if(c === "day" || c === "night"){
+    } else {
+        // Unhiding MO and Section filters
         const ronny = document.getElementById("filterDiv");
-        const ramushu = [...ronny.children];
-        ramushu.forEach((e, i) => {
-            if(i !== 2){
-                e.disabled = false;
-            }
-        });
-        ronny.style.display = "block";
+		const ramushu = [...ronny.children];
+		ramushu.forEach((e, i) => {
+			if (i !== 2) {
+				e.disabled = false;
+			}
+		});
+		ronny.style.display = "block";
     }
 
     const all = document.getElementsByClassName("filterDiv");
@@ -567,67 +581,98 @@ function hideItem(element, name) {
 }
 
 // Add active class to the current control button (highlight it)
-if (document.getElementById("myBtnContainer")) {
-    const btnContainer = document.getElementById("myBtnContainer");
-    const btns = btnContainer.getElementsByClassName("btn");
-    for (let i = 0; i < btns.length; i++) {
-        btns[i].addEventListener("click", function () {
-            const current = document.getElementsByClassName("selected");
-            current[0].className = current[0].className.replace(" selected", "");
-            this.className += " selected";
-        });
-    }
-}
+// if (document.getElementById("myBtnContainer")) {
+//     const btnContainer = document.getElementById("myBtnContainer");
+//     const btns = btnContainer.getElementsByClassName("btn");
+//     for (let i = 0; i < btns.length; i++) {
+//         btns[i].addEventListener("click", function () {
+//             const current = document.getElementsByClassName("selected");
+//             current[0].className = current[0].className.replace(" selected", "");
+//             this.className += " selected";
+//         });
+//     }
+// }
 
 
 // ===============date filtering=========
 function dateChange(e) {
-	// Getting the production data and parsing it from string to JSON object
-	const production = document.getElementById("DB").innerText;
-	const parsedProduction = JSON.parse(production);
-
     // Filtering production data by selected MO and section
     const MOandSectionProduction = fileterByMOandSections(e);
 
 	// Getting the date that the user specified
     const selectedDate = document.getElementById("dateFilter").value
 
-	// Creating next day so the the selected date
-	const tomorrow = new Date(selectedDate);
-	tomorrow.setDate(tomorrow.getDate() + 1);
-
 	// This is a div where tables will be displayed in it
-	let main = document.getElementById("tables");
+	const main = document.getElementById("tables");
 	main.innerHTML = "";
 
-	let prodFiltered = MOandSectionProduction.filter((prod) => moment(prod.created).format("YYYY-MM-DD") === selectedDate);
-	let prodFilteredNight = MOandSectionProduction.filter((prod) => moment(prod.created).format("YYYY-MM-DD") === moment(tomorrow).format("YYYY-MM-DD"));
-
-	// Sorting production data by section in ascending order
-	prodFiltered.sort((a, b) => {
-		if (a.section.name > b.section.name) {
-			return 1;
-		} else {
-			return -1;
+    
+    const productionFilteredByDate = MOandSectionProduction.filter((prod) => moment(prod.general[0].shiftStart).format("YYYY-MM-DD") === selectedDate);
+    if(productionFilteredByDate.length !== 0){
+        const btns = document.getElementById("myBtnContainer").children;
+		const btnsToLeave = ["blast-progs", "charts"];
+		for (let i = 0; i < btns.length; i++) {
+			if (btnsToLeave.indexOf(btns[i].id) === -1) {
+				btns[i].remove();
+			}
 		}
-	});
+        createProductionIndexTables(productionFilteredByDate)
+    } else {
+        const btns = document.getElementById("myBtnContainer").children;
+        const btnsToLeave = ['blast-progs', 'charts'];
+        for(let i = 0; i < btns.length; i++){
+            if(btnsToLeave.indexOf(btns[i].id) === -1){
+                btns[i].remove();
+            };
+        }
+    }
+    // createProductionIndexTables(MOandSectionProduction)
+}
 
-	// Filtering only day shift data from the production array
-	const dayshift = prodFiltered.filter((prod) => prod.general[0].shift === "morning");
+function createProductionIndexTables(production){
+    const shifts = [];
+    production.forEach((p) => {
+        if (shifts.indexOf(p.general[0].shift) === -1) {
+			shifts.push(p.general[0].shift);
+		}
+    })
+    
+    const cont = document.getElementById("myBtnContainer");
+    const contArr = [...cont.children].map(el => el.id);
 
-	// Filtering only night shift data from the production array
-	// const backshift = prodFilteredNight.filter((prod) => prod.general[0].shift === "backshift");
-	const backshift = prodFilteredNight.filter((prod) => prod.general[0].shift === "night");
+    const buttons = [];
+    shifts.forEach((el, i) => {
+        const button = document.createElement("button");
+        button.classList = "btn";
+        button.id = el;
+        button.innerHTML = el.toUpperCase();
+        button.setAttribute("onclick", `filter('${el}')`);
+        
+        buttons.push(button)
+    })
+    
+    buttons.forEach(e => {
+        if(contArr.indexOf(e.id) === -1){
+            cont.insertBefore(e, cont.children[0]);
+        }
+    })
 
-    // Creating tables to be pushed into the main div/container
-	const content = `
-                    <table id="day-shift" class="filterDiv day">
+    shifts.forEach((s, i, arr) => {
+        const data = production.filter(p => p.general[0].shift === s)
+        // console.log(cont)
+        createShiftProductionTable(data, s, i, arr)
+    })
+
+}
+
+function createShiftProductionTable(data, shift, index, arr) {
+	const table = `<table id="${shift}-shift" class="filterDiv ${shift}">
                         <thead>
                             <tr>
 
                             </tr>
                             <tr>
-                                <th>Day</th>
+                                <th>${shift.toUpperCase()}</th>
                                 <th>Blasted (m)</th>
                                 <th>Cleaned (m)</th>
                                 <th>Supported (m)</th>
@@ -638,7 +683,7 @@ function dateChange(e) {
                             </tr>
                         </thead>
                         <tbody>
-                      ${dayshift
+                        ${data
 							.map(function (e) {
 								return (
 									"<tr><td><a href='/sections/" +
@@ -666,145 +711,63 @@ function dateChange(e) {
 							})
 							.join("")}
 
-
                             <tr>
                                 <th>Totals</th>
+                                
                                 <td>
-                                    ${dayshift
+                                    ${data
 										.map((b) => b.blast)
-										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j))
+										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
 										.reduce((x, y) => x + y, 0)}
                                 </td>
                                 <td>
-                                    ${dayshift
+                                    ${data
 										.map((b) => b.clean)
 										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
 										.reduce((x, y) => x + y, 0)}
                                 </td>
                                 <td>
-                                    ${dayshift
+                                    ${data
 										.map((b) => b.support)
 										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
 										.reduce((x, y) => x + y, 0)}
                                 </td>
                                 <td>
-                                    ${dayshift
+                                    ${data
 										.map((b) => b.drill)
 										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
 										.reduce((x, y) => x + y, 0)}
                                 </td>
                                 <td>
-                                    ${dayshift
+                                    ${data
 										.map((b) => b.prep)
 										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
 										.reduce((x, y) => x + y, 0)}
                                 </td>
                                 <td>
-                                    ${dayshift
+                                    ${data
 										.map((b) => b.notClean)
 										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
 										.reduce((x, y) => x + y, 0)}
                                 </td>
                                 <td>
-                                    ${dayshift
+                                    ${data
 										.map((b) => b.LHD)
 										.map((sub1) => sub1.length)
 										.reduce((i, j) => i + j, 0)}
                                 </td>
                             </tr>
                         </tbody >
-                    </table>
-                    <br>
-                    <table id="night-shift" class="filterDiv night">
-                        <thead>
-                            <tr>
-
-                            </tr>
-                            <tr>
-                                <th>Night</th>
-                                <th>Cleaned (m)</th>
-                                <th>Supported (m)</th>
-                                <th>Drilled (m)</th>
-                                <th>Prep'd (m)</th>
-                                <th>Not Cleaned (m)</th>
-                                <th>LHDs</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        ${backshift
-                            .map(function (e) {
-                                return (
-                                    "<tr><td><a href='/sections/" +
-                                    e.section.id +
-                                    "/production/" +
-                                    e._id +
-                                    "'>" +
-                                    e.section.name +
-                                    "</a></td><td>" +
-                                    e.clean.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
-                                    "</td><td>" +
-                                    e.support.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
-                                    "</td><td>" +
-                                    e.drill.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
-                                    "</td><td>" +
-                                    e.prep.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
-                                    "</td><td>" +
-                                    e.notClean.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
-                                    "</td><td>" +
-                                    e.LHD.length +
-                                    "</td></tr>"
-                                );
-                            })
-                            .join("")}
-
-                            <tr>
-                                <th>Totals</th>
-                                
-                                <td>
-                                    ${backshift
-                                        .map((b) => b.clean)
-                                        .map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
-                                        .reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${backshift
-                                        .map((b) => b.support)
-                                        .map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
-                                        .reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${backshift
-                                        .map((b) => b.drill)
-                                        .map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
-                                        .reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${backshift
-                                        .map((b) => b.prep)
-                                        .map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
-                                        .reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${backshift
-                                        .map((b) => b.notClean)
-                                        .map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
-                                        .reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${backshift
-                                        .map((b) => b.LHD)
-                                        .map((sub1) => sub1.length)
-                                        .reduce((i, j) => i + j, 0)}
-                                </td>
-                            </tr>
-                        </tbody >
                     </table>`;
 
 	const all = document.createElement("section");
-	all.innerHTML = content;
+	all.innerHTML = table;
 	all.setAttribute("id", "wrapper");
+	const main = document.getElementById("tables");
 	main.appendChild(all);
-	document.getElementById("morning").click();
+    if(index === arr.length - 1) {
+        document.getElementById(shift).onclick()
+    }
 }
 
 
@@ -992,8 +955,6 @@ function blastFilter(e) {
             return -1
         }
     })
-    // let todayROM = roms.filter(roms1 => { return moment(roms1.created).format('YYYY-MM-DD') == endDate})
-    // let todayPlantFeed = feeds.filter(feeds1 => { return moment(feeds1.created).format('YYYY-MM-DD') == endDate})
     const actualTotalBudget = todayProduction.map(b => b.section.budget).reduce((i, j) => i + j, 0)
     const actualTotalForecast = todayProduction.map(b => b.section.forecast).reduce((i, j) => i + j, 0)
 
@@ -1002,36 +963,8 @@ function blastFilter(e) {
     const actualBlastTotal = actualTotalBlast2.reduce((r, a, i) => r + a * actualTotalAdvance[i], 0)
 
 
-    // const actualFeed = todayPlantFeed.map(b => b.actual).join("")
-    // const forecastFeed = todayPlantFeed.map(b => b.forecast).join("")
-    // const budgetFeed = todayPlantFeed.map(b => b.forecast).join("")
-    // const actualROM = todayROM.map(b => b.actual).join("")
-    // const forecastROM = todayROM.map(b => b.forecast).join("")
-    // const budgetROM = todayROM.map(b => b.budget).join("")
-    
-
-    // const actualFeedProg = feeds.map(feed => feed.actual).reduce((a, b) => a + b, 0)
-    // const actualROMProg = roms.map(rom => rom.actual).reduce((a, b) => a + b, 0)
-    // const forecastFeedProg = feeds.map(feed => feed.forecast).reduce((a, b) => a + b, 0)
-    // const forecastROMProg = roms.map(rom => rom.forecast).reduce((a, b) => a + b, 0)
-    // const budegtROMProg = roms.map(rom => rom.budget).reduce((a, b) => a + b, 0)
-    // const budgetFeedProg = feeds.map(feed => feed.budget).reduce((a, b) => a + b, 0)
-
     varianceTotals = Number(actualBlastTotal) - Number(actualTotalForecast)
-    // varianceROM = Number(actualROM) - Number(forecastROM)
-    // variancePlantFeed = Number(actualFeed) - Number(forecastFeed)
-    // varianceProgFeed = Number(actualFeedProg) - Number(forecastFeedProg)
-    // varianceProgROM = Number(actualROMProg) - Number(forecastROMProg)
-
-    // const variancesArray = [varianceProgFeed, varianceProgROM]
-
-    // for(let i = 0; i < variancesArray.length; ++i){
-    //     if(Math.sign(variancesArray[i] === -1)){
-    //         variancesArray[i] = `(${(variancesArray[i] * -1).toFixed(1)})`
-    //     } else {
-    //         variancesArray[i] = variancesArray[i].toFixed(1)
-    //     }
-    // }
+    
 
     if (Math.sign(varianceTotals) === -1) { 
         varianceTotals = `(${(varianceTotals * -1).toFixed(1)})`
@@ -1039,17 +972,6 @@ function blastFilter(e) {
         varianceTotals = varianceTotals.toFixed(1) 
     }
 
-    // if (Math.sign(varianceROM) === -1) { 
-    //     varianceROM = `(${(varianceROM * -1).toFixed(1)})`
-    // } else {
-    //     varianceROM = varianceROM.toFixed(1) 
-    // }
-
-    // if (Math.sign(variancePlantFeed) === -1) { 
-    //     variancePlantFeed = `(${(variancePlantFeed * -1).toFixed(1)})`
-    // } else {
-    //     variancePlantFeed = variancePlantFeed.toFixed(1) 
-    // }
 
     budgetProgTotal = filteredByDate.map(b2 => b2.section.budget).reduce((b3, b4) => b3 + b4, 0)
     forecastProgTotal = filteredByDate.map(b2 => b2.section.forecast).reduce((b3, b4) => b3 + b4, 0)
@@ -1105,12 +1027,7 @@ function blastFilter(e) {
                             budgetProg = sections.map(b2 => b2.section.budget).reduce((b3, b4) => b3 + b4, 0)
                             forecastProg = sections.map(b2 => b2.section.forecast).reduce((b3, b4) => b3 + b4, 0)
 
-                            // let actual2 = sections.map(b5 => b5.blast.map(sub1 => sub1.length).reduce((i, j) => i + j, 0)).reduce((b6, b7) => b6 + b7, 0).toFixed(1)
                             let actual21 = sections.map(b5 => b5.blast.map(sub1 => sub1.length).reduce((i, j) => i + j, 0)*b5.section.plannedAdvance).reduce((b6, b7) => b6 + b7, 0).toFixed(1)
-                            // let advances = sections.map(b => b.section.plannedAdvance)
-                            
-                            
-                            // let blasts = sections.map(b5 => b5.blast.map(sub1 => sub1.length).reduce((i, j) => i+j, 0))
                             
                             varianceProg = Number(actual21) - forecastProg
 
@@ -1207,7 +1124,8 @@ function shiftSelector(e) {
     
     
 
-    if ((selectedShift.checked && selectedShift.id === "night") || (selectedShift.checked && selectedShift.id === "afternoon")) {
+    // if ((selectedShift.checked && selectedShift.id === "night") || (selectedShift.checked && selectedShift.id === "afternoon")) {
+    if ((selectedShift.checked && selectedShift.dataset.blast === "false")) {
 		blastPanel.required = false;
 		blastPanel.value = null;
 		blastLength.required = false;
@@ -1225,7 +1143,8 @@ function shiftSelector(e) {
 		blastHeading.style.display = "none";
 	}
 
-    if(selectedShift.checked && selectedShift.id === "morning"){
+    // if(selectedShift.checked && selectedShift.id === "morning"){
+    if(selectedShift.checked && selectedShift.dataset.blast === "true"){
         blastPanel.required = true;
         blastPanel.value = null;
         blastLength.required = true;
@@ -1257,6 +1176,23 @@ if(document.getElementById("blast-report")){
 function checkCallAchieved4Date (e) {
     const selectedDate = new Date(e.target.value).toDateString();
     checkCallAchieved(0, selectedDate)
+    advancePanels(selectedDate)
+}
+
+function advancePanels(selectedDate){
+    const headingToHide = document.getElementById("advance-report-heading");
+    const divToHide = document.getElementById("advance-report");
+    const inputsToDisable = divToHide.querySelectorAll("input");
+
+    if (today.toDateString() !== selectedDate) {
+        headingToHide.style.display = "none";
+        divToHide.style.display = "none";
+        inputsToDisable.forEach((e) => (e.disabled = true));
+    } else {
+        headingToHide.style.display = "block";
+        divToHide.style.display = "block";
+        inputsToDisable.forEach((e) => (e.disabled = false));
+    }
 }
 
 function checkCallAchieved (e, date) {
@@ -1288,6 +1224,9 @@ function checkCallAchieved (e, date) {
     
     if(productionShifts1[index] === selectedDate){
         target = Number(document.getElementById("call").innerText);
+        document.getElementById("isProductionShift").value = true;
+    } else {
+        document.getElementById("isProductionShift").value = false;
     }
 
     document.getElementById("target-number").innerText = target;
@@ -1623,4 +1562,22 @@ function rehabedPanelsTable(data){
 
 
 
+function changeCleanedLength(e){
+    const tag = e.parentNode.parentNode
 
+    const select1 = tag.querySelector("#clean-panel");
+    const select2 = tag.querySelector("#clean-length");
+    // const input = tag.querySelector("#input-length");
+
+    if(e.id === "clean-panel"){
+        select2.value = select2[select1.selectedIndex].value;
+    }
+
+    if(e.id === "clean-length"){
+        select1.value = select1[select2.selectedIndex].value;
+    }
+
+    // input.value = select2[select1.selectedIndex].value;
+    console.log(select1.selectedIndex)
+    console.log(select2[1].value)
+}

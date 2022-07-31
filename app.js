@@ -28,7 +28,8 @@ app.use((req, res, next)=> {
 })
 const port = process.env.PORT || 4000;
 
-const dbUrl = "mongodb://localhost/reportMe";
+const dbUrl = "mongodb://localhost:27017/reportMe";
+// const dbUrl = "mongodb://Declaration:45declaration88@localhost:27017/reportMe";
 // const dbUrl = process.env.DB_URL
 const DBoptions = {
 	useNewUrlParser: true,

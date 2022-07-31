@@ -131,6 +131,7 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 				req.flash("error", "Looks like you are trying to create duplicate report");
 				return res.redirect("/production");
 			}
+			console.log(foundProduction)
 
 			if(foundProduction.general[0].shift === "night"){
 				const cr = foundProduction.created
@@ -164,7 +165,11 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 				if (req.body.advanceEdit) {
 					const ids = req.body.advanceEdit.blast.map((e) => e.id);
 					const arr = req.body.advanceEdit.blast;
-					Production.find({ "section.name": section.name, "blast._id": { $in: ids } }, { blast: 1 }, function (err, foundBlast) {
+					Production.find({ "section.name": section.name, "blast._id": { $in: ids } }, function (err, foundBlast) {
+						if(err || !foundBlast){
+							req.flash("error", "Error while saving advances");
+							return res.redirect("back");
+						}
 						foundBlast[0].blast.forEach((b, i) => {
 							if (b._id == arr[i].id && b.panel === arr[i].panel && b.length === Number(arr[i].length)) {
 								b.isMeasured = true;
@@ -172,7 +177,9 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 							}
 						});
 
-						foundBlast.save(function (err, saved) {
+						console.log("HEY********************************")
+						console.log(foundBlast)
+						foundBlast[0].save(function (err, saved) {
 							if (err || !saved) {
 								req.flash("error", "Error occured while updating advances of previously blasted areas");
 								return res.redirect("/production");
@@ -220,22 +227,7 @@ router.get("/sections/:id/production/:production_id", isConnectionOpen, function
 			if (currentTime > expiresAt) {
 				expired = true
 			}
-			// const cr = foundProduction.created
-			// const yesterday = new Date(cr);
-			// yesterday.setDate(yesterday.getDate() - 1);
-			// foundProduction.general[0].shiftStart = yesterday;
-			// foundProduction.save(function(err, saved){
-			// 	if(err || !saved){
-			// 		console.log("Error occured**********************************")
-			// 		console.log(err)
-			// 	}
-			// 	const LHDUsage = foundProduction.LHDUsage;
-			// 	const bolterUsage = foundProduction.bolterUsage;
-			// 	const drillRigUsage = foundProduction.drillRigUsage;
-			// 	return res.render("production/showProduction", { expired, reported: foundProduction, reportedUser: user, title: "production-dash" });
-			// })
-			console.log(foundProduction.general[0].shiftStart);
-			console.log(foundProduction.created);
+			
 			// These variables are necessary for triggering usage virtuals in the schema. They are all undefined
 			const LHDUsage = foundProduction.LHDUsage;
 			const bolterUsage = foundProduction.bolterUsage;

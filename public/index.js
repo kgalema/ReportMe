@@ -514,6 +514,16 @@ function validatePanelName(e) {
     e.target.value = newValue;
 }
 
+function validatePanelActivity(e) {
+    if(e.value.length !== 0 && e.value == 0){
+        const parent = e.parentNode.parentNode;
+        const children = parent.children;
+        for(let i = 0; i < children.length; i++){
+            children[i].children[0].disabled = true
+        }
+    }
+}
+
 // ================solution Showing Infomation selectively=======
 // filter("combine")
 let chartData;

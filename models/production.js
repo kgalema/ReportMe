@@ -97,7 +97,7 @@ const productionSchema = new mongoose.Schema({
 		name: String,
 		budget: {type: Number, default: 0},
 		forecast: {type: Number, default: 0},
-		plannedAdvance: String
+		plannedAdvance: Number
 	},
 	author: {
 		type: mongoose.Schema.Types.ObjectId,
@@ -118,9 +118,15 @@ productionSchema.virtual("forecast").get(function () {
 	const forecast = this.section.forecast;
 	return forecast;
 });
+
 productionSchema.virtual("budget").get(function () {
 	const budget = this.section.budget;
 	return budget;
+});
+
+productionSchema.virtual("var").get(function () {
+	const blastVariance = this.section.forecast;
+	return blastVariance;
 });
 
 

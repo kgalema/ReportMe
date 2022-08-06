@@ -14,6 +14,7 @@ const { isLoggedIn, isProductionAuthor, isSectionSelected, isAdmin, isConnection
 // Production Reports Routes
 //===========================
 
+
 const collator = new Intl.Collator(undefined, {
 	numeric: true,
 	sensitivity: "base",
@@ -37,10 +38,16 @@ router.get("/production", isConnectionOpen, function (req, res) {
 				req.flash("error", "Error occured while fetching sections");
 				return res.redirect("back");
 			}
-			const sortedProductions = allProduction.sort(function (a, b) {
-				return collator.compare(a.section.name, b.section.name);
-			});
-			res.render("production/index", { production: sortedProductions, sections, title: "production-dash" });
+			Shift.find({}, {isBlasting: 1, name: 1}, function(err, shifts){
+				if(err || !shifts){
+					req.flash("error", "Error occured while validating");
+					return res.redirect("back");
+				}
+				const sortedProductions = allProduction.sort(function (a, b) {
+					return collator.compare(a.section.name, b.section.name);
+				});
+				res.render("production/index", { production: sortedProductions, shifts, sections, title: "production-dash" });
+			})
 		})
 	});
 });

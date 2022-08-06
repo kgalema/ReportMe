@@ -946,6 +946,11 @@ function blastFilter(e) {
     const production = document.getElementById("DB").innerText;
 	const parsedProduction = JSON.parse(production);
 
+    const shifts = document.getElementById("shifts").innerText;
+	const parsedShifts = JSON.parse(shifts);
+    const blastingShift = parsedShifts.filter(s => s.isBlasting)
+    const shift = blastingShift[0].name.toLowerCase()
+
     const endDate = document.getElementById("endDate").value;
     const startDate = document.getElementById("startDate").value;
 
@@ -957,38 +962,27 @@ function blastFilter(e) {
     }
 
     const filteredByDate = parsedProduction.filter(prod1 => { return moment(prod1.created).format('YYYY-MM-DD') >= startDate && moment(prod1.created).format('YYYY-MM-DD') <= endDate}).filter(a => a.general[0].shift === "morning")
-    const todayProduction = parsedProduction.filter(prod1 => { return moment(prod1.created).format('YYYY-MM-DD') == endDate }).filter(a => a.general[0].shift === "morning")
-    todayProduction.sort((a, b) => {
-        if (a.section.name > b.section.name){
-            return 1
-        } else {
-            return -1
-        }
-    })
+    const todayProduction = parsedProduction.filter(prod1 => { return moment(prod1.created).format('YYYY-MM-DD') == endDate }).filter(a => a.general[0].shift === shift)
+
     const actualTotalBudget = todayProduction.map(b => b.section.budget).reduce((i, j) => i + j, 0)
     const actualTotalForecast = todayProduction.map(b => b.section.forecast).reduce((i, j) => i + j, 0)
 
-    const actualTotalBlast2 = todayProduction.map(b => b.blast).map(sub1 => sub1.map(sub2 => sub2.length).reduce((i, j) => i + j, 0))
-    const actualTotalAdvance = todayProduction.map(b => b.section.plannedAdvance)
-    const actualBlastTotal = actualTotalBlast2.reduce((r, a, i) => r + a * actualTotalAdvance[i], 0)
+    const todayBlasted = todayProduction.map(b => b.blasted).reduce((a, b) => a + b, 0)
 
+    let todayVarianceTotals = Number(todayBlasted) - Number(actualTotalForecast);
 
-    varianceTotals = Number(actualBlastTotal) - Number(actualTotalForecast)
-    
+    if (Math.sign(todayVarianceTotals) === -1) {
+		todayVarianceTotals = `(${(todayVarianceTotals * -1).toFixed(1)})`;
+	} else {
+		todayVarianceTotals = todayVarianceTotals.toFixed(1);
+	}
 
-    if (Math.sign(varianceTotals) === -1) { 
-        varianceTotals = `(${(varianceTotals * -1).toFixed(1)})`
-    } else {
-        varianceTotals = varianceTotals.toFixed(1) 
-    }
+    const budgetProgTotal2 = filteredByDate.map(b2 => b2.budget).reduce((b3, b4) => b3 + b4, 0)
+    const forecastProgTotal2 = filteredByDate.map(b2 => b2.forecast).reduce((b3, b4) => b3 + b4, 0)
 
+    const squareMetersProgTotal2 = filteredByDate.map(f => f.blasted).reduce((r, a) => r + a, 0)
 
-    budgetProgTotal = filteredByDate.map(b2 => b2.section.budget).reduce((b3, b4) => b3 + b4, 0)
-    forecastProgTotal = filteredByDate.map(b2 => b2.section.forecast).reduce((b3, b4) => b3 + b4, 0)
-    const advances = filteredByDate.map(b => b.section.plannedAdvance)
-    const blasts = filteredByDate.map(b5 => b5.blast.map(sub1 => sub1.length).reduce((i, j) => i + j))
-    const squareMetersProgTotal = advances.reduce((r, a, i) => r + a * blasts[i], 0)
-    varianceProgTotal = squareMetersProgTotal - forecastProgTotal
+    varianceProgTotal = squareMetersProgTotal2 - forecastProgTotal2
 
     if (Math.sign(varianceProgTotal) === -1) {
         varianceProgTotal = `(${(varianceProgTotal * -1).toFixed(1)})`
@@ -1026,20 +1020,21 @@ function blastFilter(e) {
                         </tr>
 
                         ${todayProduction.map(b => {
-                            let variance = (b.blast.map(sub1 => sub1.length).reduce((i, j) => i + j) * (b.section.plannedAdvance)).toFixed(1) - b.section.forecast
-                            let actual = (b.blast.map(sub1 => sub1.length).reduce((i, j) => i + j) * (b.section.plannedAdvance)).toFixed(1)
-                            if (Math.sign(variance) === -1) {
-                                variance = `(${(variance * -1).toFixed(1)})`
-                            } else {
-                                variance = variance.toFixed(1)
-                            }
-                            let sections = filteredByDate.filter(b1 => b1.section.name === b.section.name)
-                            budgetProg = sections.map(b2 => b2.section.budget).reduce((b3, b4) => b3 + b4, 0)
-                            forecastProg = sections.map(b2 => b2.section.forecast).reduce((b3, b4) => b3 + b4, 0)
+                            let variance2 = b.blasted - b.section.forecast
 
-                            let actual21 = sections.map(b5 => b5.blast.map(sub1 => sub1.length).reduce((i, j) => i + j, 0)*b5.section.plannedAdvance).reduce((b6, b7) => b6 + b7, 0).toFixed(1)
+                            if (Math.sign(variance2) === -1) {
+                                variance2 = `(${(variance2 * -1).toFixed(1)})`
+                            } else {
+                                variance2 = variance2.toFixed(1)
+                            }
+
+                            const sections = filteredByDate.filter(b1 => b1.section.name === b.section.name)
+                            const budgetProg = sections.map(b2 => b2.budget).reduce((b3, b4) => b3 + b4, 0)
+                            const forecastProg = sections.map(b2 => b2.forecast).reduce((b3, b4) => b3 + b4, 0)
+
+                            const progActual = sections.map(b5 => b5.blasted).reduce((a, b) => a + b, 0)
                             
-                            varianceProg = Number(actual21) - forecastProg
+                            let varianceProg = Number(progActual) - forecastProg;
 
                             if (Math.sign(varianceProg) === -1) {
                                 varianceProg = `(${(varianceProg * -1).toFixed(1)})`
@@ -1048,7 +1043,7 @@ function blastFilter(e) {
                             }
 
 
-                            return "<tr><th>" + b.section.name + "</th>" + "<th>m<sup>2</sup></th>" + "<td>" + b.section.budget.toFixed(1) + "</td>" + "<td>" + b.section.forecast.toFixed(1) + "</td>" + "<td>" + actual + "</td>" + "<td class=\"variance\" >" + variance + "</td>" + "<td class=\"smiley\">&#128577</td>" + "<td class=\"comments_cell\">" + b.general[0].comments + "</td>" + "<td>" + budgetProg.toFixed(1) + "</td>" + "<td>"+ forecastProg.toFixed(1) +"</td>" + "<td>" + actual21 +"</td>" + "<td class=\"variance\">"+ varianceProg +"</td>" + "<td>&#128577</td>" + "</tr>"
+                            return "<tr><th>" + b.section.name + "</th>" + "<th>m<sup>2</sup></th>" + "<td>" + b.budget.toFixed(1) + "</td>" + "<td>" + b.forecast.toFixed(1) + "</td>" + "<td>" + b.blasted + "</td>" + "<td class=\"variance\" >" + variance2 + "</td>" + "<td class=\"smiley\">&#128577</td>" + "<td class=\"comments_cell\">" + b.general[0].comments + "</td>" + "<td>" + budgetProg.toFixed(1) + "</td>" + "<td>"+ forecastProg.toFixed(1) +"</td>" + "<td>" + progActual +"</td>" + "<td class=\"variance\">"+ varianceProg +"</td>" + "<td>&#128577</td>" + "</tr>"
                         }).join("")}
 
 
@@ -1062,22 +1057,22 @@ function blastFilter(e) {
                                 ${actualTotalForecast.toFixed(1)}
                             </th>
                             <th>
-                                ${actualBlastTotal.toFixed(1)}
+                                ${todayBlasted.toFixed(1)}
                             </th>
                             <th class="variance">
-                                ${varianceTotals}
+                                ${todayVarianceTotals}
                             </th>
                             <td>&#128577</td>
                             <th>
                             </th>
                             <th>
-                                ${budgetProgTotal.toFixed(1)}
+                                ${budgetProgTotal2.toFixed(1)}
                             </th>
                             <th>
-                                ${forecastProgTotal.toFixed(1)}
+                                ${forecastProgTotal2.toFixed(1)}
                             </th>
                             <th>
-                                ${squareMetersProgTotal.toFixed(1)}
+                                ${squareMetersProgTotal2.toFixed(1)}
                             </th>
                             <th class="variance">
                                 ${varianceProgTotal}

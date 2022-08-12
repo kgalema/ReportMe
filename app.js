@@ -207,26 +207,18 @@ app.use(productionCalendarRoutes);
 app.use(resourceAllocationRoutes);
 
 conn1.once("open", () => {
-	// console.log("Inside connection being open")
 	console.log("**********Before removing all routers***************");
 	console.log(app._router.stack.length);
 	for (let i = 0; i < app._router.stack.length; i++) {
-		// console.log(i)
 		if (app._router.stack[i].name === "router") {
 			app._router.stack.splice(i, 1);
 			i--;
-			// console.log(i)
 		}
 	}
 	// console.log(app._router.stack);
 	console.log('**********After removing all routers**************')
 	console.log(app._router.stack.length);
 
-	
-
-	// console.log(app._router.stack[11].handle);
-	// console.log(app._router.stack[12].handle);
-	// process.stdout.write(app._router.stack.length + "\n");
 	app.use(usersRoutes);
 	app.use(redPanelsRoutes);
 	app.use(newRedPanelsRoutes);
@@ -262,32 +254,11 @@ conn1.once("open", () => {
 		return layerName.name === "lastMiddlware";
 	}
 
-	// console.log("Selected middleware");
-	// console.log(starMiddlewareIndex);
-	// console.log(lastErrHandlingMiddlewareIndex);
-
-	// console.log("*********Printing********")
-	// console.log(app._router.stack[starMiddlewareIndex].route.path);
-	// console.log(app._router.stack[26].handle)
 	const lastItemOfStack = app._router.stack.length - 1;
 	const secondLastItemOfStack = app._router.stack.length - 2;
-	// console.log(lastItemOfStack)
-	// console.log(secondLastItemOfStack)
+	
 	arraymove(app._router.stack, lastErrHandlingMiddlewareIndex, lastItemOfStack);
 	arraymove(app._router.stack, starMiddlewareIndex, secondLastItemOfStack);
-
-	// console.log(app._router.stack)
-
-	// console.log("*****After adding other middlwares*****")
-	// console.log(app._router.stack);
-	// console.log(app._router.stack.length);
-	// console.log(app._router.stack[11]);
-	// process.stdout.write(app._router.stack[28].handle + "\n");
-	// process.stdout.write(app._router.stack[12].handle + "\n");
-	// process.stdout.write(app._router.stack[27].handle + "\n");
-	// console.log(app._router.stack[12]);
-	// console.log(app._router.stack[11].handle);
-	// console.log(app._router.stack[12].handle);
 })
 
 

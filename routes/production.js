@@ -133,6 +133,17 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 		const uniqueCode = section.name + dateNow + req.body.production.general[0].shift;
 		req.body.production.uniqueCode = uniqueCode;
 
+		if(req.body.production.blast && req.body.production.blast.length > 0){
+			req.body.production.blast.forEach(b => {
+				if(b.length == 0){
+					b.isMeasured = true;
+					b.isCleaned = true;
+					b.panel = "NONE";
+				}
+			})
+		};
+		// console.log(req.body.production)
+		// return res.json({})
 		Production.create(req.body.production, function (err, foundProduction) {
 			if (err || !foundProduction) {
 				req.flash("error", "Looks like you are trying to create duplicate report");

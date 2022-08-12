@@ -9,9 +9,7 @@
             <p id="foundShifts" style="display: none;">
                 <%= JSON.stringify(foundShifts) %>
             </p>
-            <p id="foundFleetUtils" style="display: none;">
-                <%= JSON.stringify(foundFleetUtils) %>
-            </p>
+            
             <p id="foundTMM" style="display: none;">
                 <%= JSON.stringify(tmm) %>
             </p>
@@ -42,10 +40,6 @@
                     <tr>
                         <th>Shift</th>
                         <th>Availability (%)</th>
-                        <!-- <th>Utilisation (%)</th> -->
-                        <!-- <th>Efficiency (%)</th> -->
-                        <!-- <th>Production eff</th>
-                        <th>Overall effectiveness</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -55,12 +49,6 @@
                         </td>
                         <td id="morning-availability" class="availability">
                         </td>
-                        <!-- <td id="morning-utilisation" class="utilisation">
-                        </td> -->
-                        <!-- <td id="morning-reliability">
-                        </td> -->
-                        <!-- <td id="morning-efficiency" class="efficiency">
-                        </td> -->
                     </tr>
                     <tr>
                         <td>
@@ -68,12 +56,6 @@
                         </td>
                         <td id="afternoon-availability" class="availability">
                         </td>
-                        <!-- <td id="afternoon-utilisation" class="utilisation">
-                        </td> -->
-                        <!-- <td id="afternoon-reliability">
-                        </td> -->
-                        <!-- <td id="afternoon-efficiency" class="efficiency">
-                        </td> -->
                     </tr>
                     <tr>
                         <td>
@@ -81,12 +63,6 @@
                         </td>
                         <td id="night-availability" class="availability">
                         </td>
-                        <!-- <td id="night-utilisation" class="utilisation">
-                        </td> -->
-                        <!-- <td id="night-reliability">
-                        </td> -->
-                        <!-- <td id="night-efficiency" class="efficiency">
-                        </td> -->
                     </tr>
                 </tbody>
             </table>

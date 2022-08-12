@@ -6,6 +6,10 @@ const TMM = require("../models/tmms");
 const Shift = require("../models/shift");
 const { isLoggedIn, isAdmin, isConnectionOpen, checks } = require("../middleware");
 
+const collator = new Intl.Collator(undefined, {
+	numeric: true,
+	sensitivity: "base",
+});
 
 // 1. Index route
 router.get("/resource", isConnectionOpen, function (req, res) {
@@ -14,11 +18,7 @@ router.get("/resource", isConnectionOpen, function (req, res) {
 			req.flash("error", "Error occured while retriving all allocations");
 			return res.redirect("/production");
 		}
-		const collator = new Intl.Collator(undefined, {
-			numeric: true,
-			sensitivity: "base",
-		});
-
+		
 		const allocations = allocation.sort(function (a, b) {
 			return collator.compare(a.section, b.section);
 		});
@@ -45,11 +45,6 @@ router.get("/resource/new", isConnectionOpen, isLoggedIn, isAdmin, function (req
 					return res.redirect("/resource");
 				}
 
-				const collator = new Intl.Collator(undefined, {
-					numeric: true,
-					sensitivity: "base",
-				});
-
 				const TMMS = tmms.sort(function (a, b) {
 					return collator.compare(a.name, b.name);
 				});
@@ -65,6 +60,7 @@ router.get("/resource/new", isConnectionOpen, isLoggedIn, isAdmin, function (req
 
 // 3. Create route - post a new resource allocation into the database then redirect elsewhere
 router.post("/resource", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
+	// Date of the allocation
 	const dateToUse = new Date(req.body.date).toLocaleDateString();
 	const dateToUse2 = new Date(req.body.date).toISOString();
 	
@@ -80,6 +76,13 @@ router.post("/resource", isConnectionOpen, isLoggedIn, isAdmin, function (req, r
 		}
 
 		const tmmsPayload = [...req.body.LHDs, ...req.body.drillRigs, ...req.body.bolters];
+		const tmms = []
+		tmmsPayload.forEach(tmm => {
+			if(tmm !== "none"){
+				tmms.push(tmm)
+			}
+		})
+
 		const tmmsAllocated = [];
 		const tmmsRejected = [];
 		
@@ -97,7 +100,7 @@ router.post("/resource", isConnectionOpen, isLoggedIn, isAdmin, function (req, r
 			})
 		})
 
-		tmmsPayload.forEach(e => {
+		tmms.forEach(e => {
 			if(tmmsAllocated.indexOf(e) > -1){
 				tmmsRejected.push(e)
 			}

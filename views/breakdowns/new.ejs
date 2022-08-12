@@ -21,16 +21,24 @@
                 <div class="shift">
                     <% locals.shifts.forEach(shift => { %>
                         <% if (locals.shiftNow === shift.name) { %>
-                            <input style="margin: 3px;" type="radio" name="breakdown[shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" checked required>
+                            <input style="margin: 3px;" type="radio" name="breakdown[shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" checked onchange="resetItems()" required>
                             <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
                         <% return } %>
-                        <input style="margin: 3px;" type="radio" name="breakdown[shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" required>
+                        <input style="margin: 3px;" type="radio" name="breakdown[shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" onchange="resetItems()" required>
                         <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
                     <% }) %>
                     
                 </div>
                 <br>
                 <table class="form-row">
+                    <!-- <tr>
+                        <td class="form-row">
+                            <label for="todayDate">Date Start:</label>
+                        </td>
+                        <td class="form-row">
+                            <input  id="todayDate" name="breakdown[startDate]" type="date" onchange="resetItems()" required>
+                        </td>
+                    </tr> -->
                     <tr>
                         <td class="form-row">
                             <label for="section">Section:</label>
@@ -46,6 +54,25 @@
                             </select>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="todayDate">Date Start:</label>
+                        </td>
+                        <td class="form-row">
+                            <input  id="todayDate" name="breakdown[startDate]" type="date" onchange="resetItems()" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="startTime">Time Start:</label>
+                        </td>
+                        <td class="form-row">
+                            <input  id="startTime" name="breakdown[startTime]" type="time" onchange="resetItems()" required>
+                        </td>
+                    </tr>
+                <!-- </table> -->
+
+                <!-- <table class="form-row"> -->
                     <tr>
                         <td class="form-row">
                             <label for="category">Category:</label>
@@ -96,22 +123,22 @@
                             <textarea name="breakdown[description]" id="description" cols="30" rows="5" required></textarea>
                         </td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td class="form-row">
                             <label for="startTime">Time Start:</label>
                         </td>
                         <td class="form-row">
                             <input  id="startTime" name="breakdown[startTime]" type="time" required>
                         </td>
-                    </tr>
-                    <tr>
+                    </tr> -->
+                    <!-- <tr>
                         <td class="form-row">
                             <label for="todayDate">Date Start:</label>
                         </td>
                         <td class="form-row">
                             <input  id="todayDate" name="breakdown[startDate]" type="date" onchange="resetItems()" required>
                         </td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td class="form-row">
                             <label for="orderRef">Ref Number:</label>

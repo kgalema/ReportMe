@@ -17,12 +17,19 @@
 			<h2>Breakdowns</h2>
 			<div>
 				<input type="date" max="" id="breakdown-date" name="" oninput="breakdownFilter(this.value)" />
-				<input type="radio" class="breakdownShift" name="breakdownShift" id="morningBreakdowns" value="morning" checked onchange="document.getElementById('breakdown-date').oninput()" />
-				<label for="morningBreakdowns">Day Shift</label>
-				<input type="radio" class="breakdownShift" name="breakdownShift" id="afternoonBreakdowns" value="afternoon" onchange="document.getElementById('breakdown-date').oninput()" />
+				<% locals.foundShifts.forEach(shift => { %>
+					<% if (locals.shiftNow && locals.shiftNow === shift.name) { %>
+						<input type="radio" class="breakdownShift" name="breakdownShift" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" checked onchange="document.getElementById('breakdown-date').oninput()" />
+						<label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
+					<% } else { %>
+						<input type="radio" class="breakdownShift" name="breakdownShift" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" onchange="document.getElementById('breakdown-date').oninput()" />
+						<label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
+					<% } %>
+				<% }) %>
+				<!-- <input type="radio" class="breakdownShift" name="breakdownShift" id="afternoonBreakdowns" value="afternoon" onchange="document.getElementById('breakdown-date').oninput()" />
 				<label for="afternoonBreakdowns">Afternoon Shift</label>
 				<input type="radio" class="breakdownShift" name="breakdownShift" id="nightBreakdowns" value="night" onchange="document.getElementById('breakdown-date').oninput()" />
-				<label for="nightBreakdowns">Night Shift</label>
+				<label for="nightBreakdowns">Night Shift</label> -->
 			</div>
 			<br>
 

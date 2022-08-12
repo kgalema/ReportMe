@@ -11,7 +11,7 @@ const { isLoggedIn, isBreakdownAuthor, isConnectionOpen, checkShift } = require(
 
 
 // 1. Index route -list all breakdowns
-router.get("/breakdowns", isConnectionOpen, function (req, res) {
+router.get("/breakdowns", isConnectionOpen, checkShift, function (req, res) {
 	Breakdown.find({}, function (err, allBreakdowns) {
 		if (err || !allBreakdowns) {
 			req.flash("error", "Error occured while fetching breakdowns");
@@ -27,7 +27,9 @@ router.get("/breakdowns", isConnectionOpen, function (req, res) {
 					req.flash("error", "Error occured while fetching shift information");
 					return res.redirect("/");
 				}
-				res.render("breakdowns/index", { allBreakdowns, closedBreakdowns, foundShifts, title: "breakdowns" });
+				console.log(closedBreakdowns.length)
+				console.log(allBreakdowns.length)
+				res.render("breakdowns/index", { shiftNow: req.shift, allBreakdowns, closedBreakdowns, foundShifts, title: "breakdowns" });
 			});
 		});
 	})
@@ -82,26 +84,75 @@ router.post("/breakdown", isConnectionOpen, isLoggedIn, function (req, res) {
 	startTime.setSeconds(0);
 	startTime.setMilliseconds(0);
 	req.body.breakdown.startTime = startTime;
+	// req.body.breakdown.shiftStart = startTime;
 
+	// Shift.find({ name: req.body.breakdown.shift.toUpperCase() }, {start: 1},  function (err, foundShift) {
+	// 	if (err || !foundShift) {
+	// 		req.flash("error", "Error occured while validating breakdown shift");
+	// 		return res.redirect("breakdowns/new");
+	// 	}
+	// 	const bdownStart = new Date(req.body.breakdown.startDate);
+	// 	const startHR = Number(foundShift[0].start.split(":")[0]);
+	// 	const startMin = Number(foundShift[0].start.split(":")[1]);
+	// 	bdownStart.setHours(startHR);
+	// 	bdownStart.setMinutes(startMin);
+
+	// 	req.body.breakdown.shiftStartTime = bdownStart;
+	// 	return res.json(foundShift);
+	// });
+	// return
 	Section.findById(req.body.breakdown.sectionId, function (err, foundSection) {
 		if (err || !foundSection) {
 			req.flash("error", "Something went wrong while creating new breakdown");
 			return res.redirect("breakdowns/new");
 		}
 		req.body.breakdown.section = { id: foundSection._id, name: foundSection.name };
-		console.log(req.body.breakdown)
-		Breakdown.create(req.body.breakdown, function (err, newBreakdown) {
-			if (err || !newBreakdown) {
-				console.log(err)
-				req.flash("error", "Something went wrong while creating new breakdown");
+		req.body.breakdown.author = { id: req.user._id };
+
+		Shift.find({ name: req.body.breakdown.shift.toUpperCase() }, { start: 1, end: 1, overlap: 1 }, function (err, foundShift) {
+			if (err || !foundShift) {
+				req.flash("error", "Error occured while validating breakdown shift");
 				return res.redirect("breakdowns/new");
 			}
-			newBreakdown.author.id = req.user._id;
-			newBreakdown.save(function (err, savedBreakdown) {
-				if (err || !savedBreakdown) {
-					req.flash("error", "Something went wrong while creating saving breakdown report");
-					return res.redirect("back");
+			const bdownStart = new Date(req.body.breakdown.startDate);
+
+			const startHR = Number(foundShift[0].start.split(":")[0]);
+			const startMin = Number(foundShift[0].start.split(":")[1]);
+			bdownStart.setHours(startHR);
+			bdownStart.setMinutes(startMin);
+
+			const endHR = Number(foundShift[0].end.split(":")[0]);
+			const endMin = Number(foundShift[0].end.split(":")[1]);
+
+			req.body.breakdown.shiftStartTime = bdownStart;
+
+			if(foundShift[0].overlap && hours >= 0 && hours <= endHR){
+				console.log("Shift is overlaping and time has passed midnight")
+				const date = new Date(req.body.breakdown.startDate);
+				date.setDate(date.getDate() - 1);
+				date.setHours(startHR);
+				date.setMinutes(startMin);
+				console.log(req.body.breakdown.startTime);
+				req.body.breakdown.shiftStartTime = date;
+			} else {
+				console.log("Shift either overlaps or not. It doesn't matter")
+			}
+
+			// console.log(foundShift)
+			// return res.json({breakdown: req.body.breakdown})
+
+			Breakdown.create(req.body.breakdown, function (err, newBreakdown) {
+				if (err || !newBreakdown) {
+					req.flash("error", "Something went wrong while creating new breakdown");
+					return res.redirect("breakdowns/new");
 				}
+				// newBreakdown.author.id = req.user._id;
+				// newBreakdown.save(function (err, savedBreakdown) {
+				// 	if (err || !savedBreakdown) {
+				// 		req.flash("error", "Something went wrong while creating saving breakdown report");
+				// 		return res.redirect("back");
+				// 	}
+				// console.log(newBreakdown)
 				req.flash("success", "Successfully added new breakdown");
 				res.redirect("/breakdowns");
 			});

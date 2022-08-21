@@ -40,7 +40,7 @@ router.get("/production", isConnectionOpen, function (req, res) {
 			}
 			Shift.find({}, {isBlasting: 1, name: 1}, function(err, shifts){
 				if(err || !shifts){
-					req.flash("error", "Error occured while validating");
+					req.flash("error", "Error occured while validating shifts");
 					return res.redirect("back");
 				}
 				const sortedProductions = allProduction.sort(function (a, b) {

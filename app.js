@@ -43,16 +43,9 @@ const DBoptions = {
 
 //***************************************************/
 const connectWithDB = () => {
-	mongoose.connect(dbUrl, DBoptions, (err, db) => {
-		console.log("Connecting to database using connect to connectWithDB function");
-		if (err) {
-			console.log("Error occured while connecting to DB")
-			console.error(err.name);
-		}else {
-			console.log("database connection");
-			// console.log(db)
-		}
-	});
+	mongoose.connect(dbUrl, DBoptions)
+		.then(db => console.log("COONECTION SUCCESS ON FIRST ATTEMPT"))
+		.catch(e => console.log(e.name, e.message))
 };
 
 //***************************************************/
@@ -63,13 +56,14 @@ connectWithDB();
 
 //Check for connection.db
 const conn1 = mongoose.connection
+// console.log(conn1)
 
 conn1.on('connected', () => {
-	console.log("********On connected emmited********")
+	console.log("On connected emmited")
 })
 
 conn1.once("open", function(e){
-	console.log("******Connection Open Inside Once Open Listener*******");
+	console.log("Connection Open Inside Once Open Listener");
 
 	const MongoStore = require("connect-mongo")(session);
 
@@ -121,25 +115,25 @@ conn1.once("open", function(e){
 });
 
 conn1.on("error", function(e){
-	console.log("******On Connection Error*******")
+	console.log("On Connection Error")
 	console.log(`Error occured when connectng to DB with name: ${e.name} and message: ${e.message}`)
 	connectWithDB();
 })
 
 conn1.on("disconnected", function(){
-	console.log("*******Connection disconnected******")
+	console.log("DB connection disconnected")
 })
 
 conn1.on("reconnected", function(){
-	console.log("*******Reconnected after losing connection DB******")
+	console.log("DB reconnected after losing connection")
 })
 
 conn1.on("reconnectFailed", function(){
-	console.log("*******Reconnecting to DB failed******")
+	console.log("DB reconnection failed")
 })
 
 conn1.on("close", function(){
-	console.log("*******Connection successfuly closed******")
+	console.log("DB connection successfuly closed")
 })
 
 process.on("SIGINT", async () => {
@@ -207,7 +201,7 @@ app.use(productionCalendarRoutes);
 app.use(resourceAllocationRoutes);
 
 conn1.once("open", () => {
-	console.log("**********Before removing all routers***************");
+	console.log("Before removing all routers");
 	console.log(app._router.stack.length);
 	for (let i = 0; i < app._router.stack.length; i++) {
 		if (app._router.stack[i].name === "router") {
@@ -216,7 +210,7 @@ conn1.once("open", () => {
 		}
 	}
 	// console.log(app._router.stack);
-	console.log('**********After removing all routers**************')
+	console.log('After removing all routers')
 	console.log(app._router.stack.length);
 
 	app.use(usersRoutes);
@@ -235,6 +229,9 @@ conn1.once("open", () => {
 	app.use(shiftsRoutes);
 	app.use(productionCalendarRoutes);
 	app.use(resourceAllocationRoutes);
+
+	console.log("Add back all routers");
+	console.log(app._router.stack.length);
 
 
 	// Moving an item from index to another index
@@ -283,6 +280,10 @@ const lastMiddlware = (err, req, res, next) => {
 	if (!err.message) err.message = "Oh No, Something Went Wrong!";
 	res.status(statusCode).render("error", { title: "title", err });
 };
+
+process.on("uncaughtException", (error) => {
+	console.log(error)
+});
 
 app.use(lastMiddlware)
 

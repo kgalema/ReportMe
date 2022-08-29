@@ -101,14 +101,18 @@ router.get("/sections/:id/production/new", isConnectionOpen, isLoggedIn, isSecti
 					const foundDates1 = foundDates.map(e => e.date)
 					const blasting = shifts.filter(s => s.isBlasting).map(arr => arr.name.toLowerCase()).reduce((a, b) => a + b,"")
 
-					Production.find({ "section.name": foundSection.name, "general.shift": blasting, "blast.isMeasured": false }, { blast: 1 }, function (err, productionFound) {
+					Production.find({ "section.name": foundSection.name, "general.shift": blasting, "blast.isMeasured": false }, { blast: 1, "general.shiftStart": 1 }, function (err, productionFound) {
 						const panelsAdvanced = [];
+						const panelsAdvancedDate = []
 						productionFound.forEach((e) => {
+							panelsAdvancedDate.push(e.general[0].shiftStart)
 							e.blast.forEach((b) => {
+								b.shiftStart = e.general[0].shiftStart;
 								panelsAdvanced.push(b);
 							});
 						});
-						res.render("production/new", { panelsAdvanced, shifts, foundDates1, section: foundSection, drillRigs, LHDs, bolters, title: "production-dash" });
+						console.log(panelsAdvancedDate);
+						res.render("production/new", { panelsAdvanced, panelsAdvancedDate, shifts, foundDates1, section: foundSection, drillRigs, LHDs, bolters, title: "production-dash" });
 					});
 						
 				})

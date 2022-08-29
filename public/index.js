@@ -527,6 +527,11 @@ function validatePanelActivity(e) {
 // ================solution Showing Infomation selectively=======
 // filter("combine")
 let chartData;
+
+// if (document.getElementById("blast-progs")) {
+// 	document.getElementById("blast-progs").onclick();
+// }
+
 function filter(c) {
     const container = document.getElementById("myBtnContainer");
     const current = container.getElementsByClassName("selected");
@@ -1186,17 +1191,24 @@ function checkCallAchieved4Date (e) {
 
 function advancePanels(selectedDate){
     const headingToHide = document.getElementById("advance-report-heading");
-    const divToHide = document.getElementById("advance-report");
-    const inputsToDisable = divToHide.querySelectorAll("input");
-
-    if (today.toDateString() !== selectedDate) {
-        headingToHide.style.display = "none";
-        divToHide.style.display = "none";
-        inputsToDisable.forEach((e) => (e.disabled = true));
-    } else {
-        headingToHide.style.display = "block";
-        divToHide.style.display = "block";
-        inputsToDisable.forEach((e) => (e.disabled = false));
+    if(headingToHide){
+        const divToHide = document.getElementById("advance-report");
+        const inputsToDisable = divToHide.querySelectorAll("input");
+    
+        const panelsAdvancedDate = document.getElementById("panelsAdvancedDate").innerText;
+        const parsedPanelsAdvancedDate = JSON.parse(panelsAdvancedDate);
+        const date = new Date(parsedPanelsAdvancedDate[0]).toDateString();
+    
+        // if (today.toDateString() !== selectedDate) {
+        if (new Date(date) <= new Date(selectedDate)) {
+            headingToHide.style.display = "block";
+			divToHide.style.display = "block";
+			inputsToDisable.forEach((e) => (e.disabled = false));
+        } else if (new Date(date) > new Date(selectedDate)) {
+			headingToHide.style.display = "none";
+			divToHide.style.display = "none";
+			inputsToDisable.forEach((e) => (e.disabled = true));
+		}
     }
 }
 

@@ -381,15 +381,15 @@ function sortAllocationIndex() {
 
     let filterDate;
     const selectedDate = document.getElementById("todayDate");
-    const today = new Date().toLocaleDateString();
+    const today = new Date().toLocaleDateString("en-GB");
 
     if (selectedDate.value === "") {
         filterDate = today
 	} else {
-        filterDate = new Date(selectedDate.value).toLocaleDateString();
+        filterDate = new Date(selectedDate.value).toLocaleDateString("en-GB");
     }
     
-    const dataFiltered = parsedData.filter((e) => new Date(e.date).toLocaleDateString() === filterDate);
+    const dataFiltered = parsedData.filter((e) => new Date(e.date).toLocaleDateString("en-GB") === filterDate);
     createTable4Allocation(dataFiltered)
 }
 

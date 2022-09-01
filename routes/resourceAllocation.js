@@ -61,7 +61,7 @@ router.get("/resource/new", isConnectionOpen, isLoggedIn, isAdmin, function (req
 // 3. Create route - post a new resource allocation into the database then redirect elsewhere
 router.post("/resource", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
 	// Date of the allocation
-	const dateToUse = new Date(req.body.date).toLocaleDateString();
+	const dateToUse = new Date(req.body.date).toLocaleDateString("en-GB");
 	const dateToUse2 = new Date(req.body.date).toISOString();
 	
 	const uniqueCode = req.body.section + dateToUse + req.body.shift;

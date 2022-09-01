@@ -1077,14 +1077,14 @@ function selectEngAssets(cat){
         }
     })
 
-    let selectorCode = sectionName + date2.toLocaleDateString() + selectedShift;
+    let selectorCode = sectionName + date2.toLocaleDateString("en-GB") + selectedShift;
     if (selectedShift === "night" && hrStart >= 0 && hrStart <= 6) {
-		selectorCode = sectionName + date.toLocaleDateString() + selectedShift;
+		selectorCode = sectionName + date.toLocaleDateString("en-GB") + selectedShift;
 	}
 
     const engAssets = [];
     parsedAllocations.forEach(e => {
-        const selectorCode2 = e.section + new Date(e.date).toLocaleDateString() + e.shift;
+        const selectorCode2 = e.section + new Date(e.date).toLocaleDateString("en-GB") + e.shift;
         if(selectorCode2 === selectorCode){
             engAssets.push(e)
         }
@@ -1134,12 +1134,12 @@ function filterBreakdowns2(){
 
     const filtered = parsedAllocations.filter(e => e.shift === shift)
     const filtered2 = filtered.filter((e) => new Date(e.date) >= start && new Date(e.date) <= end);
-    const lables2 = filtered2.map((e) => `${new Date(e.date).toLocaleDateString()}`);
+    const lables2 = filtered2.map((e) => `${new Date(e.date).toLocaleDateString("en-GB")}`);
 
     const obj = {};
 
     for (const key of lables2) {
-        obj[key] = filteredByDates.filter(e => new Date(key).toLocaleDateString() === new Date(e.breakdown.shiftStartTime).toLocaleDateString()).map(e => e.downtime);
+        obj[key] = filteredByDates.filter((e) => new Date(key).toLocaleDateString("en-GB") === new Date(e.breakdown.shiftStartTime).toLocaleDateString("en-GB")).map((e) => e.downtime);
         console.log(key)
     }
 

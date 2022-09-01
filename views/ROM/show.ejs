@@ -2,7 +2,7 @@
 
     <div class="main-body">
         <div class="element">
-            <h3>ROM entry for: <%= foundROM.created.toLocaleDateString() %> </h3>
+            <h3>ROM entry for: <%= foundROM.created.toLocaleDateString("en-GB") %> </h3>
             <div class="element2">
                 <table>
                     <thead>
@@ -15,7 +15,7 @@
                     </thead>
                     <tbody>
                         <td>
-                            <%= foundROM.created.toLocaleDateString() %>
+                            <%= foundROM.created.toLocaleDateString("en-GB") %>
                         </td>
                         <td>
                             <%= foundROM.budget %>

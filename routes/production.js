@@ -46,6 +46,7 @@ router.get("/production", isConnectionOpen, function (req, res) {
 				const sortedProductions = allProduction.sort(function (a, b) {
 					return collator.compare(a.section.name, b.section.name);
 				});
+				allProduction.forEach(e => console.log(e.uniqueCode))
 				res.render("production/index", { production: sortedProductions, shifts, sections, title: "production-dash" });
 			})
 		})
@@ -129,10 +130,10 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 			req.flash("error", "Oops! Seems like the database is down or section has been deleted");
 			return res.redirect("back");
 		}
-		let dateNow = new Date().toLocaleDateString();
+		let dateNow = new Date().toLocaleDateString("en-GB");
 
 		if (req.body.production.created) {
-			dateNow = new Date(req.body.production.created).toLocaleDateString();
+			dateNow = new Date(req.body.production.created).toLocaleDateString("en-GB");
 		}
 		const uniqueCode = section.name + dateNow + req.body.production.general[0].shift;
 		req.body.production.uniqueCode = uniqueCode;

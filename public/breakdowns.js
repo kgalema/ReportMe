@@ -1132,15 +1132,15 @@ function filterBreakdowns2(){
 	const foundAllocations = document.getElementById("allocations").innerText;
 	const parsedAllocations = JSON.parse(foundAllocations);
 
+    const options = { day: "2-digit", month: "short", year: "2-digit" };
     const filtered = parsedAllocations.filter(e => e.shift === shift)
     const filtered2 = filtered.filter((e) => new Date(e.date) >= start && new Date(e.date) <= end);
-    const lables2 = filtered2.map((e) => `${new Date(e.date).toLocaleDateString("en-GB")}`);
+    const lables2 = filtered2.map((e) => `${new Date(e.date).toLocaleDateString("en-GB", options)}`);
 
     const obj = {};
 
     for (const key of lables2) {
         obj[key] = filteredByDates.filter((e) => new Date(key).toLocaleDateString("en-GB") === new Date(e.breakdown.shiftStartTime).toLocaleDateString("en-GB")).map((e) => e.downtime);
-        console.log(key)
     }
 
     const vals = Object.values(obj);

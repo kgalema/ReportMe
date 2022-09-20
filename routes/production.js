@@ -46,7 +46,6 @@ router.get("/production", isConnectionOpen, function (req, res) {
 				const sortedProductions = allProduction.sort(function (a, b) {
 					return collator.compare(a.section.name, b.section.name);
 				});
-				allProduction.forEach(e => console.log(e.uniqueCode))
 				res.render("production/index", { production: sortedProductions, shifts, sections, title: "production-dash" });
 			})
 		})
@@ -112,7 +111,6 @@ router.get("/sections/:id/production/new", isConnectionOpen, isLoggedIn, isSecti
 								panelsAdvanced.push(b);
 							});
 						});
-						console.log(panelsAdvancedDate);
 						res.render("production/new", { panelsAdvanced, panelsAdvancedDate, shifts, foundDates1, section: foundSection, drillRigs, LHDs, bolters, title: "production-dash" });
 					});
 						
@@ -154,7 +152,6 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 				req.flash("error", "Looks like you are trying to create duplicate report");
 				return res.redirect("/production");
 			}
-			console.log(foundProduction)
 
 			if(foundProduction.general[0].shift === "night"){
 				const cr = foundProduction.created
@@ -200,8 +197,6 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 							}
 						});
 
-						console.log("HEY********************************")
-						console.log(foundBlast)
 						foundBlast[0].save(function (err, saved) {
 							if (err || !saved) {
 								req.flash("error", "Error occured while updating advances of previously blasted areas");

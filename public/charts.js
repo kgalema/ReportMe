@@ -280,6 +280,7 @@ function drawEffGraph2(){
 	const dates = document.getElementsByClassName("date");
 	const dates2 = [...dates]
 	const labels = dates2.map(e => e.innerText)
+	console.log(labels)
 
 	const avail = document.getElementsByClassName("avail");
 	const avail2 = [...avail];
@@ -291,6 +292,18 @@ function drawEffGraph2(){
 		efficiencyChart2.destroy();
 	}
 
+	const options = {
+		scales: {
+			x: {
+				ticks: {
+					font: {
+						size: 10
+					}
+				},
+			},
+		},
+	};
+
 	const configEffGraph2 = {
 		data: {
 			labels: labels,
@@ -298,21 +311,23 @@ function drawEffGraph2(){
 				{
 					type: "bar",
 					data: data,
-					borderColor: "#777",
-					borderWidth: "1",
+					// borderColor: "#777",
+					backgroundColor: "blue",
+					// borderWidth: "1",
 					label: "Availability %",
-					maxBarThickness: 40,
+					maxBarThickness: 20,
 				},
 				// {
-				// 	type: "line",
-				// 	data: [],
-				// 	backgroundColor: "blue",
-				// 	borderColor: "green",
-				// 	borderWidth: 1,
-				// 	label: "Target %",
-				// },
-			],
+					// 	type: "line",
+					// 	data: [],
+					// 	backgroundColor: "blue",
+					// 	borderColor: "green",
+					// 	borderWidth: 1,
+					// 	label: "Target %",
+					// },
+				],
 		},
+		options: options,
 	};
 
 	const foundTMM = document.getElementById("foundTMM").innerText;

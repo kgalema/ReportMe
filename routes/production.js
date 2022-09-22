@@ -136,80 +136,96 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 		const uniqueCode = section.name + dateNow + req.body.production.general[0].shift;
 		req.body.production.uniqueCode = uniqueCode;
 
-		if(req.body.production.blast && req.body.production.blast.length > 0){
-			req.body.production.blast.forEach(b => {
-				if(b.length == 0){
+		if (req.body.production.blast && req.body.production.blast.length > 0) {
+			req.body.production.blast.forEach((b) => {
+				if (b.length == 0) {
 					b.isMeasured = true;
 					b.isCleaned = true;
 					b.panel = "NONE";
 				}
-			})
-		};
-		// console.log(req.body.production)
-		// return res.json({})
-		Production.create(req.body.production, function (err, foundProduction) {
-			if (err || !foundProduction) {
-				req.flash("error", "Looks like you are trying to create duplicate report");
+			});
+		}
+
+		Shift.find({ name: req.body.production.general[0].shift.toUpperCase() }, function (err, shift) {
+			if (err || !shift) {
+				req.flash("error", "Error occured while validating production shift");
 				return res.redirect("/production");
 			}
-
-			if(foundProduction.general[0].shift === "night"){
-				const cr = foundProduction.created
+			if (shift[0].overlap === true) {
+				const cr = req.body.production.created;
 				const yesterday = new Date(cr);
 				yesterday.setDate(yesterday.getDate() - 1);
-				foundProduction.general[0].shiftStart = yesterday;
+				req.body.production.general[0].shiftStart = yesterday;
 			} else {
-				foundProduction.general[0].shiftStart = foundProduction.created;
+				req.body.production.general[0].shiftStart = req.body.production.created;
 			}
 
-			foundProduction.section.id = section._id;
-			foundProduction.section.name = section.name;
-			if (foundProduction.general[0].isProduction) {
-				foundProduction.section.budget = section.budget;
-				foundProduction.section.forecast = section.forecast;
-			}
+			// console.log(req.body.production.general[0].shiftStart);
 
-			foundProduction.blast.forEach((b) => {
-				b.advance = section.plannedAdvance;
-			});
-			foundProduction.section.plannedAdvance = section.plannedAdvance;
-			foundProduction.author = req.user._id;
-
-
-			foundProduction.save(function (err, savedProduction) {
-				if (err || !savedProduction) {
-					req.flash("error", "Error while saving production report");
-					return res.redirect("back");
+			
+			Production.create(req.body.production, function (err, foundProduction) {
+				if (err || !foundProduction) {
+					req.flash("error", "Looks like you are trying to create duplicate report");
+					return res.redirect("/production");
 				}
 
-				if (req.body.advanceEdit) {
-					const ids = req.body.advanceEdit.blast.map((e) => e.id);
-					const arr = req.body.advanceEdit.blast;
-					Production.find({ "section.name": section.name, "blast._id": { $in: ids } }, function (err, foundBlast) {
-						if(err || !foundBlast){
-							req.flash("error", "Error while saving advances");
-							return res.redirect("back");
-						}
-						foundBlast[0].blast.forEach((b, i) => {
-							if (b._id == arr[i].id && b.panel === arr[i].panel && b.length === Number(arr[i].length)) {
-								b.isMeasured = true;
-								b.advance = arr[i].advance;
-							}
-						});
+				// if (foundProduction.general[0].shift === "night") {
+				// 	const cr = foundProduction.created;
+				// 	const yesterday = new Date(cr);
+				// 	yesterday.setDate(yesterday.getDate() - 1);
+				// 	foundProduction.general[0].shiftStart = yesterday;
+				// } else {
+				// 	foundProduction.general[0].shiftStart = foundProduction.created;
+				// }
 
-						foundBlast[0].save(function (err, saved) {
-							if (err || !saved) {
-								req.flash("error", "Error occured while updating advances of previously blasted areas");
-								return res.redirect("/production");
-							}
-							req.flash("success", "Successfully added production report");
-							res.redirect("/production");
-						});
-					});
-				} else {
-					req.flash("success", "Successfully added production report");
-					res.redirect("/production");
+				foundProduction.section.id = section._id;
+				foundProduction.section.name = section.name;
+				if (foundProduction.general[0].isProduction) {
+					foundProduction.section.budget = section.budget;
+					foundProduction.section.forecast = section.forecast;
 				}
+
+				foundProduction.blast.forEach((b) => {
+					b.advance = section.plannedAdvance;
+				});
+				foundProduction.section.plannedAdvance = section.plannedAdvance;
+				foundProduction.author = req.user._id;
+
+				foundProduction.save(function (err, savedProduction) {
+					if (err || !savedProduction) {
+						req.flash("error", "Error while saving production report");
+						return res.redirect("back");
+					}
+
+					if (req.body.advanceEdit) {
+						const ids = req.body.advanceEdit.blast.map((e) => e.id);
+						const arr = req.body.advanceEdit.blast;
+						Production.find({ "section.name": section.name, "blast._id": { $in: ids } }, function (err, foundBlast) {
+							if (err || !foundBlast) {
+								req.flash("error", "Error while saving advances");
+								return res.redirect("back");
+							}
+							foundBlast[0].blast.forEach((b, i) => {
+								if (b._id == arr[i].id && b.panel === arr[i].panel && b.length === Number(arr[i].length)) {
+									b.isMeasured = true;
+									b.advance = arr[i].advance;
+								}
+							});
+
+							foundBlast[0].save(function (err, saved) {
+								if (err || !saved) {
+									req.flash("error", "Error occured while updating advances of previously blasted areas");
+									return res.redirect("/production");
+								}
+								req.flash("success", "Successfully added production report");
+								res.redirect("/production");
+							});
+						});
+					} else {
+						req.flash("success", "Successfully added production report");
+						res.redirect("/production");
+					}
+				});
 			});
 		});
 	});
@@ -230,7 +246,7 @@ router.get("/sections/:id/production/:production_id", isConnectionOpen, function
 				req.flash("error", "Looks like the report does not have author");
 				return res.redirect("back");
 			}
-			const dateCreated = foundProduction.created;
+			const dateCreated = foundProduction.general[0].shiftStart;
 			const time = foundProduction.createdAt;
 			const currentTime = new Date()
 			

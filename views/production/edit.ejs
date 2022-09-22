@@ -33,6 +33,9 @@
                         <% } %>
                     </div>
 
+                    <input type="date" name="production[general][1][shiftStart]" value="<%= new Date(production.general[0].shiftStart).toLocaleDateString("en-ZA").replace(/\//gi, "-") %>" readonly >
+                    <input type="text" value="<%= production.general[0].shiftStart %>" name="production[general][1][isProduction]" id="isProductionShift" readonly>
+
                     <br>
 
 

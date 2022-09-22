@@ -42,6 +42,8 @@
                     <br>
                     <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
                         <input type="date" name="production[created]" id="todayDate" oninput="checkCallAchieved4Date(event)">
+                    <% } else { %>
+                        <input type="date" name="production[created]" id="todayDate" oninput="checkCallAchieved4Date(event)" readonly hidden>
                     <% } %>
 
                     <br>

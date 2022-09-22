@@ -104,7 +104,7 @@ const productionSchema = new mongoose.Schema({
 		ref: "User",
 	},
 	uniqueCode: { type: String, unique: true },
-	created: { type: Date, default: () => new Date() },
+	// created: { type: Date, default: () => new Date() },
 }, opts);
 
 productionSchema.virtual("blasted").get(function () {

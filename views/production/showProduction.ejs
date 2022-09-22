@@ -3,7 +3,6 @@
     <div class=element>
         <div class="element2">
             <h2>Reported Production: <%= reported.section.name %></h2>
-            <h3><%= reported.created.toDateString() %></h3>
             <h3><%= reported.general[0].shiftStart.toDateString() %></h3>
 
             <p>
@@ -257,7 +256,7 @@
                             </tr>
                             <tr>
                                 <td>Created</td>
-                                <td><%= locals.reported.created.toDateString() %></td>
+                                <td><%= locals.reported.general[0].shiftStart.toDateString() %></td>
                             </tr>
                         </tbody>
                     </table>

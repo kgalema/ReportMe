@@ -11,7 +11,10 @@ const opts = {
 const rehabSchema = new mongoose.Schema({
 	panel: String,
 	trigger: String,
-	reportNumber: String,
+	reportNumber: {
+		type: String,
+		unique: true
+	},
 	issueDate: { type: Date },
 	declaredDate: { type: Date },
 	rehabDate: { type: Date },
@@ -35,7 +38,14 @@ const rehabSchema = new mongoose.Schema({
 		ref: "User",
 	},
 
-	fileID: { type: mongoose.Schema.Types.ObjectId },
+	fileID: { 
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "Reds.files",
+	},
+	rehabedFileID: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "Rehabs.files",
+	},
 },opts);
 
 const Rehab = mongoose.model("Rehab", rehabSchema)

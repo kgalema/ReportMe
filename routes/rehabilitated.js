@@ -5,20 +5,38 @@ const Redpanel = require("../models/tarp");
 const Rehab   = require("../models/rehab");
 const { isLoggedIn, isRehabAuthor, isAdmin, isConnectionOpen } = require("../middleware");
 const mongoose = require("mongoose");
+const GridFsStorage = require("multer-gridfs-storage");
+const multer = require("multer");
+const path = require("path");
+const crypto = require("crypto");
 
 
 const exported = require("../app")
 
+// Create storage engine
+const storage2 = new GridFsStorage({
+	url: exported.dbUrl,
+	options: { useNewUrlParser: true, useUnifiedTopology: true },
+	file: (req, file) => {
+		return new Promise((resolve, reject) => {
+			crypto.randomBytes(16, (err, buf) => {
+				if (err) {
+					return reject(err);
+				}
+				const filename = buf.toString("hex") + path.extname(file.originalname);
+				const fileInfo = {
+					filename: filename,
+					bucketName: "rehabs",
+				};
+				resolve(fileInfo)
+			})
+		})
+	}
+})
 
-// const dbUrl = exported.dbUrl;
+const upload2 = multer({ storage: storage2 });
+
 const connection = exported.connection;
-
-let gfs
-connection.once("open", () => {
-	gfs = new mongoose.mongo.GridFSBucket(connection.db, { bucketName: "reds" });
-});
-
-
 
 
 // 1. Index routes -renders a list for all Rehabiliated panels
@@ -38,17 +56,19 @@ router.get("/sections/:id/redPanels/:redpanel_id/rehabedPanel/new", isConnection
 			req.flash("error", "Error While Fetching Red Panel Data");
 			return res.redirect("back");
 		}
-		res.render("rehab/new", { foundRed: foundRed, title: "production-report" });
+		res.render("rehab/new", { foundRed: foundRed, title: "TARP-Red" });
 	});
 });
 
-// 3. Create route - creates a Tarp red panel data
-router.post("/sections/:id/redPanels/:redpanel_id/rehabedPanels", isConnectionOpen, isLoggedIn, function (req, res) {
+// 3. Create route - creates a rehabed TARP red panel data
+router.post("/sections/:id/redPanels/:redpanel_id/rehabedPanels", isConnectionOpen, isLoggedIn, upload2.single("signedReport"), function (req, res) {
 	Redpanel.findById(req.params.redpanel_id, function (err, foundRed) {
 		if (err || !foundRed) {
 			req.flash("error, Error While Fetching Red Panel To Be Rehabilitaed");
 			return res.redirect("back");
 		}
+
+		// const gfs2 = new mongoose.mongo.GridFSBucket(req.DBconnection, { bucketName: "rehabs" });
 
 		const rehabedPanel = {
 			panel: foundRed.panel,
@@ -65,7 +85,9 @@ router.post("/sections/:id/redPanels/:redpanel_id/rehabedPanels", isConnectionOp
 			authorRed: foundRed.author,
 			authorNewRed: foundRed.newRedAuthor,
 			fileID: foundRed.fileID,
+			rehabedFileID: req.file.id
 		};
+
 		Rehab.create(rehabedPanel, function (err, rehab) {
 			if (err || !rehab) {
 				req.flash("error", "Error while creating a rehabilitated panel");
@@ -107,7 +129,6 @@ router.get("/rehabedPanel/:id", isConnectionOpen, function (req, res) {
 						return res.redirect("back");
 					}
 					const authors = [rehabedUser, redUser, newRedUser];
-					console.log(authors);
 					res.render("rehab/show", { rehabedPanel: foundRehabed, authors, title: "TARP-Red" });
 				});
 			});
@@ -116,28 +137,36 @@ router.get("/rehabedPanel/:id", isConnectionOpen, function (req, res) {
 });
 
 // 4.1 Downloading the stored file
-router.get("/sections/:id/rehabedPanels/:rehabedPanel_id/download", isConnectionOpen, function (req, res) {
+router.post("/sections/:id/rehabedPanels/:rehabedPanel_id/download", isConnectionOpen, function (req, res) {
 	Rehab.findById(req.params.rehabedPanel_id, function (err, foundRehabed) {
 		if (err || !foundRehabed) {
 			req.flash("error", "Cannot Find Requested Rehabilitated Panel");
 			return res.redirect("/rehabedPanels");
-		} else {
-			let ID = new mongoose.Types.ObjectId(foundRehabed.fileID);
-			gfs.find({ _id: ID }).toArray((err, file) => {
-				if (err || !file[0]) {
-					console.log(err);
-					req.flash("error", "Error while fetching the file");
-					return res.redirect("/rehabedPanels");
-				}
-				res.writeHead(200, {
-					"Content-Type": file[0].contentType,
-					"Content-Disposition": "attachment; filename=" + foundRehabed.reportNumber + ".pdf",
-				});
+		} 
+		
 
-				const readstream = gfs.openDownloadStreamByName(file[0].filename);
-				readstream.pipe(res);
-			});
+		let ID;
+		if(req.query.bucket === "reds"){
+			ID = new mongoose.Types.ObjectId(foundRehabed.fileID);
+		} else if (req.query.bucket === "rehabs") {
+			ID = new mongoose.Types.ObjectId(foundRehabed.rehabedFileID);
 		}
+
+		const gfsR = new mongoose.mongo.GridFSBucket(connection.db, { bucketName: req.query.bucket });
+		gfsR.find({ _id: ID }).toArray((err, file) => {
+			if (err || !file[0]) {
+				console.log(err)
+				req.flash("error", "Error occured while downloading file");
+				return res.redirect("/rehabedPanels");
+			}
+			res.writeHead(200, {
+				"Content-Type": file[0].contentType,
+				"Content-Disposition": "attachment; filename=" + foundRehabed.reportNumber + req.query.bucket.toUpperCase() + ".pdf",
+			});
+
+			const readstream = gfsR.openDownloadStreamByName(file[0].filename);
+			readstream.pipe(res);
+		});
 	});
 });
 
@@ -182,12 +211,21 @@ router.delete("/sections/:id/rehabedPanels/:rehabedPanel_id", isConnectionOpen, 
 				req.flash("error", "Error While Deleting Rehabilitated Panel Data");
 				return res.redirect("/rehabedPanels");
 			}
-			gfs.delete(new mongoose.Types.ObjectId(foundRehabed.fileID), function (err, data) {
+			const gfsR = new mongoose.mongo.GridFSBucket(connection.db, { bucketName: "reds" });
+			const gfsRH = new mongoose.mongo.GridFSBucket(connection.db, { bucketName: "rehabs" });
+
+			gfsR.delete(new mongoose.Types.ObjectId(foundRehabed.fileID), function (err, data) {
 				if (err) {
-					req.flash("error", "Error While Deleting Recommendation. Rehabilitated Panel Data Deleted. Inform MRM Department");
+					req.flash("error", "Error while deleting initial recommendation. Inform MRM Department");
 					return res.redirect("/rehabedPanels");
 				}
-				req.flash("success", "Successfully deleted a Rehabilitated Panel");
+				gfsRH.delete(new mongoose.Types.ObjectId(foundRehabed.rehabedFileID), function(err, data){
+					if(err){
+						req.flash("error", "Error while deleting signed off recommendations. Initial recommendations deleted. Inform MRM Department");
+						return res.redirect("/rehabedPanels");
+					}
+				});
+				req.flash("success", "Successfully deleted a rehabilitated panel");
 				res.redirect("/rehabedPanels");
 			});
 		});

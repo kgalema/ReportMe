@@ -13,9 +13,9 @@ const Shift = require("./models/shift")
 const mongoose = require("mongoose");
 
 
-mongoose.connection.on("connected", () => {
-	console.log("On connected emmited inside middlware*******************************************");
-});
+// mongoose.connection.on("connected", () => {
+// 	console.log("On connected emmited inside middlware*******************************************");
+// });
 
 let isDBconnected = false;
 mongoose.connection.on('open', () => {
@@ -171,6 +171,7 @@ module.exports.isConnectionOpen = (req, res, next) => {
 	if (!isDBconnected) {
 		return res.render("welcomePage");
 	} 
+    req.DBconnection = mongoose.connection.db
 	next();
 }
 

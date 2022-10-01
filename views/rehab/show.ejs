@@ -36,8 +36,12 @@
             </table>
          <% } %>
 
-         <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/download" method="get">
-            <button type="submit">Download Recommendation</button>
+         <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/download?bucket=reds" method="post">
+            <button type="submit">Initial Recommendation</button>
+         </form>
+         <br>
+         <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/download?bucket=rehabs" method="post">
+            <button type="submit">Signed Off Recommendation</button>
          </form>
          <br>
          <hr>

@@ -36,7 +36,10 @@
                     </div>
 
                     <div id="filterDiv" class="availableFilters">
-                        <input type="date" id="dateFilter" oninput="dateChange(this)">
+                        <label for="dateFilterStart">From:</label>
+                        <input type="date" id="dateFilterStart" data-period="start" oninput="dateChange(this)">
+                        <label for="dateFilter">To:</label>
+                        <input type="date" id="dateFilter" data-period="end" oninput="dateChange(this)">
                         <select name="" id="moFilter" oninput="dateChange(this)">
                             <option value="allMO" selected>--MO--</option>
                             <% MOs.forEach(mo => { %>
@@ -52,6 +55,9 @@
                     </div>
 
                     <div class="myBtnContainer" id="myBtnContainer">
+                        <% shifts.forEach(shift => { %>
+                            <button class="btn" id="<%= shift.name.toLowerCase() %>" onclick="filter('<%= shift.name.toLowerCase() %>')"><%= shift.name %></button>
+                        <% }) %>
                         <button class="btn" id="blast-progs" onclick="filter('blast-progs')">Progressive Blast</button>
                         <button class="btn" id="charts" onclick="filter('charts')">Graphs</button>
                     </div>

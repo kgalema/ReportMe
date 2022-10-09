@@ -20,8 +20,8 @@ require('./initDB');
 
 // Middleware for license will be here
 app.use((req, res, next)=> {
-	const expires = 1649018491130 + 1000 * 60 * 60 * 24 * 182;
-	if(Date.now() > expires){
+	const expires = new Date("31 Dec 2022");
+	if(new Date() > expires){
 		return res.send("Your trial has ended. Contact declaration.co.za")
 	}
 	next()

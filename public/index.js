@@ -525,12 +525,12 @@ function validatePanelActivity(e) {
 }
 
 // ================solution Showing Infomation selectively=======
-// filter("combine")
+// filter("blast-progs")
 let chartData;
 
-// if (document.getElementById("blast-progs")) {
-// 	document.getElementById("blast-progs").onclick();
-// }
+if (document.getElementById("blast-progs")) {
+	document.getElementById("blast-progs").onclick();
+}
 
 function filter(c) {
     const container = document.getElementById("myBtnContainer");
@@ -611,6 +611,32 @@ function hideItem(element, name) {
 
 // ===============date filtering=========
 function dateChange(e) {
+    // return
+    // Separate "from" date with "to" date
+    const from = document.getElementById("dateFilterStart").value;
+    const to = document.getElementById("dateFilter").value;
+    const fromDate = new Date(new Date(from).toDateString());
+    const toDate = new Date(new Date(to).toDateString());
+    
+    const maxDate = new Date();
+    const maxDateString = maxDate.toDateString();
+    const choosenDate = new Date(e.value).toDateString();
+
+    const maxDateSum = `${maxDate.getFullYear()}-` + `${(maxDate.getMonth() + 1).toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false })}-` + `${maxDate.getDate().toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false })}`;
+    
+    if(toDate < fromDate){
+        document.getElementById("dateFilterStart").value = maxDateSum;
+        document.getElementById("dateFilter").value = maxDateSum;
+        e.oninput();
+        return alert("Start date cannot be greater than end date")
+    }
+
+
+    if(new Date(choosenDate) > new Date(maxDateString) && e.dataset.period === "end"){
+        e.value = maxDateSum;
+        e.oninput();
+        return alert("Your chosen end date cannot be greater than today")
+    }
     // Filtering production data by selected MO and section
     const MOandSectionProduction = fileterByMOandSections(e);
 
@@ -622,65 +648,67 @@ function dateChange(e) {
 	main.innerHTML = "";
 
     
-    const productionFilteredByDate = MOandSectionProduction.filter((prod) => moment(prod.general[0].shiftStart).format("YYYY-MM-DD") === selectedDate);
-    if(productionFilteredByDate.length !== 0){
-        const btns = document.getElementById("myBtnContainer").children;
-		const btnsToLeave = ["blast-progs", "charts"];
-		for (let i = 0; i < btns.length; i++) {
-			if (btnsToLeave.indexOf(btns[i].id) === -1) {
-				btns[i].remove();
-			}
-		}
-        createProductionIndexTables(productionFilteredByDate)
+    // const productionFilteredByDate = MOandSectionProduction.filter((prod) => moment(prod.general[0].shiftStart).format("YYYY-MM-DD") === selectedDate);
+    const productionFilteredByDates = MOandSectionProduction.filter((prod) => new Date(new Date(prod.general[0].shiftStart).toDateString()) >= fromDate && new Date(new Date(prod.general[0].shiftStart).toDateString()) <= toDate);
+    const lastProduction = MOandSectionProduction.filter(prod1 => { return new Date(prod1.general[0].shiftStart).toDateString() === new Date(to).toDateString()});
+
+    if(productionFilteredByDates.length !== 0){
+        // const btns = document.getElementById("myBtnContainer").children;
+		// const btnsToLeave = ["blast-progs", "charts"];
+		// for (let i = 0; i < btns.length; i++) {
+		// 	if (btnsToLeave.indexOf(btns[i].id) === -1) {
+		// 		btns[i].remove();
+		// 	}
+		// }
+        createProductionIndexTables(productionFilteredByDates, lastProduction)
     } else {
-        const btns = document.getElementById("myBtnContainer").children;
-        const btnsToLeave = ['blast-progs', 'charts'];
-        for(let i = 0; i < btns.length; i++){
-            if(btnsToLeave.indexOf(btns[i].id) === -1){
-                btns[i].remove();
-            };
-        }
+        // const btns = document.getElementById("myBtnContainer").children;
+        // const btnsToLeave = ['blast-progs', 'charts'];
+        // for(let i = 0; i < btns.length; i++){
+        //     if(btnsToLeave.indexOf(btns[i].id) === -1){
+        //         btns[i].remove();
+        //     };
+        // }
     }
     // createProductionIndexTables(MOandSectionProduction)
 }
 
-function createProductionIndexTables(production){
+function createProductionIndexTables(production, lastProduction){
     const shifts = [];
     production.forEach((p) => {
         if (shifts.indexOf(p.general[0].shift) === -1) {
 			shifts.push(p.general[0].shift);
 		}
-    })
+    });
+
+    // Map it
+    const mapped = lastProduction.map((i, index, arr) => {
+		const sections = production.filter((s) => i.section.name === s.section.name);
+		// Blasted Total
+		const blast = sections.map((s) => s.blast.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+		// Cleaned Total
+		const clean = sections.map((s) => s.clean.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+		// Supported Total
+		const support = sections.map((s) => s.support.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+		// Drilled Total
+		const drill = sections.map((s) => s.drill.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+		// Prepared Total
+		const prep = sections.map((s) => s.prep.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+		// Not Cleaned Total
+		const notClean = sections.map((s) => s.notClean.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+		// LHDs total
+		const LHDs = sections.map((s) => s.LHD.map((l) => l.buckets).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+        const data = [blast, clean, support, drill, prep, notClean, LHDs]
+        return {data, section: i.section, shift: i.general[0].shift, _id: i._id}
+	})
     
-    const cont = document.getElementById("myBtnContainer");
-    const contArr = [...cont.children].map(el => el.id);
-
-    const buttons = [];
-    shifts.forEach((el, i) => {
-        const button = document.createElement("button");
-        button.classList = "btn";
-        button.id = el;
-        button.innerHTML = el.toUpperCase();
-        button.setAttribute("onclick", `filter('${el}')`);
-        
-        buttons.push(button)
-    })
-    
-    buttons.forEach(e => {
-        if(contArr.indexOf(e.id) === -1){
-            cont.insertBefore(e, cont.children[0]);
-        }
-    })
-
-    shifts.forEach((s, i, arr) => {
-        const data = production.filter(p => p.general[0].shift === s)
-        // console.log(cont)
-        createShiftProductionTable(data, s, i, arr)
-    })
-
+    shifts.forEach((shift, index) => {
+        const mappedShift = mapped.filter(e => e.shift === shift)
+        createShiftProductionTable2(mappedShift, shift, index);
+	});
 }
 
-function createShiftProductionTable(data, shift, index, arr) {
+function createShiftProductionTable2(mapped, shift, index) {
 	const table = `<table id="${shift}-shift" class="filterDiv ${shift}">
                         <thead>
                             <tr>
@@ -694,84 +722,84 @@ function createShiftProductionTable(data, shift, index, arr) {
                                 <th>Drilled (m)</th>
                                 <th>Prep'd (m)</th>
                                 <th>Not Cleaned (m)</th>
-                                <th>LHDs</th>
+                                <th>LHD Buckets</th>
                             </tr>
                         </thead>
                         <tbody>
-                        ${data
-							.map(function (e) {
-								return (
-									"<tr><td><a href='/sections/" +
-									e.section.id +
-									"/production/" +
-									e._id +
-									"'>" +
-									e.section.name +
-									"</a></td><td>" +
-									e.blast.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
-									"</td><td>" +
-									e.clean.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
-									"</td><td>" +
-									e.support.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
-									"</td><td>" +
-									e.drill.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
-									"</td><td>" +
-									e.prep.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
-									"</td><td>" +
-									e.notClean.map((sub1) => sub1.length).reduce((i, j) => i + j, 0) +
-									"</td><td>" +
-									e.LHD.length +
-									"</td></tr>"
-								);
+
+                        ${mapped
+							.map((e, i) => {
+								return `<tr>
+                                        <th>
+                                            <a href=/sections/${e.section.id}/production/${e._id}>
+                                                ${e.section.name}
+                                            </a>
+                                        </th>
+                                        <td>${e.data[0]}</td>
+                                        <td>${e.data[1]}</td>
+                                        <td>${e.data[2]}</td>
+                                        <td>${e.data[3]}</td>
+                                        <td>${e.data[4]}</td>
+                                        <td>${e.data[5]}</td>
+                                        <td>${e.data[6]}</td>
+                                    </tr>`;
 							})
 							.join("")}
 
-                            <tr>
-                                <th>Totals</th>
-                                
-                                <td>
-                                    ${data
-										.map((b) => b.blast)
-										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
-										.reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${data
-										.map((b) => b.clean)
-										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
-										.reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${data
-										.map((b) => b.support)
-										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
-										.reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${data
-										.map((b) => b.drill)
-										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
-										.reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${data
-										.map((b) => b.prep)
-										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
-										.reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${data
-										.map((b) => b.notClean)
-										.map((sub1) => sub1.map((sub2) => sub2.length).reduce((i, j) => i + j, 0))
-										.reduce((x, y) => x + y, 0)}
-                                </td>
-                                <td>
-                                    ${data
-										.map((b) => b.LHD)
-										.map((sub1) => sub1.length)
-										.reduce((i, j) => i + j, 0)}
-                                </td>
-                            </tr>
+                        <tr>
+                            <th>Totals</th>
+                            
+                            <td>
+                                ${mapped
+                                    .map((b) => b.data)
+                                    .map(c => c[0])
+                                    .reduce((a, b) => a + b, 0)
+                                }
+                            </td>
+                            <td>
+                                ${mapped
+                                    .map((b) => b.data)
+                                    .map(c => c[1])
+                                    .reduce((a, b) => a + b, 0)
+                                }
+                            </td>
+                            <td>
+                                ${mapped
+                                    .map((b) => b.data)
+                                    .map(c => c[2])
+                                    .reduce((a, b) => a + b, 0)
+                                }
+                            </td>
+                            <td>
+                                ${mapped
+                                    .map((b) => b.data)
+                                    .map(c => c[3])
+                                    .reduce((a, b) => a + b, 0)
+                                }
+                            </td>
+                            <td>
+                                ${mapped
+                                    .map((b) => b.data)
+                                    .map(c => c[4])
+                                    .reduce((a, b) => a + b, 0)
+                                }
+                            </td>
+                            <td>
+                                ${mapped
+                                    .map((b) => b.data)
+                                    .map(c => c[5])
+                                    .reduce((a, b) => a + b, 0)
+                                }
+                            </td>
+                            <td>
+                                ${mapped
+                                    .map((b) => b.data)
+                                    .map(c => c[6])
+                                    .reduce((a, b) => a + b, 0)
+                                }
+                            </td>
+                        </tr>
+                        
                         </tbody >
                     </table>`;
 
@@ -780,8 +808,8 @@ function createShiftProductionTable(data, shift, index, arr) {
 	all.setAttribute("id", "wrapper");
 	const main = document.getElementById("tables");
 	main.appendChild(all);
-    if(index === arr.length - 1) {
-        document.getElementById(shift).onclick()
+    if(index === 0) {
+        document.getElementById(shift).onclick();
     }
 }
 
@@ -912,6 +940,10 @@ if (document.getElementById("endDate") && document.getElementById("startDate")) 
 if(document.getElementById("dateFilter")){
     document.getElementById("dateFilter").max = htmlDate
 }
+if(document.getElementById("dateFilterStart")){
+    document.getElementById("dateFilterStart").max = htmlDate
+    document.getElementById("dateFilterStart").value = htmlDate
+}
 if(document.getElementById("startdate")){
     document.getElementById("startdate").value = htmlStartDate;
 }
@@ -958,16 +990,25 @@ function blastFilter(e) {
 
     const endDate = document.getElementById("endDate").value;
     const startDate = document.getElementById("startDate").value;
+    
+    const end = new Date(endDate).toDateString();
+    const start = new Date(startDate).toDateString();
+    const endObj = new Date(end);
+    const startObj = new Date(start);
 
-    if (endDate < startDate) {
+
+    if (endObj < startObj) {
+        console.log("End date is less than start date")
         e.target.value = ""
         document.getElementById("tableDate").innerHTML = endDate.slice(8) + "/" + endDate.slice(5, 7) + "/" + endDate.slice(0, 4)
         document.getElementById("endDate").value = moment(today).format('YYYY-MM-DD');
         return alert("Start date cannot be greater than end date. Please re-select your date range")
     }
 
-    const filteredByDate = parsedProduction.filter(prod1 => { return moment(prod1.created).format('YYYY-MM-DD') >= startDate && moment(prod1.created).format('YYYY-MM-DD') <= endDate}).filter(a => a.general[0].shift === "morning")
-    const todayProduction = parsedProduction.filter(prod1 => { return moment(prod1.created).format('YYYY-MM-DD') == endDate }).filter(a => a.general[0].shift === shift)
+    // const filteredByDate = parsedProduction.filter(prod1 => { return moment(prod1.created).format('YYYY-MM-DD') >= startDate && moment(prod1.created).format('YYYY-MM-DD') <= endDate}).filter(a => a.general[0].shift === "morning")
+    // const todayProduction = parsedProduction.filter(prod1 => { return moment(prod1.created).format('YYYY-MM-DD') == endDate }).filter(a => a.general[0].shift === shift)
+    const filteredByDate = parsedProduction.filter(prod1 => { return Date.parse(new Date(prod1.general[0].shiftStart).toDateString()) >= Date.parse(start) && Date.parse(new Date(prod1.general[0].shiftStart).toDateString()) <= Date.parse(end)}).filter(a => a.general[0].shift === shift)
+    const todayProduction = parsedProduction.filter(prod1 => { return new Date(prod1.general[0].shiftStart).toDateString() === end }).filter(a => a.general[0].shift === shift)
 
     const actualTotalBudget = todayProduction.map(b => b.section.budget).reduce((i, j) => i + j, 0)
     const actualTotalForecast = todayProduction.map(b => b.section.forecast).reduce((i, j) => i + j, 0)
@@ -1048,7 +1089,7 @@ function blastFilter(e) {
                             }
 
 
-                            return "<tr><th>" + b.section.name + "</th>" + "<th>m<sup>2</sup></th>" + "<td>" + b.budget.toFixed(1) + "</td>" + "<td>" + b.forecast.toFixed(1) + "</td>" + "<td>" + b.blasted + "</td>" + "<td class=\"variance\" >" + variance2 + "</td>" + "<td class=\"smiley\">&#128577</td>" + "<td class=\"comments_cell\">" + b.general[0].comments + "</td>" + "<td>" + budgetProg.toFixed(1) + "</td>" + "<td>"+ forecastProg.toFixed(1) +"</td>" + "<td>" + progActual +"</td>" + "<td class=\"variance\">"+ varianceProg +"</td>" + "<td>&#128577</td>" + "</tr>"
+                            return "<tr><th>" + b.section.name + "</th>" + "<th>m<sup>2</sup></th>" + "<td>" + b.budget.toFixed(1) + "</td>" + "<td>" + b.forecast.toFixed(1) + "</td>" + "<td>" + b.blasted.toFixed(1) + "</td>" + "<td class=\"variance\" >" + variance2 + "</td>" + "<td class=\"smiley\">&#128577</td>" + "<td class=\"comments_cell\">" + b.general[0].comments + "</td>" + "<td>" + budgetProg.toFixed(1) + "</td>" + "<td>"+ forecastProg.toFixed(1) +"</td>" + "<td>" + progActual.toFixed(1) +"</td>" + "<td class=\"variance\">"+ varianceProg +"</td>" + "<td>&#128577</td>" + "</tr>"
                         }).join("")}
 
 

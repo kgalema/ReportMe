@@ -38,7 +38,7 @@ router.get("/production", isConnectionOpen, function (req, res) {
 				req.flash("error", "Error occured while fetching sections");
 				return res.redirect("back");
 			}
-			Shift.find({}, {isBlasting: 1, name: 1}, function(err, shifts){
+			Shift.find({}, {isBlasting: 1, name: 1, start: 1}, function(err, shifts){
 				if(err || !shifts){
 					req.flash("error", "Error occured while validating shifts");
 					return res.redirect("back");
@@ -46,6 +46,7 @@ router.get("/production", isConnectionOpen, function (req, res) {
 				const sortedProductions = allProduction.sort(function (a, b) {
 					return collator.compare(a.section.name, b.section.name);
 				});
+				console.log(shifts)
 				res.render("production/index", { production: sortedProductions, shifts, sections, title: "production-dash" });
 			})
 		})

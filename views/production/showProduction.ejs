@@ -2,8 +2,8 @@
 <div class="main-body">
     <div class=element>
         <div class="element2">
-            <h2>Reported Production: <%= reported.section.name %></h2>
-            <h3><%= reported.general[0].shiftStart.toDateString() %></h3>
+            <h2>Production Report</h2>
+            <h3><%= reported.section.name %> | <%= reported.general[0].shiftStart.toDateString() %>| <%= reported.general[0].shift[0].toUpperCase() + reported.general[0].shift.slice(1) %></h3>
 
             <p>
                 <% const blastSum = reported.blast.map(b => b.length).reduce((i, j)=> i+j, 0) %>
@@ -255,20 +255,54 @@
                                 <td><%= locals.reported.updatedAt.toDateString() %> - <%= reported.updatedAt.getHours()%>:<%= reported.updatedAt.getMinutes()%></td>
                             </tr>
                             <tr>
-                                <td>Created</td>
+                                <td>Shift Start</td>
                                 <td><%= locals.reported.general[0].shiftStart.toDateString() %></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                <% } %>
+                <% if (locals.currentUser && locals.currentUser.isAdmin && locals.reported.declaration.isAttached) { %>
+                    <table class="prod-group-item">
+                        <thead>
+                            <tr>
+                                <th colspan="2">Details (Attachment)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Author</td>
+                                <td><%= locals.reported.declaration.author %></td>
+                            </tr>
+                            <tr>
+                                <td>Uploaded </td>
+                                <td><%= locals.reported.declaration.date.toDateString() %> - <%= locals.reported.declaration.date.getHours() %>:<%= locals.reported.declaration.date.getMinutes() %></td>
                             </tr>
                         </tbody>
                     </table>
                 <% } %>
                 
             </section>
-          
+
             <br>
+            <% if (locals.reported.declaration.isAttached) { %>
+                <form action="/declaration/production/<%= reported._id %>/download" method="post">
+                    <input type="submit" value="Download declaration"></input>
+                </form>
+            <% } %>
+
+            <% if (locals.reported.declaration.isAttached && locals.currentUser && locals.currentUser.isAdmin) { %>
+                <a href="/declaration/production/<%= reported._id %>/new?what=edit">edit declaration</a>
+            <% } %>
+
+
+            <% if (!locals.reported.declaration.isAttached && locals.currentUser) { %>
+                <a href="/declaration/production/<%= reported._id %>/new">Attach declaration</a>
+            <% } %>
+          
             <p>
                 <a href="/production">Dashboard</a>
             </p>
-            <% if(locals.expired && locals.currentUser.isAdmin) { %>
+            <% if(locals.expired && locals.currentUser && locals.currentUser.isAdmin) { %>
                     <a href="/sections/<%= reported.section.id %>/production/<%= reported._id %>/edit">Edit</a>
                     <form action="/sections/<%= reported.section.id %>/production/<%= reported._id %>?_method=DELETE" method="POST">
                         <button id="delete" type="submit">Delete!</button>

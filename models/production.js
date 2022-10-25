@@ -65,30 +65,30 @@ const productionSchema = new mongoose.Schema({
 			buckets: Number,
 		},
 	],
-	fleetHrs: {
-		bolters: [
-			{
-				name: String,
-				engine: [Number],
-				drilling: [Number],
-				electrical: [Number]
-			}
-		],
-		drillRigs: [
-			{
-				name: String,
-				engine: [Number],
-				percussion: [Number],
-				electrical: [Number],
-			}
-		] ,
-		LHDs: [
-			{
-				name: String,
-				engine: [Number],
-			}
-		]
-	},
+	// fleetHrs: {
+	// 	bolters: [
+	// 		{
+	// 			name: String,
+	// 			engine: [Number],
+	// 			drilling: [Number],
+	// 			electrical: [Number]
+	// 		}
+	// 	],
+	// 	drillRigs: [
+	// 		{
+	// 			name: String,
+	// 			engine: [Number],
+	// 			percussion: [Number],
+	// 			electrical: [Number],
+	// 		}
+	// 	] ,
+	// 	LHDs: [
+	// 		{
+	// 			name: String,
+	// 			engine: [Number],
+	// 		}
+	// 	]
+	// },
 	section: {
 		id: {
 			type: mongoose.Schema.Types.ObjectId,
@@ -104,7 +104,16 @@ const productionSchema = new mongoose.Schema({
 		ref: "User",
 	},
 	uniqueCode: { type: String, unique: true },
-	// created: { type: Date, default: () => new Date() },
+	declaration: { 
+		isAttached: {type: Boolean, default: false},
+		id: {
+			type: mongoose.Schema.Types.ObjectId, 
+			ref: "declarations.files"
+		},
+		author: String,
+		authorID: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
+		date: {type: Date }
+	},
 }, opts);
 
 productionSchema.virtual("blasted").get(function () {

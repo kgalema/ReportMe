@@ -27,8 +27,6 @@ router.get("/breakdowns", isConnectionOpen, checkShift, function (req, res) {
 					req.flash("error", "Error occured while fetching shift information");
 					return res.redirect("/");
 				}
-				console.log(closedBreakdowns.length)
-				console.log(allBreakdowns.length)
 				res.render("breakdowns/index", { shiftNow: req.shift, allBreakdowns, closedBreakdowns, foundShifts, title: "breakdowns" });
 			});
 		});
@@ -60,7 +58,6 @@ router.get("/breakdowns/new", isConnectionOpen, isLoggedIn, checkShift, function
 					req.flash("error", "Error occured while retrieving shifts");
 					return res.redirect("/breakdowns");
 				}
-				// Allocation.find({shift: req.shift.toLowerCase()}, function(err, allocations){
 				Allocation.find({}, function(err, allocations){
 					if(err || !allocations){
 						req.flash("error", "Error occured while fetching resource allocations for today")
@@ -84,23 +81,7 @@ router.post("/breakdown", isConnectionOpen, isLoggedIn, function (req, res) {
 	startTime.setSeconds(0);
 	startTime.setMilliseconds(0);
 	req.body.breakdown.startTime = startTime;
-	// req.body.breakdown.shiftStart = startTime;
-
-	// Shift.find({ name: req.body.breakdown.shift.toUpperCase() }, {start: 1},  function (err, foundShift) {
-	// 	if (err || !foundShift) {
-	// 		req.flash("error", "Error occured while validating breakdown shift");
-	// 		return res.redirect("breakdowns/new");
-	// 	}
-	// 	const bdownStart = new Date(req.body.breakdown.startDate);
-	// 	const startHR = Number(foundShift[0].start.split(":")[0]);
-	// 	const startMin = Number(foundShift[0].start.split(":")[1]);
-	// 	bdownStart.setHours(startHR);
-	// 	bdownStart.setMinutes(startMin);
-
-	// 	req.body.breakdown.shiftStartTime = bdownStart;
-	// 	return res.json(foundShift);
-	// });
-	// return
+	
 	Section.findById(req.body.breakdown.sectionId, function (err, foundSection) {
 		if (err || !foundSection) {
 			req.flash("error", "Something went wrong while creating new breakdown");
@@ -127,32 +108,18 @@ router.post("/breakdown", isConnectionOpen, isLoggedIn, function (req, res) {
 			req.body.breakdown.shiftStartTime = bdownStart;
 
 			if(foundShift[0].overlap && hours >= 0 && hours <= endHR){
-				console.log("Shift is overlaping and time has passed midnight")
 				const date = new Date(req.body.breakdown.startDate);
 				date.setDate(date.getDate() - 1);
 				date.setHours(startHR);
 				date.setMinutes(startMin);
-				console.log(req.body.breakdown.startTime);
 				req.body.breakdown.shiftStartTime = date;
-			} else {
-				console.log("Shift either overlaps or not. It doesn't matter")
 			}
-
-			// console.log(foundShift)
-			// return res.json({breakdown: req.body.breakdown})
 
 			Breakdown.create(req.body.breakdown, function (err, newBreakdown) {
 				if (err || !newBreakdown) {
 					req.flash("error", "Something went wrong while creating new breakdown");
 					return res.redirect("breakdowns/new");
 				}
-				// newBreakdown.author.id = req.user._id;
-				// newBreakdown.save(function (err, savedBreakdown) {
-				// 	if (err || !savedBreakdown) {
-				// 		req.flash("error", "Something went wrong while creating saving breakdown report");
-				// 		return res.redirect("back");
-				// 	}
-				// console.log(newBreakdown)
 				req.flash("success", "Successfully added new breakdown");
 				res.redirect("/breakdowns");
 			});
@@ -225,22 +192,17 @@ router.put("/breakdown/:id", isConnectionOpen, isLoggedIn, isBreakdownAuthor, fu
 				return res.redirect("back")
 
 			}
-			// Creating an object for closed breakdown
 			const closed = { author: { id: req.user._id } };
 			closed.breakdown = foundBreakdown;
 			closed.breakdown.shift = foundBreakdown.shift;
 			closed.endTime = bdownDate;
 			closed.comments = `Moved from ${foundBreakdown.shift} to ${nextShift} shift`;
 			
-			// console.log(closed)
-			// Creating an object for open breakdown
 			const start = new Date()
 			start.setHours(nextStartTime.split(":")[0]);
 			start.setMinutes(nextStartTime.split(":")[1]);
 			start.setSeconds(0);
 			start.setMilliseconds(0);
-			// foundBreakdown.shift = nextShift;
-			// foundBreakdown.startTime = start;
 
 			const newOpen = { author: { 
 					id: req.user._id 
@@ -266,7 +228,6 @@ router.put("/breakdown/:id", isConnectionOpen, isLoggedIn, isBreakdownAuthor, fu
 							req.flash("error", "Error occured while closing breakdown");
 							return res.redirect("/breakdowns");
 						}
-						console.log("It should be deleted here")
 						req.flash("success", "Successfully move a breakdown to next shift shift");
 						return res.redirect("/breakdowns");
 					});
@@ -289,7 +250,6 @@ router.put("/breakdown/:id", isConnectionOpen, isLoggedIn, isBreakdownAuthor, fu
 	Breakdown.findByIdAndUpdate(req.params.id, req.body.breakdown, function (err, updatedBreakdown) {
 		if (err || !updatedBreakdown) {
 			req.flash("error", "Error occured while updating a breakdown");
-			console.log(err);
 			return res.redirect("back");
 		}
 		req.flash("success", "Successfully updated breakdown");

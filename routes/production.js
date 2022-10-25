@@ -1,5 +1,6 @@
 const express = require("express")
 const router = express.Router()
+const mongoose = require("mongoose");
 const Section = require("../models/section")
 const Production = require("../models/production")
 const TMM = require("../models/tmms")
@@ -8,11 +9,28 @@ const Shift = require("../models/shift")
 const ProductionCalendar = require("../models/productionCalendar")
 const { isLoggedIn, isProductionAuthor, isSectionSelected, isAdmin, isConnectionOpen } = require("../middleware")
 
+const GridFsStorage = require("multer-gridfs-storage");
+const multer = require("multer");
+const path = require("path");
 
+const exported = require("../app");
 
-//===========================
-// Production Reports Routes
-//===========================
+// Create storage engine
+const storage = new GridFsStorage({
+	url: exported.dbUrl,
+	options: { useNewUrlParser: true, useUnifiedTopology: true },
+	file: (req, file) => {
+			const filename = "declaration"+ req.query.code + path.extname(file.originalname);
+			const fileInfo = {
+					filename: filename,
+					bucketName: "declarations",
+				};
+
+			return fileInfo
+	}
+})
+
+const upload = multer({ storage });
 
 
 const collator = new Intl.Collator(undefined, {
@@ -46,7 +64,6 @@ router.get("/production", isConnectionOpen, function (req, res) {
 				const sortedProductions = allProduction.sort(function (a, b) {
 					return collator.compare(a.section.name, b.section.name);
 				});
-				console.log(shifts)
 				res.render("production/index", { production: sortedProductions, shifts, sections, title: "production-dash" });
 			})
 		})
@@ -161,7 +178,6 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 				req.body.production.general[0].shiftStart = req.body.production.created;
 			}
 
-			// console.log(req.body.production.general[0].shiftStart);
 
 			
 			Production.create(req.body.production, function (err, foundProduction) {
@@ -169,15 +185,6 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 					req.flash("error", "Looks like you are trying to create duplicate report");
 					return res.redirect("/production");
 				}
-
-				// if (foundProduction.general[0].shift === "night") {
-				// 	const cr = foundProduction.created;
-				// 	const yesterday = new Date(cr);
-				// 	yesterday.setDate(yesterday.getDate() - 1);
-				// 	foundProduction.general[0].shiftStart = yesterday;
-				// } else {
-				// 	foundProduction.general[0].shiftStart = foundProduction.created;
-				// }
 
 				foundProduction.section.id = section._id;
 				foundProduction.section.name = section.name;
@@ -262,11 +269,6 @@ router.get("/sections/:id/production/:production_id", isConnectionOpen, function
 			if (currentTime > expiresAt) {
 				expired = true
 			}
-			
-			// These variables are necessary for triggering usage virtuals in the schema. They are all undefined
-			const LHDUsage = foundProduction.LHDUsage;
-			const bolterUsage = foundProduction.bolterUsage;
-			const drillRigUsage = foundProduction.drillRigUsage;
 			res.render("production/showProduction", {expired, reported: foundProduction, reportedUser: user, title: "production-dash" });
 		});
 	});
@@ -321,16 +323,128 @@ router.put("/sections/:id/production/:production_id", isConnectionOpen, isLogged
 
 // 7. Destroy - delete one specific production report
 router.delete("/sections/:id/production/:production_id", isConnectionOpen, isLoggedIn, isProductionAuthor, function (req, res) {
-	Production.findByIdAndRemove(req.params.production_id, function (err) {
-		if (err) {
-			req.flash("error", "Something went wrong with the database");
-			return res.redirect("back");
-		} else {
-			req.flash("success", "Successfully Deleted Production Report");
-			res.redirect("/production");
+	Production.findById(req.params.production_id, function(err, production){
+		if(err || !production){
+			req.flash("error", "Error ocured while validating production report")
+			req.redirect("/production")
 		}
+		Production.findByIdAndRemove(req.params.production_id, function (err) {
+			if (err) {
+				req.flash("error", "Something went wrong with the database");
+				return res.redirect("back");
+			}
+			const gfsR = new mongoose.mongo.GridFSBucket(req.DBconnection, { bucketName: "declarations" });
+	
+			gfsR.delete(new mongoose.Types.ObjectId(production.declaration.id), function (err) {
+				if (err) {
+					req.flash("error", "Error occured while deleting declaration. Please let admin know of this error");
+					return res.redirect("/production");
+				}
+				req.flash("success", "Successfully deleted production report");
+				res.redirect("/production");
+			})
+		});
+	})
+});
+
+
+/*****************Routes For Declaration Uploads ****************/
+
+// 1. This route renders a new form for declaration upload
+router.get("/declaration/production/:production_id/new", isConnectionOpen, isLoggedIn, function(req, res){
+	Production.findById(req.params.production_id, function(err, production){
+		if(err || !production){
+			req.flash("error", "An error occured while retrieving info about selected production report");
+			return req.redirect(`/production/${req.params.production_id}`);
+		}
+		res.render("production/declarations/new", {what: req.query.what, production, title: "production-dash"});
+	});
+})
+
+// 2. This route post and saves the uploaded declaration into the database
+router.post("/declaration/production/:production_id", isConnectionOpen, isLoggedIn, upload.single("page"), function(req, res){
+	Production.findById(req.params.production_id, function(err, production){
+		if(err || !production){
+			req.flash("error", "An error occured while retrieving info about selected production report");
+			return res.redirect(`/production/${req.params.production_id}`);
+		}
+		// return res.redirect()
+		production.declaration = {
+			isAttached: true,
+			id: req.file.id,
+			author: req.user.preferredName,
+			authorID: req.user._id,
+			date: new Date()
+		};
+
+		production.save(function(err, saved){
+			if(err || !saved){
+				req.flash("error", "Error occured while updating production report")
+				return res.redirect(req.headers.referer)
+			}
+			res.redirect(`/sections/${production.section.id}/production/${production._id}`);
+		});
 	});
 });
+
+// 3. Declaration Edit - This route edit existing declaration by removing old one and saving new one in the data base
+router.post("/declaration/production/:production_id/edit", isConnectionOpen, isLoggedIn, upload.single("page"), function(req, res){
+	Production.findById(req.params.production_id, function(err, production){
+		if(err || !production){
+			req.flash("error", "An error occured while retrieving info about selected production report");
+			return res.redirect(`/production/${req.params.production_id}`);
+		}
+
+		const fileToDelete = production.declaration.id;
+		production.declaration.id = req.file.id;
+
+		production.save(function(err, saved){
+			if(err || !saved){
+				req.flash("error", "Error occured while updating file id in the production report")
+				return res.redirect(`/production/${req.params.production_id}`);
+			}
+			
+			const gfs = new mongoose.mongo.GridFSBucket( req.DBconnection, { bucketName: "declarations" });
+			
+			gfs.delete(new mongoose.Types.ObjectId(fileToDelete), function (err) {
+				if (err) {
+					req.flash("error", "Error occured while replacing existing declaration. Contact admin");
+					return res.redirect(`/sections/${production.section.id}/production/${production._id}`);
+				}
+				req.flash("success", "Successfully edited declaration book");
+				res.redirect(`/sections/${production.section.id}/production/${production._id}`);
+			});
+		});
+	});
+});
+
+// 4. Downloading declaration
+router.post("/declaration/production/:production_id/download", isConnectionOpen, upload.single("page"), function(req, res){
+	Production.findById(req.params.production_id, function(err, production){
+		if(err || !production){
+			req.flash("error", "An error occured while retrieving info about selected production report");
+			return res.redirect(`/production/${req.params.production_id}`);
+		}
+		const fName = "declaration" + production.uniqueCode + ".pdf";
+		const gfsR = new mongoose.mongo.GridFSBucket(req.DBconnection, { bucketName: "declarations" });
+
+		gfsR.find({filename: fName}).toArray((err, file)=>{
+			if (err || !file[0]) {
+				req.flash("error", "Error occured while downloading file");
+				return res.redirect(req.headers.referer);
+			}
+
+			res.writeHead(200, {
+				"Content-Type": file[0].contentType,
+				"Content-Disposition": "attachment; filename=" + fName + ".pdf",
+			});
+
+			const readstream = gfsR.openDownloadStreamByName(file[0].filename);
+			readstream.pipe(res);
+		})
+	});
+})
+
 
 
 module.exports = router;

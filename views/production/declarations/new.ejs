@@ -1,0 +1,26 @@
+<%- include("../../partials/header") %>
+
+    <div class="main-body">
+        <div class="element">
+            <h2>Declaration Upload <small><%= null || what %></small></h2>
+            <h3> <%= production.section.name %> | <%= production.general[0].shiftStart.toDateString()  %> | <%= production.general[0].shift.toUpperCase() %></h3>
+            <hr>
+            <% if (what) { %>
+                <form action="/declaration/production/<%= production._id %>/<%= what %>?code=<%= production.uniqueCode %>" method="post" enctype="multipart/form-data">
+            <% } else { %>
+                <form action="/declaration/production/<%= production._id %>/?code=<%= production.uniqueCode %>" method="post" enctype="multipart/form-data">
+            <% } %>
+                <input type="file" name="page" id="" accept=".pdf" required>
+                <hr>
+                <input type="submit" value="Submit">
+            </form>
+            <div>
+                <a href="/sections/<%= production.section.id %>/production/<%= production._id %>">&#11013 Back</a>
+            </div>
+        </div>
+    </div>
+
+
+
+<%- include("../../partials/sidebar") %>
+<%- include("../../partials/footer") %>

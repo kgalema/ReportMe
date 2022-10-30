@@ -786,7 +786,6 @@ function filterItem(el){ //triggered by onchange listener
     //el is the select tag category
     // const tmms = document.getElementById("allAssets").innerText
     // const allTMMs = JSON.parse(tmms);
-    console.log("filtering can occur")
 
     const cat = el.value
     const assetsToUse = selectEngAssets();
@@ -1056,20 +1055,35 @@ function selectEngAssets(cat){
     const allocations = document.getElementById("allocations").innerText;
     const parsedAllocations = JSON.parse(allocations)
 
+    const shifts = document.getElementById("shifts").innerText;
+    const parsedShifts = JSON.parse(shifts)
+
+    const overlapingShift = parsedShifts.filter(s => s.overlap);
+    let overlapingShiftName
+    let overlapsEnd = 0;
+    
+    if(overlapingShift.length > 0){
+        overlapingShiftName = overlapingShift[0].name.toLowerCase();
+        overlapsEnd = Number(overlapingShift[0].end.split(':')[0]);
+    }
+    
+    
     const section = document.getElementById("section")
     const sectionName = section.options[section.selectedIndex].text;
-
+    
     const data2 = document.getElementById("todayDate").value;
     const data21 = document.getElementById("todayDate").value;
     const hours = document.getElementById("startTime").value;
     const date2 = new Date(data2)
     const date = new Date(data21)
+    
     // Yesterday
     const yesterday = date.setDate(date.getDate() - 1)
+    
     const hrStart = Number(hours.split(":")[0])
 
     const shift = document.querySelectorAll("input[name='breakdown[shift]']")
-    console.log(shift)
+
     let selectedShift;
     shift.forEach(e => {
         if(e.checked){
@@ -1078,7 +1092,8 @@ function selectEngAssets(cat){
     })
 
     let selectorCode = sectionName + date2.toLocaleDateString("en-GB") + selectedShift;
-    if (selectedShift === "night" && hrStart >= 0 && hrStart <= 6) {
+    // if (selectedShift === "night" && hrStart >= 0 && hrStart <= 6) {
+    if (selectedShift === overlapingShiftName && hrStart >= 0 && hrStart <= overlapsEnd) {
 		selectorCode = sectionName + date.toLocaleDateString("en-GB") + selectedShift;
 	}
 
@@ -1205,6 +1220,5 @@ function resetItems(){
     if(section === "select section"){
         return
     }
-    console.log(section)
     document.getElementById("category").onchange()
 }

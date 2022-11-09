@@ -1,5 +1,17 @@
 .prod_charts {
     /* position: relative; */
     width: 40vw;
-    height: 40vh
+    height: 45vh;
+    /* height: 700px; */
+    /* min-width: 40vw;
+    min-height: 50vh */
+}
+
+
+#prod-graphs {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }

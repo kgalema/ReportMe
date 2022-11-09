@@ -85,7 +85,7 @@
 
                     <!-- This section is a container for charts (progressive and daily production) -->
                 <section id="prod_charts" class="prod_charts filterDiv">
-                    <div style="display: flex; align-items: center; justify-content: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; margin-top: 15px;">
                         <div>
                             <label for="startdate">From:</label>
                             <input type="date" onchange="drawProductionGraph()" id="startdate" value="">
@@ -99,8 +99,9 @@
                             </select>
                         </div>
                     </div>
-                    <div>
+                    <div id="prod-graphs">
                         <canvas id="draw"></canvas>
+                        <hr>
                         <canvas id="drawProgressive"></canvas>
                     </div>
                 </section>

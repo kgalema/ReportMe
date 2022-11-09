@@ -108,7 +108,7 @@ function drawProductionGraph(){
 				},
 				subtitle: {
 					display: true,
-					text: "Production Report",
+					text: "Daily m\u00B2",
 					padding: {
 						bottom: 5,
 					},
@@ -172,7 +172,7 @@ function drawProductionGraph(){
 				},
 				subtitle: {
 					display: true,
-					text: "Progressive Chart",
+					text: "Progressive m\u00B2",
 					padding: {
 						bottom: 5,
 					},

@@ -41,19 +41,30 @@ function drawProductionGraph(){
 	const mongoDB = document.getElementById("DB").innerText;
 	const prodDataCharts = JSON.parse(mongoDB);
 
+	const shifts = document.getElementById("shifts").innerText;
+	const parsedShifts = JSON.parse(shifts);
+
+	const blastingShift = parsedShifts.filter(e => e.isBlasting)[0].name.toLowerCase();
+
 	// Now sort by date in ascending order
 	prodDataCharts.sort(compareFunction);
 	function compareFunction(a, b) {
-		return new Date(moment(a.created).format("YYYY-MM-DD")) - new Date(moment(b.created).format("YYYY-MM-DD"));
+		// return new Date(moment(a.created).format("YYYY-MM-DD")) - new Date(moment(b.created).format("YYYY-MM-DD"));
+		return new Date(moment(a.general[0].shiftStart).format("YYYY-MM-DD")) - new Date(moment(b.general[0].shiftStart).format("YYYY-MM-DD"));
 	}
+
+	const options = {year: "2-digit", month: "short", day: "2-digit"};
 
 	const startDate = document.getElementById("startdate").value || htmlStartDate;
 	const endDate = document.getElementById("enddate").value || htmlDate;
 	const selectedSection = document.getElementById("selectedSection").value;
-	const data = prodDataCharts.filter((e) => moment(e.created).format("YYYY-MM-DD") >= startDate && moment(e.created).format("YYYY-MM-DD") <= endDate);
-	const dayShiftData = data.filter((doc) => doc.general[0].shift === "morning"); //Day shift production data
+	// const data = prodDataCharts.filter((e) => moment(e.created).format("YYYY-MM-DD") >= startDate && moment(e.created).format("YYYY-MM-DD") <= endDate);
+	const data = prodDataCharts.filter((e) => moment(e.general[0].shiftStart).format("YYYY-MM-DD") >= startDate && moment(e.general[0].shiftStart).format("YYYY-MM-DD") <= endDate);
+	// const dayShiftData = data.filter((doc) => doc.general[0].shift === "morning");
+	const dayShiftData = data.filter((doc) => doc.general[0].shift === blastingShift); //Day shift production data
 	const dayShiftDataSection = dayShiftData.filter((doc) => doc.section.name === selectedSection); //Day shift production data of 1 particular section
-	const labels = dayShiftDataSection.map((e) => moment(e.created).format("YYYY-MM-DD"));
+	// const labels = dayShiftDataSection.map((e) => moment(e.general[0].shiftStart).format("YYYY-MM-DD"));
+	const labels = dayShiftDataSection.map((e) => new Date(e.general[0].shiftStart).toLocaleDateString("en-GB", options));
 	const dataForecast = dayShiftDataSection.map((e) => e.forecast);
 	const dataBlasted = dayShiftDataSection.map((e) => e.blasted);
 
@@ -62,7 +73,7 @@ function drawProductionGraph(){
 	const cummulativeForecast = cummulateArr(dataForecast)
 	
 	// Thickness of bar graphs in pixels
-	const thickness = 40;
+	const thickness = 15;
 
 
 	// Configuration for non-cummulative graph

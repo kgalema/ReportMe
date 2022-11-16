@@ -446,5 +446,180 @@ router.post("/declaration/production/:production_id/download", isConnectionOpen,
 })
 
 
+// Seeding the data base
+// Non-blasting shifting
+router.get("/production/night/seed", isConnectionOpen, isAdmin, function (req, res) {
+
+	const date = new Date("2022-10-01T00:00:00.000Z")
+	const dates = []
+	const arrToInsert = []
+
+	while (date <= new Date()) {
+		dates.push(date.toLocaleDateString())
+		date.setDate(date.getDate() + 1);
+	}
+
+
+
+	dates.forEach(d => {
+		const production = {
+			section: {
+				budget: 0,
+				forecast: 0,
+				id: "5fc8dcd9f1cc9f4e1cd9a191",
+				name: "SECTION_1",
+				plannedAdvance: 2.7,
+			},
+			declaration: { isAttached: false },
+			general: [
+				{
+					shift: "night",
+					isProduction: false,
+					comments: "Hello there!",
+					shiftStart: d,
+				},
+			],
+			blast: [
+				{
+					isCleaned: true,
+					isMeasured: true,
+					panel: "NONE",
+					length: 0,
+					advance: 2.7,
+				},
+			],
+			clean: [
+				{ panel: "WINZE26", length: 8 },
+				{ panel: "109E", length: 8 },
+				{ panel: "102E", length: 8 },
+			],
+			support: [
+				{
+					panel: "108WINZE",
+					length: 6,
+					bolts: 12,
+					anchors: 6,
+					machine: "RB01",
+				},
+			],
+			drill: [
+				{
+					panel: "87W",
+					length: 8,
+					holes: 54,
+					drillRig: "GST01",
+				},
+			],
+			prep: [{ panel: "6E", length: 8 }],
+			notClean: [{ panel: "82W", length: 8 }],
+			LHD: [
+				{
+					coyNumber: 119319,
+					LHDnumber: "GL89",
+					buckets: 57,
+				},
+			],
+			uniqueCode: "SECTION_1" + d + "night",
+			author: req.user._id,
+		};
+
+		arrToInsert.push(production)
+	})
+
+
+	Production.insertMany(arrToInsert, function(err, inserted){
+		if(err || !inserted){
+			console.log(err.message)
+			req.flash("error", "Error occured while inserting documents")
+			return res.redirect("/production")
+		}
+		console.log(inserted.length)
+		res.send("Successfully seeded database")
+	})
+});
+
+// Blasting Shift
+router.get("/production/day/seed", isConnectionOpen, isAdmin, function (req, res) {
+
+	const date = new Date("2022-10-01T00:00:00.000Z")
+	const dates = []
+	const arrToInsert = []
+
+	while (date <= new Date()) {
+		dates.push(date.toLocaleDateString())
+		date.setDate(date.getDate() + 1);
+	}
+
+
+
+	dates.forEach(d => {
+		const production = {
+			section: {
+				budget: 0,
+				forecast: 0,
+				id: "5fc8dcd9f1cc9f4e1cd9a191",
+				name: "SECTION_1",
+				plannedAdvance: 2.7,
+			},
+			declaration: { isAttached: false },
+			general: [
+				{
+					shift: "night",
+					isProduction: false,
+					comments: "Hello there!",
+					shiftStart: d,
+				},
+			],
+			blast: [
+				{
+					isCleaned: true,
+					isMeasured: true,
+					panel: "NONE",
+					length: 0,
+					advance: 2.7,
+				},
+			],
+			clean: [
+				{ panel: "WINZE26", length: 8 },
+				{ panel: "109E", length: 8 },
+				{ panel: "102E", length: 8 },
+			],
+			support: [
+				{
+					panel: "108WINZE",
+					length: 6,
+					bolts: 12,
+					anchors: 6,
+					machine: "RB01",
+				},
+			],
+			drill: [
+				{
+					panel: "87W",
+					length: 8,
+					holes: 54,
+					drillRig: "GST01",
+				},
+			],
+			prep: [{ panel: "6E", length: 8 }],
+			notClean: [{ panel: "82W", length: 8 }],
+			LHD: [
+				{
+					coyNumber: 119319,
+					LHDnumber: "GL89",
+					buckets: 57,
+				},
+			],
+			uniqueCode: "SECTION_1" + d + "night",
+			author: req.user._id,
+		};
+
+		arrToInsert.push(production)
+	})
+
+	res.send("Successfully seeded database for blasting shift")
+});
+
+
 
 module.exports = router;

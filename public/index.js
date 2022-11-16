@@ -650,7 +650,8 @@ function dateChange(e) {
     
     // const productionFilteredByDate = MOandSectionProduction.filter((prod) => moment(prod.general[0].shiftStart).format("YYYY-MM-DD") === selectedDate);
     const productionFilteredByDates = MOandSectionProduction.filter((prod) => new Date(new Date(prod.general[0].shiftStart).toDateString()) >= fromDate && new Date(new Date(prod.general[0].shiftStart).toDateString()) <= toDate);
-    const lastProduction = MOandSectionProduction.filter(prod1 => { return new Date(prod1.general[0].shiftStart).toDateString() === new Date(to).toDateString()});
+    // const lastProduction = MOandSectionProduction.filter(prod1 => { return new Date(prod1.general[0].shiftStart).toDateString() === new Date(to).toDateString()});
+    const lastProduction = productionFilteredByDates.filter(prod1 => { return new Date(prod1.general[0].shiftStart).toDateString() === new Date(to).toDateString()});
 
     if(productionFilteredByDates.length !== 0){
         // const btns = document.getElementById("myBtnContainer").children;
@@ -660,7 +661,7 @@ function dateChange(e) {
 		// 		btns[i].remove();
 		// 	}
 		// }
-        createProductionIndexTables(productionFilteredByDates, lastProduction)
+        createProductionIndexTables(productionFilteredByDates, lastProduction, to)
     } else {
         // const btns = document.getElementById("myBtnContainer").children;
         // const btnsToLeave = ['blast-progs', 'charts'];
@@ -673,7 +674,7 @@ function dateChange(e) {
     // createProductionIndexTables(MOandSectionProduction)
 }
 
-function createProductionIndexTables(production, lastProduction){
+function createProductionIndexTables(production, lastProduction, lastDate){
     const shifts = [];
     production.forEach((p) => {
         if (shifts.indexOf(p.general[0].shift) === -1) {
@@ -682,29 +683,45 @@ function createProductionIndexTables(production, lastProduction){
     });
 
     // Map it
-    const mapped = lastProduction.map((i, index, arr) => {
-		const sections = production.filter((s) => i.section.name === s.section.name);
-		// Blasted Total
-		const blast = sections.map((s) => s.blast.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
-		// Cleaned Total
-		const clean = sections.map((s) => s.clean.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
-		// Supported Total
-		const support = sections.map((s) => s.support.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
-		// Drilled Total
-		const drill = sections.map((s) => s.drill.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
-		// Prepared Total
-		const prep = sections.map((s) => s.prep.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
-		// Not Cleaned Total
-		const notClean = sections.map((s) => s.notClean.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
-		// LHDs total
-		const LHDs = sections.map((s) => s.LHD.map((l) => l.buckets).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
-        const data = [blast, clean, support, drill, prep, notClean, LHDs]
-        return {data, section: i.section, shift: i.general[0].shift, _id: i._id}
-	})
+    // const mapped = lastProduction.map((i, index, arr) => {
+	// 	const sections = production.filter((s) => i.section.name === s.section.name);
+	// 	const blast = sections.map((s) => s.blast.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+	// 	const clean = sections.map((s) => s.clean.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+	// 	const support = sections.map((s) => s.support.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+	// 	const drill = sections.map((s) => s.drill.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+	// 	const prep = sections.map((s) => s.prep.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+	// 	const notClean = sections.map((s) => s.notClean.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+	// 	const LHDs = sections.map((s) => s.LHD.map((l) => l.buckets).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+    //     const data = [blast, clean, support, drill, prep, notClean, LHDs]
+    //     return {data, section: i.section, shift: i.general[0].shift, _id: i._id}
+	// })
+    // console.log(mapped)
     
+    // shifts.forEach((shift, index) => {
+    //     const mappedShift = mapped.filter(e => e.shift === shift)
+    //     console.log(shift)
+    //     console.log(mappedShift)
+    //     createShiftProductionTable2(mappedShift, shift, index);
+	// });
     shifts.forEach((shift, index) => {
-        const mappedShift = mapped.filter(e => e.shift === shift)
-        createShiftProductionTable2(mappedShift, shift, index);
+        const filterByShift = production.filter(e => e.general[0].shift === shift);
+        const filterByShiftLast = filterByShift.filter(prod1 => { return new Date(prod1.general[0].shiftStart).toDateString() === new Date(lastDate).toDateString()});
+
+        const mapped2 = filterByShiftLast.map((i, index, arr) => {
+			const sections = filterByShift.filter((s) => i.section.name === s.section.name);
+			const blast = sections.map((s) => s.blast.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+			const clean = sections.map((s) => s.clean.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+			const support = sections.map((s) => s.support.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+			const drill = sections.map((s) => s.drill.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+			const prep = sections.map((s) => s.prep.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+			const notClean = sections.map((s) => s.notClean.map((l) => l.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+			const LHDs = sections.map((s) => s.LHD.map((l) => l.buckets).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0);
+			const data = [blast, clean, support, drill, prep, notClean, LHDs];
+			return { data, section: i.section, shift: i.general[0].shift, _id: i._id };
+		});
+
+        
+        createShiftProductionTable2(mapped2, shift, index);
 	});
 }
 
@@ -809,6 +826,7 @@ function createShiftProductionTable2(mapped, shift, index) {
 	const main = document.getElementById("tables");
 	main.appendChild(all);
     if(index === 0) {
+        console.log(shift)
         document.getElementById(shift).onclick();
     }
 }

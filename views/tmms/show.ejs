@@ -9,7 +9,7 @@
             <p id="foundShifts" style="display: none;">
                 <%= JSON.stringify(foundShifts) %>
             </p>
-            
+
             <p id="foundTMM" style="display: none;">
                 <%= JSON.stringify(tmm) %>
             </p>
@@ -26,7 +26,7 @@
                 <label for=""><small>Shift:</small></label>
                 <select name="" id="shifts" onchange="drawEffGraph2()" oninput="filterBreakdowns2()">
                     <% locals.foundShifts.forEach(el => { %>
-                        <option value="<%=el.name%>"><%=el.name%></option>
+                    <option value="<%=el.name%>"><%=el.name%></option>
                     <% }) %>
                 </select>
             </div>
@@ -67,14 +67,14 @@
                 </tbody>
             </table>
             <% if (locals.tmm.parentCategory) { %>
-                <div id="canvasDiv" style="margin-top: 20px;">
-                    <canvas style="display: none;" id="effGraph" width="393.219px">
-    
-                    </canvas>
-                    <canvas id="effGraph2" width="393.219px">
-    
-                    </canvas>
-                </div>
+            <div id="canvasDiv" style="margin-top: 20px;">
+                <canvas style="display: none;" id="effGraph" width="393.219px">
+
+                </canvas>
+                <canvas id="effGraph2" width="393.219px">
+
+                </canvas>
+            </div>
             <% } %>
 
             <br>
@@ -82,12 +82,13 @@
                 <a href="/tmms">Dashboard</a>
             </p>
             <% if (locals.currentUser && locals.currentUser.isAdmin) { %>
-               <div class="admin">
-                    <a href="/tmm/<%= tmm._id %>/edit">Edit</a>
-                    <form action="/tmm/<%= tmm._id %>/?_method=DELETE" method="POST">
-                        <button id="delete" type="submit">Delete!</button>
-                    </form>
-                </div>
+            <div class="admin">
+                <a href="/tmm/<%= tmm._id %>/edit">Edit</a>
+                <form action="/tmm/<%= tmm._id %>/?_method=DELETE" method="POST">
+                    <button style="display: none;" id="delete-confirm" type="submit">Delete</button>
+                    <button id="delete" onclick="showModal()" type="button">Delete</button>
+                </form>
+            </div>
             <% } %>
         </div>
     </div>

@@ -17,18 +17,10 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user");
 require('./initDB');
 
-
-// Middleware for license will be here
-app.use((req, res, next)=> {
-	const expires = new Date("31 Dec 2022");
-	if(new Date() > expires){
-		return res.send("Your trial has ended. Contact declaration.co.za")
-	}
-	next()
-})
 const port = process.env.PORT || 4000;
 
-const dbUrl = "mongodb://localhost:27017/reportMe";
+const dbUrl = "mongodb://127.0.0.1:27017/reportMe";
+// const dbUrl = "mongodb://localhost/reportMe";
 // const dbUrl = "mongodb://Declaration:45declaration88@localhost:27017/reportMe";
 // const dbUrl = process.env.DB_URL
 const DBoptions = {
@@ -36,9 +28,6 @@ const DBoptions = {
 	useUnifiedTopology: true,
 	useCreateIndex: true,
 	useFindAndModify: false,
-	// socketTimeoutMS: 5000,
-	// serverSelectionTimeoutMS: 5000,
-	// heartbeatFrequencyMS: 5000
 };
 
 //***************************************************/

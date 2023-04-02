@@ -1,35 +1,36 @@
 <%- include("../../partials/header") %>
 
-    <div class="main-body">
-        <div class="element">
-            <div class="element2">
-                <div>
-                    <h2>Closed Breakdown: <%= closedBreakdown.breakdown.equipment %> at <%= locals.closedBreakdown.breakdown.section.name %></h2>
-                    <p>Shift: - <%= closedBreakdown.breakdown.shift.toUpperCase() %></p>
-                    <p>Start time (hh:mm): - <%= closedBreakdown.start %> (<%= closedBreakdown.breakdown.startTime.toDateString() %>)</p>
-                    <p>End time (hh:mm): - <%= closedBreakdown.end %> (<%= closedBreakdown.endTime.toDateString() %>)</p>
-                    <p>Downtime (hh:mm): - <%= closedBreakdown.downtime %></p>
-                    <p>Description: - <%= closedBreakdown.breakdown.description %></p>
-                    <p>Operator <small><em>(Reported by)</em></small> : - <%= closedBreakdown.breakdown.operator %></p>
-                    <p>Artisan: - <%= closedBreakdown.artisan %></p>
-                    <p>Artisan Comments: - <%= closedBreakdown.comments %></p>
-                    <p>Reference number: - <%= closedBreakdown.breakdown.orderRef %></p>
-                </div>
-                <hr>
-                <div>
-                    <a href="/breakdowns">Dashboard</a>
-                </div>
-                <% if(currentUser && closedBreakdown.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
-                    <p>
-                        <a href="/closedBreakdowns/<%= closedBreakdown._id %>/edit">Edit</a>
-                    </p>
-                    <form action="/closedBreakdowns/<%= closedBreakdown._id %>?_method=DELETE" method="POST">
-                        <button id="delete" type="submit">Delete</button>
-                    </form>
-                <% } %>
+<div class="main-body">
+    <div class="element">
+        <div class="element2">
+            <div>
+                <h2>Closed Breakdown: <%= closedBreakdown.breakdown.equipment %> at <%= locals.closedBreakdown.breakdown.section.name %></h2>
+                <p>Shift: - <%= closedBreakdown.breakdown.shift.toUpperCase() %></p>
+                <p>Start time (hh:mm): - <%= closedBreakdown.start %> (<%= closedBreakdown.breakdown.startTime.toDateString() %>)</p>
+                <p>End time (hh:mm): - <%= closedBreakdown.end %> (<%= closedBreakdown.endTime.toDateString() %>)</p>
+                <p>Downtime (hh:mm): - <%= closedBreakdown.downtime %></p>
+                <p>Description: - <%= closedBreakdown.breakdown.description %></p>
+                <p>Operator <small><em>(Reported by)</em></small> : - <%= closedBreakdown.breakdown.operator %></p>
+                <p>Artisan: - <%= closedBreakdown.artisan %></p>
+                <p>Artisan Comments: - <%= closedBreakdown.comments %></p>
+                <p>Reference number: - <%= closedBreakdown.breakdown.orderRef %></p>
             </div>
+            <hr>
+            <div>
+                <a href="/breakdowns">Dashboard</a>
+            </div>
+            <% if(currentUser && closedBreakdown.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+            <p>
+                <a href="/closedBreakdowns/<%= closedBreakdown._id %>/edit">Edit</a>
+            </p>
+            <form action="/closedBreakdowns/<%= closedBreakdown._id %>?_method=DELETE" method="POST">
+                <button style="display: none;" id="delete-confirm" type="submit">Delete</button>
+                <button id="delete" onclick="showModal()" type="button">Delete</button>
+            </form>
+            <% } %>
         </div>
     </div>
+</div>
 
 
 

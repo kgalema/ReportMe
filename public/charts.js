@@ -3,25 +3,24 @@ let progChart;
 let efficiencyChart;
 let efficiencyChart2;
 
-function drawnChart(chart){
-    chartCreated = chart;
-    return chartCreated;
+function drawnChart(chart) {
+	chartCreated = chart;
+	return chartCreated;
 }
 
-function drawnProgChart(chart){
-    progChart = chart;
-    return progChart;
+function drawnProgChart(chart) {
+	progChart = chart;
+	return progChart;
 }
 
-function drawnEffChart(chart){
-    efficiencyChart = chart;
-    return efficiencyChart;
+function drawnEffChart(chart) {
+	efficiencyChart = chart;
+	return efficiencyChart;
 }
-function drawnEffChart2(chart){
-    efficiencyChart2 = chart;
-    return efficiencyChart2;
+function drawnEffChart2(chart) {
+	efficiencyChart2 = chart;
+	return efficiencyChart2;
 }
-
 
 if (document.getElementById("prod_charts")) {
 	document.getElementById("startdate").value = htmlStartDate;
@@ -29,7 +28,7 @@ if (document.getElementById("prod_charts")) {
 	drawProductionGraph();
 }
 
-function drawProductionGraph(){
+function drawProductionGraph() {
 	if (chartCreated) {
 		console.log("Chart created exist");
 		chartCreated.destroy();
@@ -53,28 +52,27 @@ function drawProductionGraph(){
 		return new Date(moment(a.general[0].shiftStart).format("YYYY-MM-DD")) - new Date(moment(b.general[0].shiftStart).format("YYYY-MM-DD"));
 	}
 
-	const options = {year: "2-digit", month: "short", day: "2-digit"};
+	const options = { year: "2-digit", month: "short", day: "2-digit" };
 
 	const startDate = document.getElementById("startdate").value || htmlStartDate;
 	const endDate = document.getElementById("enddate").value || htmlDate;
 	const selectedSection = document.getElementById("selectedSection").value;
 	// const data = prodDataCharts.filter((e) => moment(e.created).format("YYYY-MM-DD") >= startDate && moment(e.created).format("YYYY-MM-DD") <= endDate);
-	const data = prodDataCharts.filter((e) => moment(e.general[0].shiftStart).format("YYYY-MM-DD") >= startDate && moment(e.general[0].shiftStart).format("YYYY-MM-DD") <= endDate);
+	const data = prodDataCharts.filter(e => moment(e.general[0].shiftStart).format("YYYY-MM-DD") >= startDate && moment(e.general[0].shiftStart).format("YYYY-MM-DD") <= endDate);
 	// const dayShiftData = data.filter((doc) => doc.general[0].shift === "morning");
-	const dayShiftData = data.filter((doc) => doc.general[0].shift === blastingShift); //Day shift production data
-	const dayShiftDataSection = dayShiftData.filter((doc) => doc.section.name === selectedSection); //Day shift production data of 1 particular section
+	const dayShiftData = data.filter(doc => doc.general[0].shift === blastingShift); //Day shift production data
+	const dayShiftDataSection = dayShiftData.filter(doc => doc.section.name === selectedSection); //Day shift production data of 1 particular section
 	// const labels = dayShiftDataSection.map((e) => moment(e.general[0].shiftStart).format("YYYY-MM-DD"));
-	const labels = dayShiftDataSection.map((e) => new Date(e.general[0].shiftStart).toLocaleDateString("en-GB", options));
-	const dataForecast = dayShiftDataSection.map((e) => e.forecast);
-	const dataBlasted = dayShiftDataSection.map((e) => e.blasted);
+	const labels = dayShiftDataSection.map(e => new Date(e.general[0].shiftStart).toLocaleDateString("en-GB", options));
+	const dataForecast = dayShiftDataSection.map(e => e.forecast);
+	const dataBlasted = dayShiftDataSection.map(e => e.blasted);
 
 	// Configuring Progressive Values
-	const cummulativeBlast = cummulateArr(dataBlasted)
-	const cummulativeForecast = cummulateArr(dataForecast)
-	
+	const cummulativeBlast = cummulateArr(dataBlasted);
+	const cummulativeForecast = cummulateArr(dataForecast);
+
 	// Thickness of bar graphs in pixels
 	const thickness = 15;
-
 
 	// Configuration for non-cummulative graph
 	const config = {
@@ -209,18 +207,17 @@ function drawProductionGraph(){
 	let myChartProgressive = new Chart(document.getElementById("drawProgressive").getContext("2d"), configProgressive);
 
 	drawnChart(myChart);
-	drawnProgChart(myChartProgressive)
+	drawnProgChart(myChartProgressive);
 }
 
 // drawProductionGraph()
-
 
 /*
  * Creating a chart for table of breakdowns efficiencies
  *
  */
 
-function drawEffGraph(){
+function drawEffGraph() {
 	if (efficiencyChart) {
 		console.log("Chart efficiency chart exist");
 		efficiencyChart.destroy();
@@ -237,8 +234,8 @@ function drawEffGraph(){
 	// const utils = [];
 	const effs = [];
 
-	for( let i = 0; i < availabilitiesLength; i++){
-		avails.push(Number(availabilities[i].innerText))
+	for (let i = 0; i < availabilitiesLength; i++) {
+		avails.push(Number(availabilities[i].innerText));
 	}
 	// for (let i = 0; i < utilisationsLength; i++) {
 	// 	utils.push(Number(utilisations[i].innerText));
@@ -283,21 +280,21 @@ function drawEffGraph(){
 
 	if (tmmCat === "TMM") {
 		let effGraph = new Chart(document.getElementById("effGraph").getContext("2d"), configEffGraph);
-		drawnEffChart(effGraph)
+		drawnEffChart(effGraph);
 	}
 }
 
-function drawEffGraph2(){
+function drawEffGraph2() {
 	const dates = document.getElementsByClassName("date");
-	const dates2 = [...dates]
-	const labels = dates2.map(e => e.innerText)
-	console.log(labels)
+	const dates2 = [...dates];
+	const labels = dates2.map(e => e.innerText);
+	console.log(labels);
 
 	const avail = document.getElementsByClassName("avail");
 	const avail2 = [...avail];
-	const data = avail2.map((e) => e.innerText);
+	const data = avail2.map(e => e.innerText);
 
-	console.log("Graph2 is triggered")
+	console.log("Graph2 is triggered");
 	if (efficiencyChart2) {
 		console.log("Chart efficiency chart exist");
 		efficiencyChart2.destroy();
@@ -308,8 +305,8 @@ function drawEffGraph2(){
 			x: {
 				ticks: {
 					font: {
-						size: 10
-					}
+						size: 10,
+					},
 				},
 			},
 		},
@@ -329,14 +326,14 @@ function drawEffGraph2(){
 					maxBarThickness: 20,
 				},
 				// {
-					// 	type: "line",
-					// 	data: [],
-					// 	backgroundColor: "blue",
-					// 	borderColor: "green",
-					// 	borderWidth: 1,
-					// 	label: "Target %",
-					// },
-				],
+				// 	type: "line",
+				// 	data: [],
+				// 	backgroundColor: "blue",
+				// 	borderColor: "green",
+				// 	borderWidth: 1,
+				// 	label: "Target %",
+				// },
+			],
 		},
 		options: options,
 	};
@@ -346,9 +343,9 @@ function drawEffGraph2(){
 	const tmmCat = parsedFoundTMM.parentCategory;
 
 	if (tmmCat === "TMM") {
-		console.log("Graph 2 is working")
+		console.log("Graph 2 is working");
 		let effGraph2 = new Chart(document.getElementById("effGraph2").getContext("2d"), configEffGraph2);
-		drawnEffChart2(effGraph2)
+		drawnEffChart2(effGraph2);
 	}
 }
 
@@ -363,20 +360,20 @@ function cummulateArr(arr) {
 	return arr2;
 }
 
-if(document.getElementById("effGraph")){
+if (document.getElementById("effGraph")) {
 	const foundTMM = document.getElementById("foundTMM").innerText;
 	const parsedFoundTMM = JSON.parse(foundTMM);
 	const tmmCat = parsedFoundTMM.parentCategory;
-	if(tmmCat === "TMM"){
-		drawEffGraph()
+	if (tmmCat === "TMM") {
+		drawEffGraph();
 	}
 }
 
-if(document.getElementById("effGraph2")){
+if (document.getElementById("effGraph2")) {
 	const foundTMM = document.getElementById("foundTMM").innerText;
 	const parsedFoundTMM = JSON.parse(foundTMM);
 	const tmmCat = parsedFoundTMM.parentCategory;
-	if(tmmCat === "TMM"){
-		drawEffGraph2()
+	if (tmmCat === "TMM") {
+		drawEffGraph2();
 	}
 }

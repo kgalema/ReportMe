@@ -2,67 +2,68 @@
 
 <div class="main-body">
 
-   <div class="element">
-      <div>
-         <h2>TARP Red Panel <%= redPanel.panel %> of: <%= redPanel.section.name %></h2>
-         <p>Trigger(s) - <%= redPanel.trigger %></p>
-         <p>Report number - <%= redPanel.reportNumber %></p>
-         <p>Date Declared - <%= redPanel.declaredDate.toDateString() %></p>
-         <p>Date Report Issued - <%= redPanel.issueDate.toDateString() %></p>
+    <div class="element">
+        <div>
+            <h2>Active TARP Red Panel <%= redPanel.panel %>: <%= redPanel.section.name %></h2>
+            <p>Trigger(s) - <%= redPanel.trigger %></p>
+            <p>Report number - <%= redPanel.reportNumber %></p>
+            <p>Date Declared - <%= redPanel.declaredDate.toDateString() %></p>
+            <p>Date Report Issued - <%= redPanel.issueDate.toDateString() %></p>
 
-         <% if (currentUser && currentUser.isAdmin) { %>
-                <table class="prod-group-item">
-                    <thead>
-                        <tr>
-                            <th colspan="2">Details</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Authors</td>
-                            <td><%= locals.redAuthors[0].preferredName %> and <%= locals.redAuthors[1].preferredName %></td>
-                        </tr>
-                        <tr>
-                            <td>Created(true)</td>
-                            <td><%= locals.redPanel.createdAt %></td>
-                        </tr>
-                        <tr>
-                            <td>Updated</td>
-                            <td><%= locals.redPanel.updatedAt %></td>
-                        </tr>
-                    </tbody>
-                </table>
+            <% if (currentUser && currentUser.isAdmin) { %>
+            <table class="prod-group-item">
+                <thead>
+                    <tr>
+                        <th colspan="2">Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Authors</td>
+                        <td><%= locals.redAuthors[0].preferredName %> and <%= locals.redAuthors[1].preferredName %></td>
+                    </tr>
+                    <tr>
+                        <td>Created(true)</td>
+                        <td><%= locals.redPanel.createdAt %></td>
+                    </tr>
+                    <tr>
+                        <td>Updated</td>
+                        <td><%= locals.redPanel.updatedAt %></td>
+                    </tr>
+                </tbody>
+            </table>
             <% } %>
-         
-         <p>
-         <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/download" method="get">
-            <button type="submit">Download Recommendation</button>
-         </form>
-         <% if (currentUser && currentUser.department === "MRM" || currentUser && currentUser.isAdmin) { %>
-         <br>
-            <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/rehabedPanel/new" method="GET">
-               <button type="submit">Rehabilitated</button>
+
+            <p>
+            <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/download" method="get">
+                <button type="submit">Download Recommendation</button>
             </form>
-         <% } %>
-         </p>
+            <% if (currentUser && currentUser.department === "MRM" || currentUser && currentUser.isAdmin) { %>
+            <br>
+            <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/rehabedPanel/new" method="GET">
+                <button type="submit">Rehabilitated</button>
+            </form>
+            <% } %>
+            </p>
 
-      </div>
+        </div>
 
-      <hr>
-      <div>
+        <hr>
+        <div>
             <a href="/redPanel">Dashboard</a>
-      </div>
+        </div>
 
-      <% if( currentUser && redPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
-         <p>
+        <% if( currentUser && redPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+        <p>
             <a href="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>/edit">Edit</a>
-         </p>
-         <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>?_method=DELETE" method="POST">
-            <button id="delete" type="submit">Delete</button>
-         </form>
-      <% } %>
+        </p>
+        <form action="/sections/<%= redPanel.section.id %>/redPanels/<%= redPanel._id %>?_method=DELETE" method="POST">
+            <button style="display: none;" id="delete-confirm" type="submit">Delete</button>
+            <button id="delete" onclick="showModal()" type="button">Delete</button>
+        </form>
+        <% } %>
 
-   </div>
+    </div>
 
 </div>
 

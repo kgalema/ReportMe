@@ -2,37 +2,55 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Declaration</title>
-    <link rel="stylesheet" href="/app.css">
-    <link rel="stylesheet" href="/charts.css">
+    <link rel="stylesheet" href="/app.css" />
+    <link rel="stylesheet" href="/charts.css" />
     <!-- <link rel="icon" type="image/png" href="/pictures/LOGO.png"> -->
-    <link rel="icon" type="image/svg" href="/pictures/Group2.svg">
+    <link rel="icon" type="image/svg" href="/pictures/Group2.svg" />
     <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js" integrity="sha256-Y26AMvaIfrZ1EQU49pf6H4QzVTrOI8m9wQYKkftBt4s=" crossorigin="anonymous"></script> -->
     <!-- <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
     <!-- <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet"> -->
     <script src="/moment.min.js"></script>
     <script src="/chart.min.js"></script>
-
 </head>
 
 <body>
     <div id="flash">
         <% if(locals.success && locals.success.length) {%>
-            <div class="success">
-                <%= success %>
-            </div>
+        <div class="success">
+            <%= success %>
+        </div>
         <% } %>
 
         <% if(locals.error && locals.error.length) {%>
-            <div class="error">
-                <%= error %>
-            </div>
+        <div class="error">
+            <%= error %>
+        </div>
         <% } %>
+
         <% if(locals.warning && locals.warning.length) {%>
-            <div class="warning">
-                <%= warning %>
-            </div>
+        <div class="warning">
+            <%= warning %>
+        </div>
         <% } %>
+    </div>
+
+    <div id="modal">
+        <div class="element">
+            <h2>Caution!</h2>
+            <h4>The action you are about to take cannot be undone!</h4>
+            <p>
+                If you are sure, type '<strong>delete</strong>' in the input field
+                below and then click the '<strong>Confirm</strong>' button to
+                continue.
+            </p>
+            <input type="text" name="" id="modal-input" placeholder="delete" />
+            <hr />
+            <div id="modal-actions">
+                <input type="button" id="modal-confirm" onclick="confirmDelete()" value="Confirm" />
+                <input type="button" id="modal-cancel" value="Cancel" />
+            </div>
+        </div>
     </div>

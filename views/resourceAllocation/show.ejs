@@ -18,13 +18,14 @@
         </div>
 
         <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
-            <p>
-                <a href="/resource/<%= foundAllocation._id %>/edit">Edit</a>
-            </p>
+        <p>
+            <a href="/resource/<%= foundAllocation._id %>/edit">Edit</a>
+        </p>
 
-            <form action="/resource/<%= foundAllocation._id %>?_method=DELETE" method="post">
-                <button id="delete" type="submit">Delete</button>
-            </form>
+        <form action="/resource/<%= foundAllocation._id %>?_method=DELETE" method="post">
+            <button style="display: none;" id="delete-confirm" type="submit">Delete</button>
+            <button id="delete" onclick="showModal()" type="button">Delete</button>
+        </form>
         <% } %>
     </div>
 </div>

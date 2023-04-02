@@ -1,6 +1,6 @@
 <%- include("../partials/header") %>
 
- <div class="main-body">
+<div class="main-body">
 
     <div class="element">
         <div>
@@ -10,56 +10,57 @@
             <p>Date Declared - <%= rehabedPanel.declaredDate.toDateString() %></p>
             <p>Date Report Issued - <%= rehabedPanel.issueDate.toDateString() %></p>
             <p>Date Rehabilitated - <%= rehabedPanel.rehabDate.toDateString() %></p>
-         </div>
+        </div>
 
-         <% if (currentUser && currentUser.isAdmin) { %>
-            <table class="prod-group-item">
-               <thead>
-                  <tr>
-                        <th colspan="2">Details</th>
-                  </tr>
-               </thead>
-               <tbody>
-                  <tr>
-                        <td>Author</td>
-                        <td><%= authors[0].preferredName %>, <%= authors[1].preferredName %> & <%= authors[2].preferredName  %></td>
-                  </tr>
-                  <tr>
-                        <td>Created(true)</td>
-                        <td><%= rehabedPanel.createdAt %></td>
-                  </tr>
-                  <tr>
-                        <td>Updated</td>
-                        <td><%= rehabedPanel.updatedAt %></td>
-                  </tr>
-               </tbody>
-            </table>
-         <% } %>
+        <% if (currentUser && currentUser.isAdmin) { %>
+        <table class="prod-group-item">
+            <thead>
+                <tr>
+                    <th colspan="2">Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Author</td>
+                    <td><%= authors[0].preferredName %>, <%= authors[1].preferredName %> & <%= authors[2].preferredName  %></td>
+                </tr>
+                <tr>
+                    <td>Created(true)</td>
+                    <td><%= rehabedPanel.createdAt %></td>
+                </tr>
+                <tr>
+                    <td>Updated</td>
+                    <td><%= rehabedPanel.updatedAt %></td>
+                </tr>
+            </tbody>
+        </table>
+        <% } %>
 
-         <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/download?bucket=reds" method="post">
+        <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/download?bucket=reds" method="post">
             <button type="submit">Initial Recommendation</button>
-         </form>
-         <br>
-         <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/download?bucket=rehabs" method="post">
+        </form>
+        <br>
+        <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/download?bucket=rehabs" method="post">
             <button type="submit">Signed Off Recommendation</button>
-         </form>
-         <br>
-         <hr>
-         <div>
+        </form>
+        <br>
+        <hr>
+        <div>
             <a href="/rehabedPanels">Dashboard</a>
-         </div>
+        </div>
 
-         <% if( currentUser && rehabedPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
-            <p>
-               <a href="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/edit">Edit</a>
-            </p>
-            <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>?_method=DELETE" method="POST">
-               <button id="delete" type="submit">Delete</button>
-            </form>
-         <% } %>
-    </div>  
-    
- </div>
+        <% if( currentUser && rehabedPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+        <p>
+            <a href="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>/edit">Edit</a>
+        </p>
+        <form action="/sections/<%= rehabedPanel.section.id %>/rehabedPanels/<%= rehabedPanel._id %>?_method=DELETE" method="POST">
+            <button style="display: none;" id="delete-confirm" type="submit">Delete</button>
+            <button id="delete" onclick="showModal()" type="button">Delete</button>
+        </form>
+        <% } %>
+    </div>
+
+</div>
 
 
 <%- include("../partials/sidebar") %>

@@ -333,16 +333,22 @@ router.delete("/sections/:id/production/:production_id", isConnectionOpen, isLog
 				req.flash("error", "Something went wrong with the database");
 				return res.redirect("back");
 			}
-			const gfsR = new mongoose.mongo.GridFSBucket(req.DBconnection, { bucketName: "declarations" });
-	
-			gfsR.delete(new mongoose.Types.ObjectId(production.declaration.id), function (err) {
-				if (err) {
-					req.flash("error", "Error occured while deleting declaration. Please let admin know of this error");
-					return res.redirect("/production");
-				}
-				req.flash("success", "Successfully deleted production report");
-				res.redirect("/production");
-			})
+
+            if(production.declaration.isAttached){
+                const gfsR = new mongoose.mongo.GridFSBucket(req.DBconnection, { bucketName: "declarations" });
+
+                gfsR.delete(new mongoose.Types.ObjectId(production.declaration.id), function (err) {
+                    if (err) {
+                        req.flash("error", "Error occured while deleting declaration. Please let admin know of this error");
+                        return res.redirect("/production");
+                    }
+                    req.flash("success", "Successfully deleted production report");
+                    return res.redirect("/production");
+                })
+            }
+
+            req.flash("success", "Successfully deleted production report");
+            res.redirect("/production");
 		});
 	})
 });

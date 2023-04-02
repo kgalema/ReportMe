@@ -465,6 +465,58 @@ hr {
     left: 1rem;
 }
 
+#modal {
+    position: absolute;
+    display: none;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    z-index: 2;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+#modal-input {
+    width: 50px;
+    text-decoration: none;
+    border-width: 1px;
+    border-color: rgb(151, 151, 151);
+    border-radius: 2px;
+    border-style: double;
+    outline-width: 1px;
+    outline-color: red;
+    padding: 1;
+    text-align: center;
+}
+
+#modal-actions {
+    display: flex;
+    width: 100%;
+    margin-top: 1rem;
+    justify-content: center;
+    gap: 10px;
+}
+
+#modal-confirm {
+    background-color: red;
+    padding: 6px;
+    border: 1px solid red;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+}
+
+#modal-cancel {
+    background-color: transparent;
+    padding: 6px;
+    border: 1px solid green;
+    border-radius: 8px;
+    color: black;
+    cursor: pointer;
+}
+
 #call {
     display: none;
 }

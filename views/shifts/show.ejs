@@ -17,12 +17,13 @@
         </div>
 
         <% if(locals.currentUser && locals.shift.authorId.equals(locals.currentUser._id) || locals.currentUser && locals.currentUser.isAdmin){ %>
-            <p>
-                <a href="/shifts/<%= shift._id %>/edit">Edit</a>
-            </p>
-            <form action="/shifts/<%= shift._id %>?_method=DELETE" method="POST">
-                <button id="delete" type="submit">Delete</button>
-            </form>
+        <p>
+            <a href="/shifts/<%= shift._id %>/edit">Edit</a>
+        </p>
+        <form action="/shifts/<%= shift._id %>?_method=DELETE" method="POST">
+            <button style="display: none;" id="delete-confirm">Delete</button>
+            <button id="delete" onclick="showModal()" type="button">Delete</button>
+        </form>
         <% } %>
     </div>
 </div>

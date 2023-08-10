@@ -2,8 +2,8 @@
 <div class="main-body">
     <div class=element>
         <div class="element2">
-            <h2>Reported Production: <%= reported.section.name %></h2>
-            <h3><%= reported.created.toDateString() %></h3>
+            <h2>Production Report</h2>
+            <h3><%= reported.section.name %> | <%= reported.general[0].shiftStart.toDateString() %>| <%= reported.general[0].shift[0].toUpperCase() + reported.general[0].shift.slice(1) %></h3>
 
             <p>
                 <% const blastSum = reported.blast.map(b => b.length).reduce((i, j)=> i+j, 0) %>
@@ -16,30 +16,34 @@
             </p>
             <section id="production-groups">
                 <% if (reported.general[0].shift === "morning") { %>
-                   
-                    <table id="blast-group" class="prod-group-item">
-                        <thead>
-                            <tr>
-                                <th colspan="2">Blasted (<%= blastSum %>m)</th>
-                            </tr>
-                            <tr>
-                                <th>Panels</th>
-                                <th>Length (m)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% reported.blast.forEach(function(e){ %>
-                                <tr>
-                                    <td>
-                                        <%= e.panel %>
-                                    </td>
-                                    <td>
-                                        <%= e.length %>
-                                    </td>
-                                </tr>
-                            <% }) %>
-                        </tbody>
-                    </table>
+
+                <table id="blast-group" class="prod-group-item">
+                    <thead>
+                        <tr>
+                            <th colspan="3">Blasted (<%= blastSum %>m)</th>
+                        </tr>
+                        <tr>
+                            <th>Panels</th>
+                            <th>Length (m)</th>
+                            <th>Advance (m)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reported.blast.forEach(function(e){ %>
+                        <tr>
+                            <td>
+                                <%= e.panel %>
+                            </td>
+                            <td>
+                                <%= e.length %>
+                            </td>
+                            <td>
+                                <%= e.advance %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
 
                 <% } %>
 
@@ -55,14 +59,14 @@
                     </thead>
                     <tbody>
                         <% reported.prep.forEach(function(e){ %>
-                            <tr>
-                                <td>
-                                    <%= e.panel %>
-                                </td>
-                                <td>
-                                    <%= e.length %>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                <%= e.panel %>
+                            </td>
+                            <td>
+                                <%= e.length %>
+                            </td>
+                        </tr>
                         <% }) %>
                     </tbody>
                 </table>
@@ -79,14 +83,14 @@
                     </thead>
                     <tbody>
                         <% reported.notClean.forEach(function(e){ %>
-                            <tr>
-                                <td>
-                                    <%= e.panel %>
-                                </td>
-                                <td>
-                                    <%= e.length %>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                <%= e.panel %>
+                            </td>
+                            <td>
+                                <%= e.length %>
+                            </td>
+                        </tr>
                         <% }) %>
                     </tbody>
                 </table>
@@ -99,22 +103,18 @@
                         <tr>
                             <th>Panels</th>
                             <th>Length (m)</th>
-                            <th>Advance (m)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% reported.clean.forEach(function(e){ %>
-                            <tr>
-                                <td>
-                                    <%= e.panel %>
-                                </td>
-                                <td>
-                                    <%= e.length %>
-                                </td>
-                                <td>
-                                    <%= e.advance %>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                <%= e.panel %>
+                            </td>
+                            <td>
+                                <%= e.length %>
+                            </td>
+                        </tr>
                         <% }) %>
                     </tbody>
                 </table>
@@ -132,17 +132,17 @@
                     </thead>
                     <tbody>
                         <% reported.LHD.forEach(function(e){ %>
-                            <tr>
-                                <td>
-                                    <%= e.coyNumber %>
-                                </td>
-                                <td>
-                                    <%= e.LHDnumber %>
-                                </td>
-                                <td>
-                                    <%= e.buckets %>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                <%= e.coyNumber %>
+                            </td>
+                            <td>
+                                <%= e.LHDnumber %>
+                            </td>
+                            <td>
+                                <%= e.buckets %>
+                            </td>
+                        </tr>
                         <% }) %>
                     </tbody>
                 </table>
@@ -160,20 +160,20 @@
                     </thead>
                     <tbody>
                         <% reported.drill.forEach(function(e){ %>
-                            <tr>
-                                <td>
-                                    <%= e.panel %>
-                                </td>
-                                <td>
-                                    <%= e.length %>
-                                </td>
-                                <td>
-                                    <%= e.holes %>
-                                </td>
-                                <td>
-                                    <%= e.drillRig %>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                <%= e.panel %>
+                            </td>
+                            <td>
+                                <%= e.length %>
+                            </td>
+                            <td>
+                                <%= e.holes %>
+                            </td>
+                            <td>
+                                <%= e.drillRig %>
+                            </td>
+                        </tr>
                         <% }) %>
                     </tbody>
                 </table>
@@ -193,196 +193,128 @@
                     </thead>
                     <tbody>
                         <% reported.support.forEach(function(e){ %>
-                            <tr>
-                                <td>
-                                    <%= e.panel %>
-                                </td>
-                                <td>
-                                    <%= e.length %>
-                                </td>
-                                <td>
-                                    <%= e.bolts %>
-                                </td>
-                                <td>
-                                    <%= e.anchors %>
-                                </td>
-                                <td>
-                                    <%= e.machine %>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                <%= e.panel %>
+                            </td>
+                            <td>
+                                <%= e.length %>
+                            </td>
+                            <td>
+                                <%= e.bolts %>
+                            </td>
+                            <td>
+                                <%= e.anchors %>
+                            </td>
+                            <td>
+                                <%= e.machine %>
+                            </td>
+                        </tr>
                         <% }) %>
                     </tbody>
                 </table>
-                
+
                 <% if (reported.general[0].comments) { %>
-                    <table id="general-group" class="prod-group-item">
-                        <thead>
-                            <tr>
-                                <th>Comments</th>
-                            </tr>
-                            <tr>
-                                <th> <%= reported.general[0].shift[0].toUpperCase() + reported.general[0].shift.slice(1) %> Shift</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <%= reported.general[0].comments %>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                <% } %>
-
-                <% if (reported.fleetHrs.drillRigs.length > 0) { %>
-                    <table id="general-group" class="prod-group-item">
+                <table id="general-group" class="prod-group-item">
+                    <thead>
                         <tr>
-                            <th colspan="4">Drill Rigs Usage</th>
+                            <th>Comments</th>
                         </tr>
-                        <% locals.reported.fleetHrs.drillRigs.forEach((e, i) => { %>
-                            <tr>
-                                <th colspan="4"><%= e.name %></th>
-                            </tr>
-                            <% if (i === 0) { %>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Start (Hrs)</th>
-                                    <th>End (Hrs)</th>
-                                    <th>Usage (Hrs)</th>
-                                </tr>
-                            <% } %>
-                            
-                            <tr>
-                                <th>Engine</th>
-                                <td><%= e.engine[0] %></td>
-                                <td><%= e.engine[1] %></td>
-                                <td><%= e.engineUsage %></td>
-                            </tr>
-                            <tr>
-                                <th>Percussion</th>
-                                <td><%= e.percussion[0] %></td>
-                                <td><%= e.percussion[1] %></td>
-                                <td><%= e.percussionUsage %></td>
-                            </tr>
-                            <tr>
-                                <th>Electrical</th>
-                                <td><%= e.electrical[0] %></td>
-                                <td><%= e.electrical[1] %></td>
-                                <td><%= e.electricalUsage %></td>
-                            </tr>
-                        <% }) %>
-                    </table>
-                <% } %>
-
-                <% if (reported.fleetHrs.bolters.length > 0) { %>
-                    <table id="general-group" class="prod-group-item">
                         <tr>
-                            <th colspan="4">Bolters Usage</th>
+                            <th> <%= reported.general[0].shift[0].toUpperCase() + reported.general[0].shift.slice(1) %> Shift</th>
                         </tr>
-                        <% locals.reported.fleetHrs.bolters.forEach((e, i) => { %>
-                            <tr>
-                                <th colspan="4"><%= e.name %></th>
-                            </tr>
-                            <% if (i === 0) { %>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Start (Hrs)</th>
-                                    <th>End (Hrs)</th>
-                                    <th>Usage (Hrs)</th>
-                                </tr>
-                            <% } %>
-                            
-                            <tr>
-                                <th>Engine</th>
-                                <td><%= e.engine[0] %></td>
-                                <td><%= e.engine[1] %></td>
-                                <td><%= e.engineUsage %></td>
-                            </tr>
-                            <tr>
-                                <th>Drilling</th>
-                                <td><%= e.drilling[0] %></td>
-                                <td><%= e.drilling[1] %></td>
-                                <td><%= e.drillingUsage %></td>
-                            </tr>
-                            <tr>
-                                <th>Electrical</th>
-                                <td><%= e.electrical[0] %></td>
-                                <td><%= e.electrical[1] %></td>
-                                <td><%= e.electricalUsage %></td>
-                            </tr>
-                        <% }) %>
-                    </table>
-                <% } %>
-
-                <% if (reported.fleetHrs.LHDs.length > 0) { %>
-                    <table id="general-group" class="prod-group-item">
+                    </thead>
+                    <tbody>
                         <tr>
-                            <th colspan="4">LHDs Usage</th>
+                            <td>
+                                <%= reported.general[0].comments %>
+                            </td>
                         </tr>
-                        <% locals.reported.fleetHrs.LHDs.forEach((e, i) => { %>
-                            <tr>
-                                <th colspan="4"><%= e.name %></th>
-                            </tr>
-                            <% if (i === 0) { %>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Start (Hrs)</th>
-                                    <th>End (Hrs)</th>
-                                    <th>Usage (Hrs)</th>
-                                </tr>
-                            <% } %>
-                            
-                            <tr>
-                                <th>Engine</th>
-                                <td><%= e.engine[0] %></td>
-                                <td><%= e.engine[1] %></td>
-                                <td><%= e.usage %></td>
-                            </tr>
-                        <% }) %>
-                    </table>
+                    </tbody>
+                </table>
                 <% } %>
 
-                <% if (currentUser && currentUser.isAdmin) { %>
-                    <table class="prod-group-item">
-                        <thead>
-                            <tr>
-                                <th colspan="2">Details</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Author</td>
-                                <td><%= locals.reportedUser.preferredName %></td>
-                            </tr>
-                            <tr>
-                                <td>Created(true)</td>
-                                <td><%= locals.reported.createdAt.toDateString() %> - <%= reported.createdAt.getHours()%>:<%= reported.createdAt.getMinutes()%></td>
-                            </tr>
-                            <tr>
-                                <td>Updated</td>
-                                <td><%= locals.reported.updatedAt.toDateString() %> - <%= reported.updatedAt.getHours()%>:<%= reported.updatedAt.getMinutes()%></td>
-                            </tr>
-                            <tr>
-                                <td>Created</td>
-                                <td><%= locals.reported.created.toDateString() %></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <% if (locals.currentUser && locals.currentUser.isAdmin) { %>
+                <table class="prod-group-item">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Author</td>
+                            <td><%= locals.reportedUser.preferredName %></td>
+                        </tr>
+                        <tr>
+                            <td>Created(true)</td>
+                            <td><%= locals.reported.createdAt.toDateString() %> - <%= reported.createdAt.getHours()%>:<%= reported.createdAt.getMinutes()%></td>
+                        </tr>
+                        <tr>
+                            <td>Updated</td>
+                            <td><%= locals.reported.updatedAt.toDateString() %> - <%= reported.updatedAt.getHours()%>:<%= reported.updatedAt.getMinutes()%></td>
+                        </tr>
+                        <tr>
+                            <td>Shift Start</td>
+                            <td><%= locals.reported.general[0].shiftStart.toDateString() %></td>
+                        </tr>
+                    </tbody>
+                </table>
                 <% } %>
-                
+                <% if (locals.currentUser && locals.currentUser.isAdmin && locals.reported.declaration.isAttached) { %>
+                <table class="prod-group-item">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Details (Attachment)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Author</td>
+                            <td><%= locals.reported.declaration.author %></td>
+                        </tr>
+                        <tr>
+                            <td>Uploaded </td>
+                            <td><%= locals.reported.declaration.date.toDateString() %> - <%= locals.reported.declaration.date.getHours() %>:<%= locals.reported.declaration.date.getMinutes() %></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <% } %>
+
             </section>
-          
+
             <br>
+            <% if (locals.reported.declaration.isAttached) { %>
+            <form action="/declaration/production/<%= reported._id %>/download" method="post">
+                <input type="submit" value="Download declaration"></input>
+            </form>
+            <% } %>
+
+            <% if (locals.reported.declaration.isAttached && locals.currentUser && locals.currentUser.isAdmin) { %>
+            <a href="/declaration/production/<%= reported._id %>/new?what=edit">edit declaration</a>
+            <% } %>
+
+
+            <% if (!locals.reported.declaration.isAttached && locals.currentUser) { %>
+            <a href="/declaration/production/<%= reported._id %>/new">Attach declaration</a>
+            <% } %>
+
             <p>
                 <a href="/production">Dashboard</a>
             </p>
-            <% if( currentUser && reported.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
-                <div class="admin">
-                    <a href="/sections/<%= reported.section.id %>/production/<%= reported._id %>/edit">Edit</a>
-                    <form action="/sections/<%= reported.section.id %>/production/<%= reported._id %>?_method=DELETE" method="POST">
-                        <button id="delete" type="submit">Delete!</button>
-                    </form>
-                </div>
+            <% if(locals.expired && locals.currentUser && locals.currentUser.isAdmin) { %>
+            <a href="/sections/<%= reported.section.id %>/production/<%= reported._id %>/edit">Edit</a>
+            <form action="/sections/<%= reported.section.id %>/production/<%= reported._id %>?_method=DELETE" method="POST">
+                <button id="delete" type="submit">Delete!</button>
+            </form>
+
+            <% } else if (!expired && locals.currentUser && reported.author.equals(currentUser._id)){ %>
+            <a href="/sections/<%= reported.section.id %>/production/<%= reported._id %>/edit">Edit</a>
+            <form action="/sections/<%= reported.section.id %>/production/<%= reported._id %>?_method=DELETE" method="POST">
+                <button style="display: none;" id="delete-confirm" type="submit">Delete</button>
+                <button id="delete" onclick="showModal()" type="button">Delete</button>
+            </form>
+
             <% } %>
         </div>
     </div>

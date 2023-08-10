@@ -40,11 +40,10 @@
                         <label for="declaredDate">Date panel declared:</label>
                     </td>
                     <td class="form-row">
-                        <input id="declaredDate" name=redPanel[declaredDate] type="datetime-local"
+                        <input id="declaredDate" name=redPanel[declaredDate] type="date" readonly
                             value="<%= moment(redpanel.declaredDate).format('YYYY-MM-DD') %>" required>
                     </td>
                 </tr>
-                <p><%= moment(redpanel.declaredDate).format("YYYY-MM-DD") %></p>
                 <tr>
                     <td class="form-row">
                         <label for="reportDate">Date report issued:</label>

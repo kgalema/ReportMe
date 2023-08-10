@@ -23,6 +23,11 @@ const breakdownSchema = new mongoose.Schema({
     description: String,
     startTime: Date,
     shift: String,
+    shiftStartTime: Date,
+    allocation: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Resource"
+    },
     section: {
         id: {
             type: mongoose.Schema.Types.ObjectId,

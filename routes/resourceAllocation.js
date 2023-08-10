@@ -6,18 +6,18 @@ const TMM = require("../models/tmms");
 const Shift = require("../models/shift");
 const { isLoggedIn, isAdmin, isConnectionOpen, checks } = require("../middleware");
 
+const collator = new Intl.Collator(undefined, {
+	numeric: true,
+	sensitivity: "base",
+});
 
 // 1. Index route
 router.get("/resource", isConnectionOpen, function (req, res) {
-	Allocation.find({}, { _id: 1, LHD: 1, bolter: 1, drillRig: 1, section: 1, date: 1, shift: 1 }, function (err, allocation) {
+	Allocation.find({}, { _id: 1, LHDs: 1, bolters: 1, drillRigs: 1, section: 1, date: 1, shift: 1 }, function (err, allocation) {
 		if (err || !allocation) {
 			req.flash("error", "Error occured while retriving all allocations");
 			return res.redirect("/production");
 		}
-		const collator = new Intl.Collator(undefined, {
-			numeric: true,
-			sensitivity: "base",
-		});
 
 		const allocations = allocation.sort(function (a, b) {
 			return collator.compare(a.section, b.section);
@@ -26,7 +26,6 @@ router.get("/resource", isConnectionOpen, function (req, res) {
 	});
 });
 
-
 // 2. New Route - renders a form for new resource allocation
 router.get("/resource/new", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
 	Section.find({}, function (err, sections) {
@@ -34,29 +33,24 @@ router.get("/resource/new", isConnectionOpen, isLoggedIn, isAdmin, function (req
 			req.flash("error", "Error occured while fetching sections");
 			return res.redirect("/resource");
 		}
-        TMM.find({ $or: [{ category: "bolters" }, { category: "LHDs" }, { category: "drillRigs" }] }, function (err, tmms) {
+		TMM.find({ $or: [{ category: "bolters" }, { category: "LHDs" }, { category: "drillRigs" }] }, function (err, tmms) {
 			if (err || !tmms) {
 				req.flash("error", "Error occured while fetching TMMs");
 				return res.redirect("/resource");
 			}
-			Shift.find({}, function(err, shifts){
-				if(err || !shifts){
+			Shift.find({}, function (err, shifts) {
+				if (err || !shifts) {
 					req.flash("error", "Error occured while retrieving shifts");
 					return res.redirect("/resource");
 				}
-
-				const collator = new Intl.Collator(undefined, {
-					numeric: true,
-					sensitivity: "base",
-				});
 
 				const TMMS = tmms.sort(function (a, b) {
 					return collator.compare(a.name, b.name);
 				});
 
 				const bolters = TMMS.filter(e => e.category === "bolters");
-				const LHDs = TMMS.filter((e) => e.category === "LHDs");
-				const drillRigs = TMMS.filter((e) => e.category === "drillRigs");
+				const LHDs = TMMS.filter(e => e.category === "LHDs");
+				const drillRigs = TMMS.filter(e => e.category === "drillRigs");
 				res.render("resourceAllocation/new", { shifts, bolters, LHDs, drillRigs, sections, title: "resource-allocation" });
 			});
 		});
@@ -65,48 +59,55 @@ router.get("/resource/new", isConnectionOpen, isLoggedIn, isAdmin, function (req
 
 // 3. Create route - post a new resource allocation into the database then redirect elsewhere
 router.post("/resource", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {
-	const dateToUse = new Date(req.body.date).toLocaleDateString();
+	// Date of the allocation
+	const dateToUse = new Date(req.body.date).toLocaleDateString("en-GB");
 	const dateToUse2 = new Date(req.body.date).toISOString();
-	
+
 	const uniqueCode = req.body.section + dateToUse + req.body.shift;
 	req.body.uniqueCode = uniqueCode;
 
-	req.body.author = { _id: req.user._id }
+	req.body.author = { _id: req.user._id };
 
-	Allocation.find({$and: [{shift: req.body.shift}, {date: dateToUse2}] }, {LHD: 1, drillRig: 1, bolter: 1, _id: 0}, function(err, allocations){
-		if(err || !allocations){
-			req.flash("error", "Error occured while validating allocations")
-			return res.redirect("/resource")
+	Allocation.find({ $and: [{ shift: req.body.shift }, { date: dateToUse2 }] }, { LHDs: 1, drillRigs: 1, bolters: 1, _id: 0 }, function (err, allocations) {
+		if (err || !allocations) {
+			req.flash("error", "Error occured while validating allocations");
+			return res.redirect("/resource");
 		}
 
-		const tmmsPayload = [...req.body.LHD, ...req.body.drillRig, ...req.body.bolter];
-		const tmmsAllocated = [];
-		const tmmsRejected = [];
-		
-		allocations.forEach(e => {
-			e.LHD.forEach(lhd => {
-				tmmsAllocated.push(lhd)
-			})
-
-			e.drillRig.forEach(rig => {
-				tmmsAllocated.push(rig)
-			})
-
-			e.bolter.forEach(bolter => {
-				tmmsAllocated.push(bolter)
-			})
-		})
-
-		tmmsPayload.forEach(e => {
-			if(tmmsAllocated.indexOf(e) > -1){
-				console.log(e)
-				tmmsRejected.push(e)
+		const tmmsPayload = [...req.body.LHDs, ...req.body.drillRigs, ...req.body.bolters];
+		const tmms = [];
+		tmmsPayload.forEach(tmm => {
+			if (tmm !== "none") {
+				tmms.push(tmm);
 			}
 		});
 
-		if(tmmsRejected.length > 0){
+		const tmmsAllocated = [];
+		const tmmsRejected = [];
+
+		allocations.forEach(e => {
+			e.LHDs.forEach(lhd => {
+				tmmsAllocated.push(lhd);
+			});
+
+			e.drillRigs.forEach(rig => {
+				tmmsAllocated.push(rig);
+			});
+
+			e.bolters.forEach(bolter => {
+				tmmsAllocated.push(bolter);
+			});
+		});
+
+		tmms.forEach(e => {
+			if (tmmsAllocated.indexOf(e) > -1) {
+				tmmsRejected.push(e);
+			}
+		});
+
+		if (tmmsRejected.length > 0) {
 			req.flash("error", `${tmmsRejected} have already been allocated sections for ${req.body.shift} shift`);
-			return res.redirect("back")
+			return res.redirect("back");
 		}
 
 		Allocation.create(req.body, function (err, newAllocation) {
@@ -144,12 +145,12 @@ router.get("/resource/:resource_id/edit", isConnectionOpen, isLoggedIn, checks, 
 				return res.redirect("/resource");
 			}
 
-			const availableTMMs = []
-			foundTMMs.forEach(e =>{
-				if(req.tmmsAllocated.indexOf(e.name) === -1){
-					availableTMMs.push(e)
+			const availableTMMs = [];
+			foundTMMs.forEach(e => {
+				if (req.tmmsAllocated.indexOf(e.name) === -1) {
+					availableTMMs.push(e);
 				}
-			})
+			});
 
 			const collator = new Intl.Collator(undefined, {
 				numeric: true,
@@ -160,14 +161,13 @@ router.get("/resource/:resource_id/edit", isConnectionOpen, isLoggedIn, checks, 
 				return collator.compare(a.name, b.name);
 			});
 
-			const drillRigs = sorted.filter((dR) => dR.category === "drillRigs");
-			const LHDs = sorted.filter((LHD) => LHD.category === "LHDs");
-			const bolters = sorted.filter((LHD) => LHD.category === "bolters");
-			res.render("resourceAllocation/edit", { resource,  drillRigs, LHDs, bolters, title: "resource-allocation" });
+			const drillRigs = sorted.filter(dR => dR.category === "drillRigs");
+			const LHDs = sorted.filter(LHD => LHD.category === "LHDs");
+			const bolters = sorted.filter(LHD => LHD.category === "bolters");
+			res.render("resourceAllocation/edit", { resource, drillRigs, LHDs, bolters, title: "resource-allocation" });
 		});
 	});
 });
-
 
 // 6. Update - takes info from edit form and PUTs it into existing data in the database
 router.put("/resource/:resource_id", isConnectionOpen, isLoggedIn, isAdmin, function (req, res) {

@@ -19,30 +19,23 @@ require("./initDB");
 
 const port = process.env.PORT || 4000;
 
-const dbUrl = "mongodb://127.0.0.1/reportMe";
+const dbUrl = "mongodb://127.0.0.1:27017/reportMe";
+// const dbUrl = "mongodb://localhost/reportMe";
+// const dbUrl = "mongodb://Declaration:45declaration88@localhost:27017/reportMe";
 // const dbUrl = process.env.DB_URL
 const DBoptions = {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 	useCreateIndex: true,
 	useFindAndModify: false,
-	// socketTimeoutMS: 5000,
-	// serverSelectionTimeoutMS: 5000,
-	// heartbeatFrequencyMS: 5000
 };
 
 //***************************************************/
 const connectWithDB = () => {
-	mongoose.connect(dbUrl, DBoptions, (err, db) => {
-		console.log("Connecting to database using connect to connectWithDB function");
-		if (err) {
-			console.log("Error occured while connecting to DB");
-			console.error(err.name);
-		} else {
-			console.log("database connection");
-			// console.log(db)
-		}
-	});
+	mongoose
+		.connect(dbUrl, DBoptions)
+		.then(db => console.log("COONECTION SUCCESS ON FIRST ATTEMPT"))
+		.catch(e => console.log(e.name, e.message));
 };
 
 //***************************************************/
@@ -51,13 +44,14 @@ connectWithDB();
 
 //Check for connection.db
 const conn1 = mongoose.connection;
+// console.log(conn1)
 
 conn1.on("connected", () => {
-	console.log("********On connected emmited********");
+	console.log("On connected emmited");
 });
 
 conn1.once("open", function (e) {
-	console.log("******Connection Open Inside Once Open Listener*******");
+	console.log("Connection Open Inside Once Open Listener");
 
 	const MongoStore = require("connect-mongo")(session);
 
@@ -78,7 +72,8 @@ conn1.once("open", function (e) {
 		name: "session",
 		secret,
 		resave: false,
-		saveUninitialized: true,
+		saveUninitialized: false,
+		// saveUninitialized: true,
 		cookie: {
 			httpOnly: true,
 			expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
@@ -109,25 +104,25 @@ conn1.once("open", function (e) {
 });
 
 conn1.on("error", function (e) {
-	console.log("******On Connection Error*******");
+	console.log("On Connection Error");
 	console.log(`Error occured when connectng to DB with name: ${e.name} and message: ${e.message}`);
 	connectWithDB();
 });
 
 conn1.on("disconnected", function () {
-	console.log("*******Connection disconnected******");
+	console.log("DB connection disconnected");
 });
 
 conn1.on("reconnected", function () {
-	console.log("*******Reconnected after losing connection DB******");
+	console.log("DB reconnected after losing connection");
 });
 
 conn1.on("reconnectFailed", function () {
-	console.log("*******Reconnecting to DB failed******");
+	console.log("DB reconnection failed");
 });
 
 conn1.on("close", function () {
-	console.log("*******Connection successfuly closed******");
+	console.log("DB connection successfuly closed");
 });
 
 process.on("SIGINT", async () => {
@@ -191,24 +186,18 @@ app.use(productionCalendarRoutes);
 app.use(resourceAllocationRoutes);
 
 conn1.once("open", () => {
-	// console.log("Inside connection being open")
-	console.log("**********Before removing all routers***************");
+	console.log("Before removing all routers");
 	console.log(app._router.stack.length);
 	for (let i = 0; i < app._router.stack.length; i++) {
-		// console.log(i)
 		if (app._router.stack[i].name === "router") {
 			app._router.stack.splice(i, 1);
 			i--;
-			// console.log(i)
 		}
 	}
 	// console.log(app._router.stack);
-	console.log("**********After removing all routers**************");
+	console.log("After removing all routers");
 	console.log(app._router.stack.length);
 
-	// console.log(app._router.stack[11].handle);
-	// console.log(app._router.stack[12].handle);
-	// process.stdout.write(app._router.stack.length + "\n");
 	app.use(usersRoutes);
 	app.use(redPanelsRoutes);
 	app.use(newRedPanelsRoutes);
@@ -225,6 +214,9 @@ conn1.once("open", () => {
 	app.use(shiftsRoutes);
 	app.use(productionCalendarRoutes);
 	app.use(resourceAllocationRoutes);
+
+	console.log("Add back all routers");
+	console.log(app._router.stack.length);
 
 	// Moving an item from index to another index
 	function arraymove(arr, fromIndex, toIndex) {
@@ -243,32 +235,16 @@ conn1.once("open", () => {
 		return layerName.name === "lastMiddlware";
 	}
 
-	// console.log("Selected middleware");
-	// console.log(starMiddlewareIndex);
-	// console.log(lastErrHandlingMiddlewareIndex);
-
-	// console.log("*********Printing********")
-	// console.log(app._router.stack[starMiddlewareIndex].route.path);
-	// console.log(app._router.stack[26].handle)
 	const lastItemOfStack = app._router.stack.length - 1;
 	const secondLastItemOfStack = app._router.stack.length - 2;
-	// console.log(lastItemOfStack)
-	// console.log(secondLastItemOfStack)
+
 	arraymove(app._router.stack, lastErrHandlingMiddlewareIndex, lastItemOfStack);
 	arraymove(app._router.stack, starMiddlewareIndex, secondLastItemOfStack);
+});
 
-	// console.log(app._router.stack)
-
-	// console.log("*****After adding other middlwares*****")
-	// console.log(app._router.stack);
-	// console.log(app._router.stack.length);
-	// console.log(app._router.stack[11]);
-	// process.stdout.write(app._router.stack[28].handle + "\n");
-	// process.stdout.write(app._router.stack[12].handle + "\n");
-	// process.stdout.write(app._router.stack[27].handle + "\n");
-	// console.log(app._router.stack[12]);
-	// console.log(app._router.stack[11].handle);
-	// console.log(app._router.stack[12].handle);
+app.all("*", (req, res, next) => {
+	console.log("Resource not found");
+	return next(new ExpressError("Page requested does not exist. Check URL and try again", 404));
 });
 
 app.all("*", (req, res, next) => {
@@ -291,6 +267,10 @@ const lastMiddlware = (err, req, res, next) => {
 	if (!err.message) err.message = "Oh No, Something Went Wrong!";
 	res.status(statusCode).render("error", { title: "title", err });
 };
+
+process.on("uncaughtException", error => {
+	console.log(error);
+});
 
 app.use(lastMiddlware);
 

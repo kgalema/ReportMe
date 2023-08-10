@@ -4,13 +4,15 @@
         <div class="element">
             <div class="error" style="display: flex; align-items: center; flex-direction: column;">
                 <h4>
+                    <%= err.name %>
+                    <hr>
                     <%= err.message %>
                 </h4>
-                <% if(process.env.NODE_ENV !=="production" ){ %>
+                <!-- <% if(process.env.NODE_ENV !=="production" ){ %>
                     <p>
                         <%= err.stack %>
                     </p>
-                    <% } %>
+                    <% } %> -->
             </div>
         </div>
     </div>

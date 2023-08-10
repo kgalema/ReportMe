@@ -1,64 +1,61 @@
 <%- include("../partials/header") %>
 
-    <div class="main-body">
+<div class="main-body">
 
-        <div class="element">
-
-            <div>
-                <h2>TARP Red Panel <%= newRedPanel.panel %> of: <%= newRedPanel.section.name %></h2>
-                <p>Trigger(s) - <%= newRedPanel.triggers %></p>
-                <p>Date declared - <%= newRedPanel.dateDeclared.toDateString() %> </p>
-            </div>
-
-            <% if (currentUser && currentUser.isAdmin) { %>
-                <table class="prod-group-item">
-                    <thead>
-                        <tr>
-                            <th colspan="2">Details</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Author</td>
-                            <td><%= locals.redUser.preferredName %></td>
-                        </tr>
-                        <tr>
-                            <td>Created(true)</td>
-                            <td><%= locals.newRedPanel.createdAt %></td>
-                        </tr>
-                        <tr>
-                            <td>Updated</td>
-                            <td><%= locals.newRedPanel.updatedAt %></td>
-                        </tr>
-                        <tr>
-                            <td>Created</td>
-                            <td><%= locals.newRedPanel.created %></td>
-                        </tr>
-                    </tbody>
-                </table>
-            <% } %>
-
-            <% if (currentUser && currentUser.department === "MRM" || currentUser && currentUser.isAdmin) { %>
-                <div>
-                    <a href="/sections/<%= newRedPanel.section.id %>/redPanel/new?q=<%= newRedPanel._id %>">Issue Recommendation</a>
-                </div>
-            <% } %>
-            <hr>
-            <div>
-                <a href="/redPanel">Dashboard</a>
-            </div>
-            <% if(currentUser && newRedPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
-                <p>
-                    <a href="/sections/<%= newRedPanel.section.id %>/newRedPanel/<%= newRedPanel._id %>/edit">Edit</a>
-                </p>
-                <form action="/sections/<%= newRedPanel.section.id %>/newRedPanel/<%= newRedPanel._id %>?_method=DELETE" method="POST">
-                    <button id="delete" type="submit">Delete</button>
-                </form>
-            <% } %>
-
+    <div class="element">
+        <div>
+            <h2>TARP Red Panel <%= newRedPanel.panel %>: <%= newRedPanel.section.name %></h2>
+            <p>Trigger(s) - <%= newRedPanel.triggers %></p>
+            <p>Date declared - <%= newRedPanel.dateDeclared.toDateString() %> </p>
         </div>
 
+
+        <% if (currentUser && currentUser.isAdmin) { %>
+        <table class="prod-group-item">
+            <thead>
+                <tr>
+                    <th colspan="2">Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Author</td>
+                    <td><%= locals.redUser.preferredName %></td>
+                </tr>
+                <tr>
+                    <td>Created(true)</td>
+                    <td><%= locals.newRedPanel.createdAt %></td>
+                </tr>
+                <tr>
+                    <td>Updated</td>
+                    <td><%= locals.newRedPanel.updatedAt %></td>
+                </tr>
+            </tbody>
+        </table>
+        <% } %>
+
+        <% if (currentUser && currentUser.department === "MRM" || currentUser && currentUser.isAdmin) { %>
+        <div>
+            <a href="/sections/<%= newRedPanel.section.id %>/redPanel/new?q=<%= newRedPanel._id %>">Issue Recommendation</a>
+        </div>
+        <% } %>
+        <hr>
+        <div>
+            <a href="/redPanel">Dashboard</a>
+        </div>
+        <% if(currentUser && newRedPanel.author.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+        <p>
+            <a href="/sections/<%= newRedPanel.section.id %>/newRedPanel/<%= newRedPanel._id %>/edit">Edit</a>
+        </p>
+        <form action="/sections/<%= newRedPanel.section.id %>/newRedPanel/<%= newRedPanel._id %>?_method=DELETE" method="POST">
+            <button style="display: none;" id="delete-confirm" type="submit">Delete</button>
+            <button id="delete" onclick="showModal()" type="button">Delete</button>
+        </form>
+        <% } %>
+
     </div>
+
+</div>
 
 
 <%- include("../partials/sidebar") %>

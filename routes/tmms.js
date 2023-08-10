@@ -4,11 +4,13 @@ const TMM = require("../models/tmms")
 const ClosedBreakdown = require("../models/closedBreakdown")
 const Shift = require("../models/shift")
 const Production = require("../models/production")
+const Allocation = require("../models/resourceAllocation")
 const { isLoggedIn, isAdmin, isConnectionOpen } = require("../middleware");
 
-//================
-// TMMS routes
-//================
+const collator = new Intl.Collator(undefined, {
+	numeric: true,
+	sensitivity: "base",
+});
 
 // 1. Index route -list all TMMS
 router.get("/tmms", isConnectionOpen, function (req, res) {
@@ -17,11 +19,6 @@ router.get("/tmms", isConnectionOpen, function (req, res) {
 			req.flash("error", "Error occured while fetching all TMMs");
 			return res.redirect("/breakdowns");
 		}
-
-		const collator = new Intl.Collator(undefined, {
-			numeric: true,
-			sensitivity: "base",
-		});
 
 		const sorted = allTMMs.sort(function (a, b) {
 			return collator.compare(a.name, b.name);
@@ -80,8 +77,6 @@ router.post("/tmms", isLoggedIn, isAdmin, function (req, res) {
         res.redirect("/tmms");
         });
     });
-	// console.log(req.body.engAsset);
-	// res.json(req.body.engAsset);
 });
 
 
@@ -92,34 +87,36 @@ router.get("/tmm/:id", isConnectionOpen, function (req, res) {
 			req.flash("error", "TMM not found");
 			return res.redirect("/tmms");
 		}
-		ClosedBreakdown.find({ "breakdown.equipment": foundTMM.name }, function (err, foundBreakdowns) {
-			if (err || !foundTMM) {
-				req.flash("error", "Error occure while fetching breakdowns for the asset");
-				return res.redirect("/tmms");
+		Shift.find({}, function(err, foundShifts){
+			if(err || !foundShifts){
+				req.flash("error", "Error occured while fetching shifts")
+				return res.redirect("/tmms")
 			}
-			Shift.find({}, function(err, foundShifts){
-				if(err || !foundShifts){
-					req.flash("error", "Error occured while fetching shifts")
+
+			const cat = foundTMM.category;
+
+			// Getting all allocations with foundTMM.name
+			Allocation.find({[cat]:{$in:[foundTMM.name]}}, {[cat]: 1, shift: 1, date: 1}).exec(function(err, allocations){
+				if(err || !allocations){
+					req.flash("error", "Error occured while retrieving allocation")
 					return res.redirect("/tmms")
 				}
 
-				const searchObj = { 
-					$or: [
-						{ "fleetHrs.bolters.name": foundTMM.name },
-						{ "fleetHrs.drillRigs.name": foundTMM.name },
-						{ "fleetHrs.LHDs.name": foundTMM.name }
-					] 
-				};
+				const sorted1 = allocations.sort(function (x, y) {
+					return x.date - y.date;
+				});
 
-				// Create common catergory for all TMMS, and Id should be TMMid
-				Production.find(searchObj, { fleetHrs: 1, created: 1, "general.shift": 1 }, function (err, foundFleetUtils) {
-					if (err || !foundFleetUtils) {
-						req.flash("error", "Error occured while calculating utilisation for "+ foundTMM.name)
+				ClosedBreakdown.find({ "breakdown.equipment": foundTMM.name }, function (err, foundBreakdowns) {
+					if (err || !foundTMM) {
+						req.flash("error", "Error occure while fetching breakdowns for the asset");
 						return res.redirect("/tmms");
 					}
-					res.render("tmms/show", { foundFleetUtils, foundShifts, tmm: foundTMM, foundBreakdowns, title: "assets" });
-				});
-			})
+					const sorted = foundBreakdowns.sort(function (a, b) {
+						return collator.compare(a.breakdown.shiftStartTime, b.breakdown.shiftStartTime);
+					});
+					res.render("tmms/show", { allocations: sorted1, foundShifts, tmm: foundTMM, foundBreakdowns: sorted, title: "assets" });
+				})
+			});
 		});
 	});
 });

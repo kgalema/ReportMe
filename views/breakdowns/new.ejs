@@ -1,133 +1,171 @@
 <%- include("../partials/header") %>
 
 <div class="main-body">
-    <div class="element">
-        <div class="element2">
-            <h2>New Breakdown</h2>
-            <h3><%= (new Date()).toDateString() %> </h3>
-            <div id="fromDB" style="display: none;">
-                <%= locals.tmms %>
-            </div>
+  <div class="element">
+    <div class="element2">
+      <h2>New Breakdown</h2>
+      <h3><%= (new Date()).toDateString() %> </h3>
+      <div id="fromDB">
+        <%= locals.tmms %>
+      </div>
+      <div id="fromDB">
+        <p id="allAssets">
+          <%= JSON.stringify(locals.tmms) %>
+        </p>
+        <p id="allocations">
+          <%= JSON.stringify(locals.allocations) %>
+        </p>
+        <p id="shifts">
+          <%= JSON.stringify(locals.shifts) %>
+        </p>
+      </div>
 
-             <form action="/breakdown" method="POST">
-                <div class="shift">
-                    <% locals.shifts.forEach(shift => { %>
-                        <input style="margin: 3px;" type="radio" name="breakdown[shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" required>
-                        <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
-                    <% }) %>
-                    <!-- <input type="radio" name="breakdown[shift]" id="morning" value="morning" required>
-                    <label for="morning">Morning Shift</label>
-                    <input type="radio" name="breakdown[shift]" id="afternoon" value="afternoon" required>
-                    <label for="afternoon">Afternoon Shift</label>
-                    <input type="radio" name="breakdown[shift]" id="night" value="night" required>
-                    <label for="night">Night Shift</label> -->
-                </div>
-                <br>
-                <table class="form-row">
-                    <tr>
+      <form action="/breakdown" method="POST">
+        <div class="shift">
+          <% locals.shifts.forEach(shift => { %>
+          <% if (locals.shiftNow === shift.name) { %>
+          <input style="margin: 3px;" type="radio" name="breakdown[shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" checked onchange="resetItems()" required>
+          <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
+          <% return } %>
+          <input style="margin: 3px;" type="radio" name="breakdown[shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" onchange="resetItems()" required>
+          <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
+          <% }) %>
+
+        </div>
+        <br>
+        <table class="form-row">
+          <!-- <tr>
                         <td class="form-row">
-                            <label for="category">Category:</label>
-                        </td>
-                        
-                        <td class="form-row">
-                            <select name="breakdown[category]" id="category" onchange="filterItem(this, '<%= JSON.stringify(tmms) %>')" required>
-                                <option value="" selected disabled>select category</option>
-                                <option value="bolters">Roof Bolter</option>
-                                <option value="drillRigs">Drill Rig</option>
-                                <option value="LHDs">LHD</option>
-                                <option value="UV">UV</option>
-                                <option value="LDV">LDV</option>
-                                <option value="electrical">Electrical</option>
-                                <option value="mechanical">Mechanical</option>
-                                <option value="ug_belts">UG Belts</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="form-row">
-                            <label for="equipment">Item/TMM ID:</label>
-                        </td>
-                        
-                        <td class="form-row" id="otherItem">
-                            <select name="breakdown[equipment]" id="equipment" disabled onchange="filterItemID(this)" required>
-                                <option value="" selected disabled>select category first</option>
-                                <option>other</option>
-                            </select>
-                            <input type="text" name="" disabled hidden id="equipment2" onkeyup="validatePanelName(event)">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="form-row">
-                            <label for="operator">Operator/Reporter:</label>
+                            <label for="todayDate">Date Start:</label>
                         </td>
                         <td class="form-row">
-                            <input type="text" name="breakdown[operator]" onkeyup="validatePanelName(event)">
+                            <input  id="todayDate" name="breakdown[startDate]" type="date" onchange="resetItems()" required>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="form-row">
-                            <label for="section">Section:</label>
-                        </td>
-                        
-                        <td class="form-row">
-                            <select name="breakdown[sectionId]" id="section" required>
-                                <option value="" selected disabled>select section</option>
-                                <% sections.forEach(section => { %>
-                                    <option value="<%= section._id %>"><%= section.name %></option>
-                                <% }) %>
-                                <option value="other">Other</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="form-row">
-                            <label for="description">Description:</label>
-                        </td>
-                        <td class="form-row">
-                            <textarea name="breakdown[description]" id="description" cols="30" rows="5" required></textarea>
-                        </td>
-                    </tr>
-                    <tr>
+                    </tr> -->
+          <tr>
+            <td class="form-row">
+              <label for="section">Section:</label>
+            </td>
+
+            <td class="form-row">
+              <select name="breakdown[sectionId]" id="section" oninput="toogleTMMCategory(this)" required>
+                <option value="" selected disabled>select section</option>
+                <% sections.forEach(section => { %>
+                <option value="<%= section._id %>"><%= section.name %></option>
+                <% }) %>
+                <!-- <option value="other">Other</option> -->
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="form-row">
+              <label for="todayDate">Date Start:</label>
+            </td>
+            <td class="form-row">
+              <input id="todayDate" name="breakdown[startDate]" type="date" onchange="resetItems()" required>
+            </td>
+          </tr>
+          <tr>
+            <td class="form-row">
+              <label for="startTime">Time Start:</label>
+            </td>
+            <td class="form-row">
+              <input id="startTime" name="breakdown[startTime]" type="time" onchange="resetItems()" required>
+            </td>
+          </tr>
+          <!-- </table> -->
+
+          <!-- <table class="form-row"> -->
+          <tr>
+            <td class="form-row">
+              <label for="category">Category:</label>
+            </td>
+
+            <td class="form-row">
+              <select name="breakdown[category]" id="category" onchange="filterItem(this)" disabled required>
+                <!-- <select name="breakdown[category]" id="category" onchange="filterItem(this, '<%= JSON.stringify(tmms) %>')" required> -->
+                <option value="" selected disabled>select section first</option>
+                <option value="bolters">Roof Bolter</option>
+                <option value="drillRigs">Drill Rig</option>
+                <option value="LHDs">LHD</option>
+                <option value="UV">UV</option>
+                <option value="LDV">LDV</option>
+                <option value="electrical">Electrical</option>
+                <option value="mechanical">Mechanical</option>
+                <option value="ug_belts">UG Belts</option>
+                <!-- <option value="other">Other</option> -->
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="form-row">
+              <label for="equipment">Item/TMM ID:</label>
+            </td>
+
+            <td class="form-row" id="otherItem">
+              <select name="breakdown[equipment]" id="equipment" disabled onchange="filterItemID(this)" required>
+                <option value="" selected disabled>select category first</option>
+                <option>other</option>
+              </select>
+              <input type="text" name="" disabled hidden id="equipment2" onkeyup="validatePanelName(event)">
+            </td>
+          </tr>
+          <tr>
+            <td class="form-row">
+              <label for="operator">Operator/Reporter:</label>
+            </td>
+            <td class="form-row">
+              <input type="text" name="breakdown[operator]" onkeyup="validatePanelName(event)">
+            </td>
+          </tr>
+          <tr>
+            <td class="form-row">
+              <label for="description">Description:</label>
+            </td>
+            <td class="form-row">
+              <textarea name="breakdown[description]" id="description" cols="30" rows="5" required></textarea>
+            </td>
+          </tr>
+          <!-- <tr>
                         <td class="form-row">
                             <label for="startTime">Time Start:</label>
                         </td>
                         <td class="form-row">
                             <input  id="startTime" name="breakdown[startTime]" type="time" required>
                         </td>
-                    </tr>
-                    <tr>
+                    </tr> -->
+          <!-- <tr>
                         <td class="form-row">
                             <label for="todayDate">Date Start:</label>
                         </td>
                         <td class="form-row">
-                            <input  id="todayDate" name="breakdown[startDate]" type="date" required>
+                            <input  id="todayDate" name="breakdown[startDate]" type="date" onchange="resetItems()" required>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="form-row">
-                            <label for="orderRef">Ref Number:</label>
-                        </td>
-                        
-                        <td class="form-row">
-                            <input type="number" min="0" id="orderRef" name="breakdown[orderRef]" required>
-                        </td>
-                    </tr>
-                    
-            
-                    <tr>
-                        <td class="form-row" colspan="2">
-                            <button style="width: 100%;" type="submit">Submit</button>
-                            <!-- <input type="submit" value="Submit"> -->
-                        </td>
-                    </tr>
-                </table>
-            </form>
-            <div>
-                <a href="/breakdowns">Dashboard</a>
-            </div>
+                    </tr> -->
+          <tr>
+            <td class="form-row">
+              <label for="orderRef">Ref Number:</label>
+            </td>
 
-        </div>
+            <td class="form-row">
+              <input type="number" min="0" id="orderRef" name="breakdown[orderRef]" required>
+            </td>
+          </tr>
+
+
+          <tr>
+            <td class="form-row" colspan="2">
+              <button style="width: 100%;" type="submit">Submit</button>
+              <!-- <input type="submit" value="Submit"> -->
+            </td>
+          </tr>
+        </table>
+      </form>
+      <div>
+        <a href="/breakdowns">Dashboard</a>
+      </div>
+
+    </div>
   </div>
 </div>
 

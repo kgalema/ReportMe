@@ -13,6 +13,12 @@
                          <p id="target">
                             <% let target = section.forecast/section.plannedAdvance %>
                          </p>   
+                         <p id="panelsAdvanced">
+                            <%= JSON.stringify(locals.panelsAdvanced) %>
+                         </p>   
+                         <p id="panelsAdvancedDate">
+                            <%= JSON.stringify(locals.panelsAdvancedDate) %>
+                         </p>   
                     </div>
                     
                     <p id="call">
@@ -24,6 +30,7 @@
                     <div class="shift">
                         <% locals.shifts.forEach(shift => { %>
                             <% if (shift.name === "MORNING") { %>
+<<<<<<< HEAD
                                 <input style="margin: 3px;" type="radio" name="production[general][1][shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" checked required onchange="shiftSelector(event)">
                                 <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
                             <% } else { %>
@@ -35,14 +42,54 @@
                         <label for="morning">Morning Shift</label>
                         <input type="radio" name="production[general][1][shift]" id="night" value="night" onchange="shiftSelector(event)" required>
                         <label for="night">Night Shift</label> -->
+=======
+                                <input style="margin: 3px;" type="radio" name="production[general][1][shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" checked required data-blast="<%= shift.isBlasting %>" onchange="shiftSelector(event)">
+                                <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
+                            <% } else { %>
+                                <input style="margin: 3px;" type="radio" name="production[general][1][shift]" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" required data-blast="<%= shift.isBlasting %>" onchange="shiftSelector(event)">
+                                <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
+                            <% } %>
+                        <% }) %>
+                        
+>>>>>>> mash
                     </div>
                     <br>
                     <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
                         <input type="date" name="production[created]" id="todayDate" oninput="checkCallAchieved4Date(event)">
+<<<<<<< HEAD
+=======
+                    <% } else { %>
+                        <input type="date" name="production[created]" id="todayDate" oninput="checkCallAchieved4Date(event)" readonly hidden>
+>>>>>>> mash
                     <% } %>
 
                     <br>
-
+                    <% if (locals.panelsAdvanced.length > 0) { %>
+                        <button id="advance-report-heading" type="button" class="collapsible">Advanced Panels Report (<small>panels blasted by previous shift)</small></button>
+                        <div class="content" id="advance-report">
+                            <table class="form-row">
+                                <tbody>
+                                    <% locals.panelsAdvanced.forEach((p, i) => { %>
+                                        <tr id="inputs" class="form-row">
+                                            <td class="form-row">
+                                                <input type="text" id="panel" name="advanceEdit[blast][<%= i %>][panel]" value="<%= p.panel %>" readonly required>
+                                            </td>
+                                            <td class="form-row">
+                                                <input type="number" min="0" id="length" name="advanceEdit[blast][<%= i %>][length]" value="<%= p.length %>" readonly required>
+                                            </td>
+                                            <td class="form-row">
+                                                <input type="text" id="id" name="advanceEdit[blast][<%= i %>][id]" value="<%= p.id %>" readonly hidden required>
+                                            </td>
+                                            <td class="form-row">
+                                                <input type="number" min="0" step="0.1" id="advance" name="advanceEdit[blast][<%= i %>][advance]" placeholder="advance" required>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } %>
+                    <input type="text" hidden value="false" name="production[general][1][isProduction]" id="isProductionShift" readonly>
                     <button id="blast-report-heading" type="button" class="collapsible">Blasted Panels Report (Target = <span id="target-number"><%= target %></span>m)</button>
                     <div class="content" id="blast-report">
                         <table class="form-row">
@@ -72,12 +119,7 @@
                                             placeholder="panel_name" required>
                                     </td>
                                     <td class="form-row">
-                                        <input type="number" min="0" id="length" name="production[clean][1][length]"
-                                            placeholder="metres" required>
-                                    </td>
-                                    <td class="form-row">
-                                        <input type="number" min="0" id="advance" name="production[clean][1][advance]"
-                                            placeholder="advance" step="0.1" required>
+                                        <input type="number" min="0" id="length" name="production[clean][1][length]" placeholder="metres" required>
                                     </td>
                                     <td class="form-row">
                                         <input type="button" id="add"
@@ -113,7 +155,7 @@
                                     </td>
                                     <td class="form-row">
                                         <label style="display: block;" for="bolter">Bolter/RDO</label>
-                                            <select class="used-bolter" oninput="getAllProductionTMMs(this)" name="production[support][1][machine]" id="bolter" required>
+                                            <select class="used-bolter" name="production[support][1][machine]" id="bolter" required>
                                                 <option selected disabled></option>
                                                 <% bolters.forEach(e => { %>
                                                     <option value="<%= e.name %>"><%= e.name %></option>
@@ -148,7 +190,7 @@
 
                                     <td class="form-row">
                                         <label style="display: block;" for="drillRig">Drill Rig</label>
-                                        <select name="production[drill][1][drillRig]" id="drillRig" class="used-drill-rig" oninput="getAllProductionTMMs(this)" required>
+                                        <select name="production[drill][1][drillRig]" id="drillRig" class="used-drill-rig" required>
                                             <option></option>
                                             <% drillRigs.forEach(e => { %>
                                                 <option value="<%= e.name %>"><%= e.name %></option>
@@ -221,7 +263,7 @@
 
                                     <td class="form-row">
                                         <label style="display: block;" for="LHDnumber">LHD</label>
-                                        <select name="production[LHD][1][LHDnumber]" id="LHDnumber" class="used-LHD" oninput="getAllProductionTMMs(this)" required>
+                                        <select name="production[LHD][1][LHDnumber]" id="LHDnumber" class="used-LHD" required>
                                             <option selected disabled></option>
                                             <% LHDs.forEach(e => { %>
                                                 <option value="<%= e.name %>"><%= e.name %></option>
@@ -239,14 +281,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-                    <button type="button" class="collapsible" id="fleet-performance">Fleet Performance (Hour meters readings)</button>
-                    <div class="content" id="fleet-performance-content">
-                        <table class="form-row" id="bolters-performance"></table>
-                        <hr style="width: 100%;">
-                        <table class="form-row" id="rig-performance"></table>
-                        <hr style="width: 100%;">
-                        <table class="form-row" id="LHD-performance"></table>
                     </div>
                     <button type="button" class="collapsible" id="comments">Target Not Achieved. Why?</button>
                     <div class="content">

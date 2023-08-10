@@ -2,7 +2,7 @@
 
     <div class="main-body">
         <div class="element">
-            <h3>Edit ROM: <%= editROM.created.toLocaleDateString() %></h3>
+            <h3>Edit ROM: <%= editROM.created.toLocaleDateString("en-GB") %></h3>
             <div class="element2">
                 <form action="/rom/<%= editROM._id %>?_method=PUT" method="POST">
                     <table class="form-row">

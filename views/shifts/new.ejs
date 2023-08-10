@@ -18,7 +18,16 @@
                     <input type="time" name="shift[end]" id="shift_end" required>
                 </div>
                 <div class="flex-row">
-                    <label for="shift_end">Overlaps to next day?</label>
+                    <label for="">Basting Shift?</label>
+                    <div>
+                        <label for="blast_false">No</label>
+                        <input type="radio" name="shift[isBlasting]" id="blast_false" value="false" checked>
+                        <label for="blast_true">Yes</label>
+                        <input type="radio" name="shift[isBlasting]" id="blast_true" value="true">
+                    </div>
+                </div>
+                <div class="flex-row">
+                    <label for="">Overlaps to next day?</label>
                     <div>
                         <label for="overlap_false">No</label>
                         <input type="radio" name="shift[overlap]" id="overlap_false" value="false" checked>

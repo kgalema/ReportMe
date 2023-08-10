@@ -13,7 +13,8 @@
                     <th>Start Time (hh:mm)</th>
                     <th>End Time (hh:mm)</th>
                     <th>Duration (hrs)</th>
-                    <th>Overlap?</th>
+                    <th>Overlaps?</th>
+                    <th>Blast</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,6 +31,13 @@
                         <td><%= el.duration %></td>
                         <td>
                             <% if (el.overlap) { %>
+                                    &#10004
+                            <% }  else { %>
+                                    &#10006
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if (el.isBlasting) { %>
                                     &#10004
                             <% }  else { %>
                                     &#10006

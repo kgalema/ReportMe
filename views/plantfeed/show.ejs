@@ -2,7 +2,7 @@
 
     <div class="main-body">
         <div class="element">
-            <h3>Plant Feed entry for: <%= foundPlantFeed.created.toLocaleDateString() %> </h3>
+            <h3>Plant Feed entry for: <%= foundPlantFeed.created.toLocaleDateString("en-GB") %> </h3>
 
             <div class="element2">
                 <table>
@@ -16,7 +16,7 @@
                     </thead>
                     <tbody>
                         <td>
-                            <%= foundPlantFeed.created.toLocaleDateString() %>
+                            <%= foundPlantFeed.created.toLocaleDateString("en-GB") %>
                         </td>
                         <td>
                             <%= foundPlantFeed.budget %>

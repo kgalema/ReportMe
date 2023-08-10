@@ -26,7 +26,6 @@ const newRedPanelSchema = new mongoose.Schema({
 			ref: "User",
 		},
 	},
-	created: { type: Date, default: () => new Date() },
 }, opts);
 
 newRedPanelSchema.virtual("age").get(function () {

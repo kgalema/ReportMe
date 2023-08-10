@@ -6,9 +6,9 @@
             <h2>Allocated Resources: <%= locals.foundAllocation.section %></h2>
             <p>Date: <%= locals.foundAllocation.date.toDateString() %> </p>
             <p>Shift: <%= locals.foundAllocation.shift.toUpperCase() %> </p>
-            <p>LHD(s): <%= locals.foundAllocation.LHD %> </p>
-            <p>Bolter(s): <%= locals.foundAllocation.bolter %></p>
-            <p>Drill Rig(s): <%= locals.foundAllocation.drillRig %></p>
+            <p>LHD(s): <%= locals.foundAllocation.LHDs %> </p>
+            <p>Bolter(s): <%= locals.foundAllocation.bolters %></p>
+            <p>Drill Rig(s): <%= locals.foundAllocation.drillRigs %></p>
         </div>
 
         <hr>
@@ -18,13 +18,14 @@
         </div>
 
         <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
-            <p>
-                <a href="/resource/<%= foundAllocation._id %>/edit">Edit</a>
-            </p>
+        <p>
+            <a href="/resource/<%= foundAllocation._id %>/edit">Edit</a>
+        </p>
 
-            <form action="/resource/<%= foundAllocation._id %>?_method=DELETE" method="post">
-                <button id="delete" type="submit">Delete</button>
-            </form>
+        <form action="/resource/<%= foundAllocation._id %>?_method=DELETE" method="post">
+            <button style="display: none;" id="delete-confirm" type="submit">Delete</button>
+            <button id="delete" onclick="showModal()" type="button">Delete</button>
+        </form>
         <% } %>
     </div>
 </div>

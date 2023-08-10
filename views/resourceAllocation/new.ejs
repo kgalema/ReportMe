@@ -1,103 +1,103 @@
 <%- include("../partials/header") %>
 
 <div class="main-body">
-    <div class="element">
-        <h2>Allocate Resources</h2>
-        <form action="/resource" method="post">
-            
-            <input type="date" name="date" id="todayDate">
-            <br>
+  <div class="element">
+    <h2>Allocate Resources</h2>
+    <form action="/resource" method="post">
 
-            <div class="flex-form">
-                
-                <div class="shift">
-                    <% locals.shifts.forEach(shift => { %>
-                        <input style="margin: 3px;" type="radio" name="shift" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" required>
-                        <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
-                    <% }) %>
-                </div>
+      <input type="date" name="date" id="todayDate">
+      <br>
 
-                <div class="flex-row2">
-                    <select name="section" id="section" required>
-                        <option value="" selected disabled>select section</option>
-                        <% locals.sections.forEach(section => { %>
-                            <option value="<%= section.name %>"><%= section.name %></option>
-                        <% }) %>
-                    </select>
-                </div>
+      <div class="flex-form">
 
-                <button id="LHD-allocation-heading" type="button" class="collapsible">LHD</button>
-                <div class="content" id="LHD-allocation">
-                    <table class="form-row">
-                        <tbody>
-                            <tr class="form-row">
-                                <td class="form-row">
-                                    <select name="LHD[1]" id="lhd-select" required>
-                                        <option selected value="none">none</option>
-                                        <% locals.LHDs.forEach(LHD => { %>
-                                            <option value="<%= LHD.name %>"><%= LHD.name %></option>
-                                        <% }) %>
-                                    </select>
-                                </td>
-                                <td class="form-row">
-                                    <a href="#" onClick="addAllocation(this)">+ LHD</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <button id="rig-allocation-heading" type="button" class="collapsible">Drill Rig</button>
-                <div class="content" id="rig-allocation">
-                    <table class="form-row">
-                        <tbody>
-                            <tr class="form-row">
-                                <td class="form-row">
-                                    <select name="drillRig[1]">
-                                        <option selected value="none">none</option>
-                                        <% locals.drillRigs.forEach(rig => { %>
-                                            <option value="<%= rig.name %>"><%= rig.name %></option>
-                                        <% }) %>
-                                    </select>
-                                </td>
-                                <td class="form-row">
-                                    <a href="#" onClick="addAllocation(this)">+ Drill Rig</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <button id="bolter-allocation-heading" type="button" class="collapsible">Bolter</button>
-                <div class="content" id="bolter-allocation">
-                    <table class="form-row">
-                        <tbody>
-                            <tr class="form-row">
-                                <td class="form-row">
-                                    <select name="bolter[1]" id="">
-                                        <option selected value="none">none</option>
-                                        <% locals.bolters.forEach(bolter => { %>
-                                            <option value="<%= bolter.name %>"><%= bolter.name %></option>
-                                        <% }) %>
-                                    </select>
-                                </td>
-                                <td class="form-row">
-                                    <a href="#" onClick="addAllocation(this)">+ Bolter</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="flex-row">
-                    <input type="submit" value="Allocate">
-                </div>
-            </div>
-        </form>
-
-        <hr>
-        <div>
-            <a href="/resource">Dashboard</a>
+        <div class="shift">
+          <% locals.shifts.forEach(shift => { %>
+          <input style="margin: 3px;" type="radio" name="shift" id="<%= shift.name.toLowerCase() %>" value="<%= shift.name.toLowerCase() %>" required>
+          <label for="<%= shift.name.toLowerCase() %>"><%= shift.name %></label>
+          <% }) %>
         </div>
+
+        <div class="flex-row2">
+          <select name="section" id="section" required>
+            <option value="" selected disabled>select section</option>
+            <% locals.sections.forEach(section => { %>
+            <option value="<%= section.name %>"><%= section.name %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <button id="LHD-allocation-heading" type="button" class="collapsible">LHD</button>
+        <div class="content" id="LHD-allocation">
+          <table class="form-row">
+            <tbody>
+              <tr class="form-row">
+                <td class="form-row">
+                  <select name="LHDs[1]" id="lhd-select" required>
+                    <option selected value="none">none</option>
+                    <% locals.LHDs.forEach(LHD => { %>
+                    <option value="<%= LHD.name %>"><%= LHD.name %></option>
+                    <% }) %>
+                  </select>
+                </td>
+                <td class="form-row">
+                  <a href="#" onClick="addAllocation(this)">+ LHD</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button id="rig-allocation-heading" type="button" class="collapsible">Drill Rig</button>
+        <div class="content" id="rig-allocation">
+          <table class="form-row">
+            <tbody>
+              <tr class="form-row">
+                <td class="form-row">
+                  <select name="drillRigs[1]">
+                    <option selected value="none">none</option>
+                    <% locals.drillRigs.forEach(rig => { %>
+                    <option value="<%= rig.name %>"><%= rig.name %></option>
+                    <% }) %>
+                  </select>
+                </td>
+                <td class="form-row">
+                  <a href="#" onClick="addAllocation(this)">+ Drill Rig</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button id="bolter-allocation-heading" type="button" class="collapsible">Bolter</button>
+        <div class="content" id="bolter-allocation">
+          <table class="form-row">
+            <tbody>
+              <tr class="form-row">
+                <td class="form-row">
+                  <select name="bolters[1]" id="">
+                    <option selected value="none">none</option>
+                    <% locals.bolters.forEach(bolter => { %>
+                    <option value="<%= bolter.name %>"><%= bolter.name %></option>
+                    <% }) %>
+                  </select>
+                </td>
+                <td class="form-row">
+                  <a href="#" onClick="addAllocation(this)">+ Bolter</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex-row">
+          <input type="submit" value="Allocate">
+        </div>
+      </div>
+    </form>
+
+    <hr>
+    <div>
+      <a href="/resource">Dashboard</a>
     </div>
+  </div>
 </div>
 
 <%- include("../partials/sidebar") %>

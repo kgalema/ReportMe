@@ -11,14 +11,16 @@ const opts = {
 const redpanelSchema = new mongoose.Schema({
 	panel: { type: String, required: true },
 	trigger: String,
-	reportNumber: String,
+	reportNumber: {
+		type: String, 
+		unique: true
+	},
 	issueDate: { type: Date },
 	fileID: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Reds.files",
 	},
 	declaredDate: { type: Date },
-	created: { type: Date, default: () => new Date() },
 	section: {
 		id: {
 			type: mongoose.Schema.Types.ObjectId,

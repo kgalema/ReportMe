@@ -6,15 +6,15 @@
         <hr>
         <div>
             <% function subtract2Times (a, b){ %>
-                <% const bSplitted = b.split(":"); %>
-                <% const bSplittedHours = Number(bSplitted[0]); %>
-                <% const bSplittedMinutes = Number(((Number(bSplitted[1]) / 60)).toFixed(10)); %>
-                <% const duration = a - bSplittedHours - bSplittedMinutes %>
-                <% const hours = Math.floor(duration).toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false }); %>
-                <% const minutes = Number((duration - hours).toFixed(10)); %>
-                <% const minutesConverted = Math.round(minutes * 60).toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false }); %>
-                <% const result = `${hours}:${minutesConverted}` %>
-                <% return result; %>
+            <% const bSplitted = b.split(":"); %>
+            <% const bSplittedHours = Number(bSplitted[0]); %>
+            <% const bSplittedMinutes = Number(((Number(bSplitted[1]) / 60)).toFixed(10)); %>
+            <% const duration = a - bSplittedHours - bSplittedMinutes %>
+            <% const hours = Math.floor(duration).toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false }); %>
+            <% const minutes = Number((duration - hours).toFixed(10)); %>
+            <% const minutesConverted = Math.round(minutes * 60).toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false }); %>
+            <% const result = `${hours}:${minutesConverted}` %>
+            <% return result; %>
             <% } %>
             <table class="form-row">
                 <tr>
@@ -46,33 +46,29 @@
                     <td class="form-row"><%= locals.section.unusableTime %></td>
                 </tr>
                 <% locals.shifts.forEach(shift => { %>
-                    <tr>
-                        <td class="form-row"><%= shift.name %> shift facetime (hh:mm):</td>
-                        <td class="form-row"><%= subtract2Times(shift.duration, locals.section.unusableTime) %></td>
-                    </tr>
+                <tr>
+                    <td class="form-row"><%= shift.name %> shift facetime (hh:mm):</td>
+                    <td class="form-row"><%= subtract2Times(shift.duration, locals.section.unusableTime) %></td>
+                </tr>
                 <% }) %>
             </table>
         </div>
 
-
-        <!-- <div class="show-section">
-            <a class="button" href="/sections/<%= locals.section._id %>/production/new">Production Report</a>
-            <a class="button" href="/sections/<%= locals.section._id %>/newReds/new">Add New Red Panel</a>
-        </div> -->
         <hr>
         <div>
             <a href="/sections">Sections</a>
         </div>
-        
+
         <% if(locals.currentUser && locals.currentUser.isAdmin){ %>
-            <div class="admin">
-                <p>
-                    <a href="/sections/<%= section._id %>/edit">Edit</a>
-                </p>
-                <form action="/sections/<%= section._id %>?_method=DELETE" method="post">
-                    <button id="delete" type="submit">Delete</button>
-                </form>
-            </div>
+        <div class="admin">
+            <p>
+                <a href="/sections/<%= section._id %>/edit">Edit</a>
+            </p>
+            <form action="/sections/<%= section._id %>?_method=DELETE" method="post">
+                <button style="display: none;" id="delete-confirm" type="submit">Delete</button>
+                <button id="delete" onclick="showModal()" type="button">Delete</button>
+            </form>
+        </div>
         <%}%>
 
 
@@ -81,4 +77,4 @@
 
 
 <%- include("../partials/sidebar") %>
-<%- include("../partials/footer") %>
+        <%- include("../partials/footer") %>

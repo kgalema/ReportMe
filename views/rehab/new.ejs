@@ -5,7 +5,7 @@
 
         <div class="element">
             <h2>Rehabilitated Panel: <%= foundRed.panel %> of <%= foundRed.section.name %> </h2>
-            <form action="/sections/<%= foundRed.section.id %>/redPanels/<%= foundRed._id %>/rehabedPanels" method="POST">
+            <form action="/sections/<%= foundRed.section.id %>/redPanels/<%= foundRed._id %>/rehabedPanels" enctype="multipart/form-data" method="POST">
                 <table class="form-row">
                     <tr>
                         <td class="form-row">
@@ -13,6 +13,14 @@
                         </td>
                         <td class="form-row">
                             <input type="date" id="date-rehabilitated" name="rehabed[rehabDate]" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-row">
+                            <label for="signedReport">Attach signed report:</label>
+                        </td>
+                        <td class="form-row">
+                            <input type="file" id="signedReport" name="signedReport" style="width: fit-content;" required>
                         </td>
                     </tr>
                     <tr>

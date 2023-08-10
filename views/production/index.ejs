@@ -22,6 +22,9 @@
                                 <% } %>
                             <% }) %>
                         </p>
+                        <p id="shifts">
+                            <%= JSON.stringify(shifts) %>
+                        </p>
                     </div>
 
                     <div id="DB" style="display: none;">
@@ -33,7 +36,10 @@
                     </div>
 
                     <div id="filterDiv" class="availableFilters">
-                        <input type="date" id="dateFilter" oninput="dateChange(this)">
+                        <label for="dateFilterStart">From:</label>
+                        <input type="date" id="dateFilterStart" data-period="start" oninput="dateChange(this)">
+                        <label for="dateFilter">To:</label>
+                        <input type="date" id="dateFilter" data-period="end" oninput="dateChange(this)">
                         <select name="" id="moFilter" oninput="dateChange(this)">
                             <option value="allMO" selected>--MO--</option>
                             <% MOs.forEach(mo => { %>
@@ -49,10 +55,18 @@
                     </div>
 
                     <div class="myBtnContainer" id="myBtnContainer">
+<<<<<<< HEAD
                         <button class="btn" id="morning" onclick="filter('day')">Morning Shift</button>
                         <button class="btn" onclick="filter('night')">Night Shift</button>
                         <button class="btn" onclick="filter('blast-progs')">Progressive Blast</button>
                         <button class="btn" id="chartData" onclick="filter('charts')">Graphs</button>
+=======
+                        <% shifts.forEach(shift => { %>
+                            <button class="btn" id="<%= shift.name.toLowerCase() %>" onclick="filter('<%= shift.name.toLowerCase() %>')"><%= shift.name %></button>
+                        <% }) %>
+                        <button class="btn" id="blast-progs" onclick="filter('blast-progs')">Progressive Blast</button>
+                        <button class="btn" id="charts" onclick="filter('charts')">Graphs</button>
+>>>>>>> mash
                     </div>
                 </div>
 
@@ -78,7 +92,7 @@
 
                     <!-- This section is a container for charts (progressive and daily production) -->
                 <section id="prod_charts" class="prod_charts filterDiv">
-                    <div style="display: flex; align-items: center; justify-content: center;">
+                    <div style="display: flex; align-items: center; justify-content: center; margin-top: 15px;">
                         <div>
                             <label for="startdate">From:</label>
                             <input type="date" onchange="drawProductionGraph()" id="startdate" value="">
@@ -92,8 +106,9 @@
                             </select>
                         </div>
                     </div>
-                    <div>
+                    <div id="prod-graphs">
                         <canvas id="draw"></canvas>
+                        <hr>
                         <canvas id="drawProgressive"></canvas>
                     </div>
                 </section>

@@ -2,6 +2,7 @@
 
 <div class="main-body">
     <div class="element">
+        <h2><%= foundUser.preferredName %></h2>
         <table>
             <tbody>
                 <tr>
@@ -32,21 +33,22 @@
         </div>
 
         <% if(currentUser && currentUser.isAdmin){ %>
-            <p>
-                <a href="/user/<%= foundUser._id %>/edit">Edit</a>
-            </p>
-            <form action="/user/<%= foundUser._id %>?_method=DELETE" method="POST">
-                <button id="delete" type="submit">Delete</button>
+        <p>
+            <a href="/user/<%= foundUser._id %>/edit">Edit</a>
+        </p>
+        <form action="/user/<%= foundUser._id %>?_method=DELETE" method="POST">
+            <button style="display: none;" id="delete-confirm" type="submit">Delete</button>
+            <button id="delete" onclick="showModal()" type="button">Delete</button>
+        </form>
+        <hr>
+        <small>
+            <form action="/forgot" method="post">
+                <input id="email_address" type="email" name="username" value="<%= locals.foundUser.username%>" hidden readonly>
+                <input type="submit" value="reset password">
+                <!-- <a href="/forgot">Password reset</a> -->
             </form>
-            <hr>
-            <small>
-                <form action="/forgot" method="post">
-                    <input id="email_address" type="email" name="username" value="<%= locals.foundUser.username%>" hidden readonly>
-                    <input type="submit" value="reset password">
-                    <!-- <a href="/forgot">Password reset</a> -->
-                </form>
-            </small>
-      <% } %>
+        </small>
+        <% } %>
     </div>
 </div>
 

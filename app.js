@@ -1,31 +1,22 @@
-const process = require("process")
+const process = require("process");
 if (process.env.NODE_ENV !== "production") {
-	require('dotenv').config();
+	require("dotenv").config();
 }
 
 const express = require("express");
 const app = express();
-const path = require('path');
+const path = require("path");
 const mongoose = require("mongoose");
 const expressSanitizer = require("express-sanitizer");
-const methodOverride = require('method-override');
-const session = require('express-session');
+const methodOverride = require("method-override");
+const session = require("express-session");
 const flash = require("connect-flash");
-const ExpressError = require('./utils/ExpressError');
+const ExpressError = require("./utils/ExpressError");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user");
-require('./initDB');
+require("./initDB");
 
-
-// Middleware for license will be here
-app.use((req, res, next)=> {
-	const expires = 1649018491130 + 1000 * 60 * 60 * 24 * 182;
-	if(Date.now() > expires){
-		return res.send("Your trial has ended. Contact declaration.co.za")
-	}
-	next()
-})
 const port = process.env.PORT || 4000;
 
 const dbUrl = "mongodb://localhost/reportMe";
@@ -45,9 +36,9 @@ const connectWithDB = () => {
 	mongoose.connect(dbUrl, DBoptions, (err, db) => {
 		console.log("Connecting to database using connect to connectWithDB function");
 		if (err) {
-			console.log("Error occured while connecting to DB")
+			console.log("Error occured while connecting to DB");
 			console.error(err.name);
-		}else {
+		} else {
 			console.log("database connection");
 			// console.log(db)
 		}
@@ -58,16 +49,14 @@ const connectWithDB = () => {
 
 connectWithDB();
 
-
-
 //Check for connection.db
-const conn1 = mongoose.connection
+const conn1 = mongoose.connection;
 
-conn1.on('connected', () => {
-	console.log("********On connected emmited********")
-})
+conn1.on("connected", () => {
+	console.log("********On connected emmited********");
+});
 
-conn1.once("open", function(e){
+conn1.once("open", function (e) {
 	console.log("******Connection Open Inside Once Open Listener*******");
 
 	const MongoStore = require("connect-mongo")(session);
@@ -119,39 +108,37 @@ conn1.once("open", function(e){
 	});
 });
 
-conn1.on("error", function(e){
-	console.log("******On Connection Error*******")
-	console.log(`Error occured when connectng to DB with name: ${e.name} and message: ${e.message}`)
+conn1.on("error", function (e) {
+	console.log("******On Connection Error*******");
+	console.log(`Error occured when connectng to DB with name: ${e.name} and message: ${e.message}`);
 	connectWithDB();
-})
+});
 
-conn1.on("disconnected", function(){
-	console.log("*******Connection disconnected******")
-})
+conn1.on("disconnected", function () {
+	console.log("*******Connection disconnected******");
+});
 
-conn1.on("reconnected", function(){
-	console.log("*******Reconnected after losing connection DB******")
-})
+conn1.on("reconnected", function () {
+	console.log("*******Reconnected after losing connection DB******");
+});
 
-conn1.on("reconnectFailed", function(){
-	console.log("*******Reconnecting to DB failed******")
-})
+conn1.on("reconnectFailed", function () {
+	console.log("*******Reconnecting to DB failed******");
+});
 
-conn1.on("close", function(){
-	console.log("*******Connection successfuly closed******")
-})
+conn1.on("close", function () {
+	console.log("*******Connection successfuly closed******");
+});
 
 process.on("SIGINT", async () => {
-	await conn1.close()
-	process.exit(0)
-})
+	await conn1.close();
+	process.exit(0);
+});
 
-module.exports.dbUrl = dbUrl
-module.exports.connection = conn1
-module.exports.app = app
+module.exports.dbUrl = dbUrl;
+module.exports.connection = conn1;
+module.exports.app = app;
 //**************************Database Setup End****************************************
-
-
 
 const redPanelsRoutes = require("./routes/redPanels");
 const newRedPanelsRoutes = require("./routes/newRed");
@@ -170,21 +157,19 @@ const shiftsRoutes = require("./routes/shift");
 const productionCalendarRoutes = require("./routes/productionCalendar");
 const resourceAllocationRoutes = require("./routes/resourceAllocation");
 
-
 // Parse application/x-www-form-urlencoded
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({ extended: true }));
 
 // Parse application/json
-app.use(express.json()) 
+app.use(express.json());
 
 // app.use(express.static("public"))
-app.use(express.static(path.join(__dirname, "public")))
+app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, '/views'))
+app.set("views", path.join(__dirname, "/views"));
 
 app.use(expressSanitizer());
 app.use(methodOverride("_method"));
-
 
 app.locals.moment = require("moment");
 
@@ -218,10 +203,8 @@ conn1.once("open", () => {
 		}
 	}
 	// console.log(app._router.stack);
-	console.log('**********After removing all routers**************')
+	console.log("**********After removing all routers**************");
 	console.log(app._router.stack.length);
-
-	
 
 	// console.log(app._router.stack[11].handle);
 	// console.log(app._router.stack[12].handle);
@@ -242,7 +225,6 @@ conn1.once("open", () => {
 	app.use(shiftsRoutes);
 	app.use(productionCalendarRoutes);
 	app.use(resourceAllocationRoutes);
-
 
 	// Moving an item from index to another index
 	function arraymove(arr, fromIndex, toIndex) {
@@ -287,14 +269,12 @@ conn1.once("open", () => {
 	// console.log(app._router.stack[12]);
 	// console.log(app._router.stack[11].handle);
 	// console.log(app._router.stack[12].handle);
-})
-
-
-app.all("*", (req, res, next) => {
-	console.log("Resource not found")
-	return next(new ExpressError("Page requested does not exist. Check URL and try again", 404))
 });
 
+app.all("*", (req, res, next) => {
+	console.log("Resource not found");
+	return next(new ExpressError("Page requested does not exist. Check URL and try again", 404));
+});
 
 const lastMiddlware = (err, req, res, next) => {
 	console.log("Error handling middleware at app.js:278");
@@ -312,7 +292,6 @@ const lastMiddlware = (err, req, res, next) => {
 	res.status(statusCode).render("error", { title: "title", err });
 };
 
-app.use(lastMiddlware)
-
+app.use(lastMiddlware);
 
 app.listen(port, () => console.log(`ReportMe server is running on port ${port}`));

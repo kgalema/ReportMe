@@ -1,130 +1,122 @@
 <%- include("../partials/header") %>
 
 <div class="main-body">
-    <div class="element">
-        <div class="element2">
-            <div id="second-element2" class="element2">
-                <div class="heading">
-                    <h2>Production Report</h2>
+  <div class="element">
+    <div class="element2">
+      <div id="second-element2" class="element2">
+        <div class="heading">
+          <h2>Production Report</h2>
 
-                    <p style="display: none;" class="<% if (title === 'production-dash') { %> selected  <% } %>">
-                        Ramushu Ronny
-                    </p>
-
-
-                    <div id="fromDB">
-                        <p>
-                            <%= sections %>
-                            <% const MOs = [] %>
-                            <% sections.forEach(section => { %>
-                                <% if (MOs.indexOf(section.mineOverseer.name) === -1) { %>
-                                    <% MOs.push(section.mineOverseer.name) %> 
-                                <% } %>
-                            <% }) %>
-                        </p>
-                        <p id="shifts">
-                            <%= JSON.stringify(shifts) %>
-                        </p>
-                    </div>
-
-                    <div id="DB" style="display: none;">
-                        <%= JSON.stringify(production) %>
-                    </div>
-
-                    <div id="DBS" style="display: none;">
-                        <%= JSON.stringify(sections) %>
-                    </div>
-
-                    <div id="filterDiv" class="availableFilters">
-                        <label for="dateFilterStart">From:</label>
-                        <input type="date" id="dateFilterStart" data-period="start" oninput="dateChange(this)">
-                        <label for="dateFilter">To:</label>
-                        <input type="date" id="dateFilter" data-period="end" oninput="dateChange(this)">
-                        <select name="" id="moFilter" oninput="dateChange(this)">
-                            <option value="allMO" selected>--MO--</option>
-                            <% MOs.forEach(mo => { %>
-                                <option value="<%= mo %>"><%= mo %></option>
-                            <% }) %>
-                        </select>
-                        <select name="" id="sectionFilter" oninput="dateChange(this)" disabled>
-                            <option value="allSections" selected>--section--</option>
-                            <% locals.sections.forEach(section => { %>
-                                <option value="<%= section.name %>"><%= section.name %></option>
-                            <% }) %>
-                        </select>
-                    </div>
-
-                    <div class="myBtnContainer" id="myBtnContainer">
-<<<<<<< HEAD
-                        <button class="btn" id="morning" onclick="filter('day')">Morning Shift</button>
-                        <button class="btn" onclick="filter('night')">Night Shift</button>
-                        <button class="btn" onclick="filter('blast-progs')">Progressive Blast</button>
-                        <button class="btn" id="chartData" onclick="filter('charts')">Graphs</button>
-=======
-                        <% shifts.forEach(shift => { %>
-                            <button class="btn" id="<%= shift.name.toLowerCase() %>" onclick="filter('<%= shift.name.toLowerCase() %>')"><%= shift.name %></button>
-                        <% }) %>
-                        <button class="btn" id="blast-progs" onclick="filter('blast-progs')">Progressive Blast</button>
-                        <button class="btn" id="charts" onclick="filter('charts')">Graphs</button>
->>>>>>> mash
-                    </div>
-                </div>
+          <p style="display: none;" class="<% if (title === 'production-dash') { %> selected  <% } %>">
+            Ramushu Ronny
+          </p>
 
 
-                <!-- This div is the container for day, afternoon and night shift report summaries -->
-                <div id="tables"></div>
+          <div id="fromDB">
+            <p>
+              <%= sections %>
+              <% const MOs = [] %>
+              <% sections.forEach(section => { %>
+              <% if (MOs.indexOf(section.mineOverseer.name) === -1) { %>
+              <% MOs.push(section.mineOverseer.name) %>
+              <% } %>
+              <% }) %>
+            </p>
+            <p id="shifts">
+              <%= JSON.stringify(shifts) %>
+            </p>
+          </div>
 
-                <!-- This section is a container for progressive blast table -->
-                <section id="blast-prog" class="filterDiv blast-progs">
-                    <div style="display: flex; align-items: center; justify-content: center;">
-                        <div  class="availableFilters">
-                            <label for="startDate">From:</label>
-                            <input type="date" id="startDate" oninput="blastFilter(event)">
-                            <label for="endDate">To:</label>
-                            <input type="date" id="endDate" oninput="blastFilter(event)">
-                        </div>
-                    </div>
-                    <br>
+          <div id="DB" style="display: none;">
+            <%= JSON.stringify(production) %>
+          </div>
 
-                    <table id="progressives"></table>
-                </section>
+          <div id="DBS" style="display: none;">
+            <%= JSON.stringify(sections) %>
+          </div>
 
+          <div id="filterDiv" class="availableFilters">
+            <label for="dateFilterStart">From:</label>
+            <input type="date" id="dateFilterStart" data-period="start" oninput="dateChange(this)">
+            <label for="dateFilter">To:</label>
+            <input type="date" id="dateFilter" data-period="end" oninput="dateChange(this)">
+            <select name="" id="moFilter" oninput="dateChange(this)">
+              <option value="allMO" selected>--MO--</option>
+              <% MOs.forEach(mo => { %>
+              <option value="<%= mo %>"><%= mo %></option>
+              <% }) %>
+            </select>
+            <select name="" id="sectionFilter" oninput="dateChange(this)" disabled>
+              <option value="allSections" selected>--section--</option>
+              <% locals.sections.forEach(section => { %>
+              <option value="<%= section.name %>"><%= section.name %></option>
+              <% }) %>
+            </select>
+          </div>
 
-                    <!-- This section is a container for charts (progressive and daily production) -->
-                <section id="prod_charts" class="prod_charts filterDiv">
-                    <div style="display: flex; align-items: center; justify-content: center; margin-top: 15px;">
-                        <div>
-                            <label for="startdate">From:</label>
-                            <input type="date" onchange="drawProductionGraph()" id="startdate" value="">
-                            <label for="enddate">To:</label>
-                            <input type="date" onchange="drawProductionGraph()" id="enddate" value="">
-                            <label for="section">Section:</label>
-                            <select name="" id="selectedSection" onchange="drawProductionGraph()">
-                                <% locals.sections.forEach(el => { %>
-                                    <option value=<%=el.name%>><%=el.name%></option>
-                                <% }) %>
-                            </select>
-                        </div>
-                    </div>
-                    <div id="prod-graphs">
-                        <canvas id="draw"></canvas>
-                        <hr>
-                        <canvas id="drawProgressive"></canvas>
-                    </div>
-                </section>
-            </div>
-
-            <% if (locals.currentUser) { %>
-                <% const occ = ["Miner", "Supervisor(Shift)", "Mine_Overseer"]%>
-                <% if (locals.currentUser.isAdmin ||  occ.indexOf(locals.currentUser.occupation) > -1) { %>
-                    <hr>
-                    <a class="button" href="sections/sectionId/production/new">Add New Production Report</a>
-                <% } %>
-            <% } %>
+          <div class="myBtnContainer" id="myBtnContainer">
+            <% shifts.forEach(shift => { %>
+            <button class="btn" id="<%= shift.name.toLowerCase() %>" onclick="filter('<%= shift.name.toLowerCase() %>')"><%= shift.name %></button>
+            <% }) %>
+            <button class="btn" id="blast-progs" onclick="filter('blast-progs')">Progressive Blast</button>
+            <button class="btn" id="charts" onclick="filter('charts')">Graphs</button>
+          </div>
         </div>
-    </div>
-</div>
 
+
+        <!-- This div is the container for day, afternoon and night shift report summaries -->
+        <div id="tables"></div>
+
+        <!-- This section is a container for progressive blast table -->
+        <section id="blast-prog" class="filterDiv blast-progs">
+          <div style="display: flex; align-items: center; justify-content: center;">
+            <div class="availableFilters">
+              <label for="startDate">From:</label>
+              <input type="date" id="startDate" oninput="blastFilter(event)">
+              <label for="endDate">To:</label>
+              <input type="date" id="endDate" oninput="blastFilter(event)">
+            </div>
+          </div>
+          <br>
+
+          <table id="progressives"></table>
+        </section>
+
+
+        <!-- This section is a container for charts (progressive and daily production) -->
+        <section id="prod_charts" class="prod_charts filterDiv">
+          <div style="display: flex; align-items: center; justify-content: center; margin-top: 15px;">
+            <div>
+              <label for="startdate">From:</label>
+              <input type="date" onchange="drawProductionGraph()" id="startdate" value="">
+              <label for="enddate">To:</label>
+              <input type="date" onchange="drawProductionGraph()" id="enddate" value="">
+              <label for="section">Section:</label>
+              <select name="" id="selectedSection" onchange="drawProductionGraph()">
+                <% locals.sections.forEach(el => { %>
+                <option value=<%=el.name%>><%=el.name%></option>
+                <% }) %>
+              </select>
+            </div>
+          </div>
+          <div id="prod-graphs">
+            <canvas id="draw"></canvas>
+            <hr>
+            <canvas id="drawProgressive"></canvas>
+          </div>
+        </section>
+      </div>
+
+      <% if (locals.currentUser) { %>
+      <% const occ = ["Miner", "Supervisor(Shift)", "Mine_Overseer"]%>
+      <% if (locals.currentUser.isAdmin ||  occ.indexOf(locals.currentUser.occupation) > -1) { %>
+      <hr>
+      <a class="button" href="sections/sectionId/production/new">Add New Production Report</a>
+      <% } %>
+      <% } %>
+    </div>
+  </div>
+</div>
 
 
 

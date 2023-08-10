@@ -42,9 +42,7 @@ const connectWithDB = () => {
 
 connectWithDB();
 
-//Check for connection.db
 const conn1 = mongoose.connection;
-// console.log(conn1)
 
 conn1.on("connected", () => {
 	console.log("On connected emmited");
@@ -194,7 +192,6 @@ conn1.once("open", () => {
 			i--;
 		}
 	}
-	// console.log(app._router.stack);
 	console.log("After removing all routers");
 	console.log(app._router.stack.length);
 
@@ -247,21 +244,14 @@ app.all("*", (req, res, next) => {
 	return next(new ExpressError("Page requested does not exist. Check URL and try again", 404));
 });
 
-app.all("*", (req, res, next) => {
-	console.log("Resource not found");
-	return next(new ExpressError("Page requested does not exist. Check URL and try again", 404));
-});
-
 const lastMiddlware = (err, req, res, next) => {
 	console.log("Error handling middleware at app.js:278");
 	const { statusCode = 500 } = err;
 	console.log("Last error handling middleware hit");
 	if (err.name === "MongoServerSelectionError") {
-		// return res.send("Database is down. Contact admin");
 		return res.render("welcomePage");
 	}
 	if (err.name === "MongooseServerSelectionError") {
-		// return res.send("Database is down. Contact admin");
 		return res.render("welcomePage");
 	}
 	if (!err.message) err.message = "Oh No, Something Went Wrong!";

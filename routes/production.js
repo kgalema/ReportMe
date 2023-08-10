@@ -39,6 +39,7 @@ const collator = new Intl.Collator(undefined, {
 
 // 1. Landing Route
 router.get("/", function (req, res) {
+	console.log("Production route");
 	Production.find({})
 		.populate("section.id")
 		.exec(function (err, productions) {

@@ -19,7 +19,7 @@ require("./initDB");
 
 const port = process.env.PORT || 4000;
 
-const dbUrl = "mongodb://localhost/reportMe";
+const dbUrl = "mongodb://127.0.0.1/reportMe";
 // const dbUrl = process.env.DB_URL
 const DBoptions = {
 	useNewUrlParser: true,

@@ -1,13 +1,13 @@
-const express = require("express")
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
 const mongoose = require("mongoose");
-const Section = require("../models/section")
-const Production = require("../models/production")
-const TMM = require("../models/tmms")
-const User = require("../models/user")
-const Shift = require("../models/shift")
-const ProductionCalendar = require("../models/productionCalendar")
-const { isLoggedIn, isProductionAuthor, isSectionSelected, isAdmin, isConnectionOpen } = require("../middleware")
+const Section = require("../models/section");
+const Production = require("../models/production");
+const TMM = require("../models/tmms");
+const User = require("../models/user");
+const Shift = require("../models/shift");
+const ProductionCalendar = require("../models/productionCalendar");
+const { isLoggedIn, isProductionAuthor, isSectionSelected, isAdmin, isConnectionOpen } = require("../middleware");
 
 const GridFsStorage = require("multer-gridfs-storage");
 const multer = require("multer");
@@ -20,18 +20,17 @@ const storage = new GridFsStorage({
 	url: exported.dbUrl,
 	options: { useNewUrlParser: true, useUnifiedTopology: true },
 	file: (req, file) => {
-			const filename = "declaration"+ req.query.code + path.extname(file.originalname);
-			const fileInfo = {
-					filename: filename,
-					bucketName: "declarations",
-				};
+		const filename = "declaration" + req.query.code + path.extname(file.originalname);
+		const fileInfo = {
+			filename: filename,
+			bucketName: "declarations",
+		};
 
-			return fileInfo
-	}
-})
+		return fileInfo;
+	},
+});
 
 const upload = multer({ storage });
-
 
 const collator = new Intl.Collator(undefined, {
 	numeric: true,
@@ -40,9 +39,24 @@ const collator = new Intl.Collator(undefined, {
 
 // 1. Landing Route
 router.get("/", function (req, res) {
-	res.redirect("/production")
-})
+	Production.find({})
+		.populate("section.id")
+		.exec(function (err, productions) {
+			if (err || !productions) {
+				req.flash("error", "Oops! Error occured while fetching production reports");
+				return res.redirect("back");
+			}
 
+			Shift.find({}, { isBlasting: 1, name: 1, start: 1 }, function (err, shifts) {
+				if (err || !shifts) {
+					req.flash("error", "Error occured while validating shifts");
+					return res.redirect("back");
+				}
+
+				res.render("index", { productions, shifts });
+			});
+		});
+});
 
 // 1. ***Index route: Shows you all captured reports***
 router.get("/production", isConnectionOpen, function (req, res) {
@@ -51,13 +65,13 @@ router.get("/production", isConnectionOpen, function (req, res) {
 			req.flash("error", "Oops! Error occured while fetching production reports");
 			return res.redirect("back");
 		}
-		Section.find({},  function(err, sections){
+		Section.find({}, function (err, sections) {
 			if (err || !sections) {
 				req.flash("error", "Error occured while fetching sections");
 				return res.redirect("back");
 			}
-			Shift.find({}, {isBlasting: 1, name: 1, start: 1}, function(err, shifts){
-				if(err || !shifts){
+			Shift.find({}, { isBlasting: 1, name: 1, start: 1 }, function (err, shifts) {
+				if (err || !shifts) {
 					req.flash("error", "Error occured while validating shifts");
 					return res.redirect("back");
 				}
@@ -65,8 +79,8 @@ router.get("/production", isConnectionOpen, function (req, res) {
 					return collator.compare(a.section.name, b.section.name);
 				});
 				res.render("production/index", { production: sortedProductions, shifts, sections, title: "production-dash" });
-			})
-		})
+			});
+		});
 	});
 });
 
@@ -80,8 +94,6 @@ router.get("/api/production", isConnectionOpen, function (req, res) {
 		}
 	});
 });
-
-
 
 // 2. ***New route: Renders production report form***
 router.get("/sections/:id/production/new", isConnectionOpen, isLoggedIn, isSectionSelected, function (req, res) {
@@ -103,41 +115,42 @@ router.get("/sections/:id/production/new", isConnectionOpen, isLoggedIn, isSecti
 			const sorted = foundTMMs.sort(function (a, b) {
 				return collator.compare(a.name, b.name);
 			});
-			const drillRigs = sorted.filter((dR) => dR.category === "drillRigs");
-			const LHDs = sorted.filter((LHD) => LHD.category === "LHDs");
-			const bolters = sorted.filter((LHD) => LHD.category === "bolters");
-			ProductionCalendar.find({}, {date: 1, _id: 0}, function(err, foundDates){
-				if(err || !foundDates){
-					req.flash("error", "Error while retrieving production days")
-					return res.redirect("/production")
+			const drillRigs = sorted.filter(dR => dR.category === "drillRigs");
+			const LHDs = sorted.filter(LHD => LHD.category === "LHDs");
+			const bolters = sorted.filter(LHD => LHD.category === "bolters");
+			ProductionCalendar.find({}, { date: 1, _id: 0 }, function (err, foundDates) {
+				if (err || !foundDates) {
+					req.flash("error", "Error while retrieving production days");
+					return res.redirect("/production");
 				}
-				Shift.find({}, function(err, shifts){
-					if(err || !shifts){
+				Shift.find({}, function (err, shifts) {
+					if (err || !shifts) {
 						req.flash("error", "Error occured while retrieving shifts");
 						return res.redirect("/production");
 					}
-					const foundDates1 = foundDates.map(e => e.date)
-					const blasting = shifts.filter(s => s.isBlasting).map(arr => arr.name.toLowerCase()).reduce((a, b) => a + b,"")
+					const foundDates1 = foundDates.map(e => e.date);
+					const blasting = shifts
+						.filter(s => s.isBlasting)
+						.map(arr => arr.name.toLowerCase())
+						.reduce((a, b) => a + b, "");
 
 					Production.find({ "section.name": foundSection.name, "general.shift": blasting, "blast.isMeasured": false }, { blast: 1, "general.shiftStart": 1 }, function (err, productionFound) {
 						const panelsAdvanced = [];
-						const panelsAdvancedDate = []
-						productionFound.forEach((e) => {
-							panelsAdvancedDate.push(e.general[0].shiftStart)
-							e.blast.forEach((b) => {
+						const panelsAdvancedDate = [];
+						productionFound.forEach(e => {
+							panelsAdvancedDate.push(e.general[0].shiftStart);
+							e.blast.forEach(b => {
 								b.shiftStart = e.general[0].shiftStart;
 								panelsAdvanced.push(b);
 							});
 						});
 						res.render("production/new", { panelsAdvanced, panelsAdvancedDate, shifts, foundDates1, section: foundSection, drillRigs, LHDs, bolters, title: "production-dash" });
 					});
-						
-				})
+				});
 			});
 		});
 	});
 });
-
 
 // 3. Create route - post the information into the database
 router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (req, res) {
@@ -155,7 +168,7 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 		req.body.production.uniqueCode = uniqueCode;
 
 		if (req.body.production.blast && req.body.production.blast.length > 0) {
-			req.body.production.blast.forEach((b) => {
+			req.body.production.blast.forEach(b => {
 				if (b.length == 0) {
 					b.isMeasured = true;
 					b.isCleaned = true;
@@ -178,8 +191,6 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 				req.body.production.general[0].shiftStart = req.body.production.created;
 			}
 
-
-			
 			Production.create(req.body.production, function (err, foundProduction) {
 				if (err || !foundProduction) {
 					req.flash("error", "Looks like you are trying to create duplicate report");
@@ -193,7 +204,7 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 					foundProduction.section.forecast = section.forecast;
 				}
 
-				foundProduction.blast.forEach((b) => {
+				foundProduction.blast.forEach(b => {
 					b.advance = section.plannedAdvance;
 				});
 				foundProduction.section.plannedAdvance = section.plannedAdvance;
@@ -206,7 +217,7 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 					}
 
 					if (req.body.advanceEdit) {
-						const ids = req.body.advanceEdit.blast.map((e) => e.id);
+						const ids = req.body.advanceEdit.blast.map(e => e.id);
 						const arr = req.body.advanceEdit.blast;
 						Production.find({ "section.name": section.name, "blast._id": { $in: ids } }, function (err, foundBlast) {
 							if (err || !foundBlast) {
@@ -239,9 +250,6 @@ router.post("/sections/:id/production", isConnectionOpen, isLoggedIn, function (
 	});
 });
 
-
-
-
 // 4. Show route: Shows info about 1 specific production report
 router.get("/sections/:id/production/:production_id", isConnectionOpen, function (req, res) {
 	Production.findById(req.params.production_id, function (err, foundProduction) {
@@ -256,20 +264,20 @@ router.get("/sections/:id/production/:production_id", isConnectionOpen, function
 			}
 			const dateCreated = foundProduction.general[0].shiftStart;
 			const time = foundProduction.createdAt;
-			const currentTime = new Date()
-			
+			const currentTime = new Date();
+
 			dateCreated.setHours(time.getHours());
 			dateCreated.setMinutes(time.getMinutes());
 			dateCreated.setSeconds(time.getSeconds());
-			
+
 			const expiredat1 = new Date(dateCreated);
 
 			const expiresAt = new Date(expiredat1.setHours(expiredat1.getHours() + 1));
 			let expired = false;
 			if (currentTime > expiresAt) {
-				expired = true
+				expired = true;
 			}
-			res.render("production/showProduction", {expired, reported: foundProduction, reportedUser: user, title: "production-dash" });
+			res.render("production/showProduction", { expired, reported: foundProduction, reportedUser: user, title: "production-dash" });
 		});
 	});
 });
@@ -280,7 +288,7 @@ router.get("/sections/:id/production/:production_id/edit", isConnectionOpen, isL
 		if (err || !foundProduction) {
 			req.flash("error", "Something went wrong with the database");
 			return res.redirect("/back");
-		} 
+		}
 		TMM.find({ category: { $in: ["LHDs", "drillRigs", "bolters"] } }, function (err, foundTMMs) {
 			if (err || !foundTMMs) {
 				req.flash("error", "Error occured while fetching TMMs");
@@ -294,19 +302,19 @@ router.get("/sections/:id/production/:production_id/edit", isConnectionOpen, isL
 			const sorted = foundTMMs.sort(function (a, b) {
 				return collator.compare(a.name, b.name);
 			});
-			const drillRigs = sorted.filter((dR) => dR.category === "drillRigs");
-			const LHDs = sorted.filter((LHD) => LHD.category === "LHDs");
-			const bolters = sorted.filter((LHD) => LHD.category === "bolters");
-			ProductionCalendar.find({}, {date: 1, _id: 0}, function(err, foundDates){
+			const drillRigs = sorted.filter(dR => dR.category === "drillRigs");
+			const LHDs = sorted.filter(LHD => LHD.category === "LHDs");
+			const bolters = sorted.filter(LHD => LHD.category === "bolters");
+			ProductionCalendar.find({}, { date: 1, _id: 0 }, function (err, foundDates) {
 				if (err || !foundDates) {
 					req.flash("error", "Error while retrieving production days");
 					return res.redirect("/production");
 				}
-				
-				const foundDates1 = foundDates.map((e) => e.date);
-				res.render("production/edit", { foundDates1, production: foundProduction, drillRigs, LHDs, bolters,title: "production-dash" });
-			})
-		})
+
+				const foundDates1 = foundDates.map(e => e.date);
+				res.render("production/edit", { foundDates1, production: foundProduction, drillRigs, LHDs, bolters, title: "production-dash" });
+			});
+		});
 	});
 });
 // 6. Update - takes info from edit form and PUTs it into existing data in the database
@@ -323,10 +331,10 @@ router.put("/sections/:id/production/:production_id", isConnectionOpen, isLogged
 
 // 7. Destroy - delete one specific production report
 router.delete("/sections/:id/production/:production_id", isConnectionOpen, isLoggedIn, isProductionAuthor, function (req, res) {
-	Production.findById(req.params.production_id, function(err, production){
-		if(err || !production){
-			req.flash("error", "Error ocured while validating production report")
-			req.redirect("/production")
+	Production.findById(req.params.production_id, function (err, production) {
+		if (err || !production) {
+			req.flash("error", "Error ocured while validating production report");
+			req.redirect("/production");
 		}
 		Production.findByIdAndRemove(req.params.production_id, function (err) {
 			if (err) {
@@ -334,43 +342,42 @@ router.delete("/sections/:id/production/:production_id", isConnectionOpen, isLog
 				return res.redirect("back");
 			}
 
-            if(production.declaration.isAttached){
-                const gfsR = new mongoose.mongo.GridFSBucket(req.DBconnection, { bucketName: "declarations" });
+			if (production.declaration.isAttached) {
+				const gfsR = new mongoose.mongo.GridFSBucket(req.DBconnection, { bucketName: "declarations" });
 
-                gfsR.delete(new mongoose.Types.ObjectId(production.declaration.id), function (err) {
-                    if (err) {
-                        req.flash("error", "Error occured while deleting declaration. Please let admin know of this error");
-                        return res.redirect("/production");
-                    }
-                    req.flash("success", "Successfully deleted production report");
-                    return res.redirect("/production");
-                })
-            }
+				gfsR.delete(new mongoose.Types.ObjectId(production.declaration.id), function (err) {
+					if (err) {
+						req.flash("error", "Error occured while deleting declaration. Please let admin know of this error");
+						return res.redirect("/production");
+					}
+					req.flash("success", "Successfully deleted production report");
+					return res.redirect("/production");
+				});
+			}
 
-            req.flash("success", "Successfully deleted production report");
-            res.redirect("/production");
+			req.flash("success", "Successfully deleted production report");
+			res.redirect("/production");
 		});
-	})
+	});
 });
-
 
 /*****************Routes For Declaration Uploads ****************/
 
 // 1. This route renders a new form for declaration upload
-router.get("/declaration/production/:production_id/new", isConnectionOpen, isLoggedIn, function(req, res){
-	Production.findById(req.params.production_id, function(err, production){
-		if(err || !production){
+router.get("/declaration/production/:production_id/new", isConnectionOpen, isLoggedIn, function (req, res) {
+	Production.findById(req.params.production_id, function (err, production) {
+		if (err || !production) {
 			req.flash("error", "An error occured while retrieving info about selected production report");
 			return req.redirect(`/production/${req.params.production_id}`);
 		}
-		res.render("production/declarations/new", {what: req.query.what, production, title: "production-dash"});
+		res.render("production/declarations/new", { what: req.query.what, production, title: "production-dash" });
 	});
-})
+});
 
 // 2. This route post and saves the uploaded declaration into the database
-router.post("/declaration/production/:production_id", isConnectionOpen, isLoggedIn, upload.single("page"), function(req, res){
-	Production.findById(req.params.production_id, function(err, production){
-		if(err || !production){
+router.post("/declaration/production/:production_id", isConnectionOpen, isLoggedIn, upload.single("page"), function (req, res) {
+	Production.findById(req.params.production_id, function (err, production) {
+		if (err || !production) {
 			req.flash("error", "An error occured while retrieving info about selected production report");
 			return res.redirect(`/production/${req.params.production_id}`);
 		}
@@ -380,13 +387,13 @@ router.post("/declaration/production/:production_id", isConnectionOpen, isLogged
 			id: req.file.id,
 			author: req.user.preferredName,
 			authorID: req.user._id,
-			date: new Date()
+			date: new Date(),
 		};
 
-		production.save(function(err, saved){
-			if(err || !saved){
-				req.flash("error", "Error occured while updating production report")
-				return res.redirect(req.headers.referer)
+		production.save(function (err, saved) {
+			if (err || !saved) {
+				req.flash("error", "Error occured while updating production report");
+				return res.redirect(req.headers.referer);
 			}
 			res.redirect(`/sections/${production.section.id}/production/${production._id}`);
 		});
@@ -394,9 +401,9 @@ router.post("/declaration/production/:production_id", isConnectionOpen, isLogged
 });
 
 // 3. Declaration Edit - This route edit existing declaration by removing old one and saving new one in the data base
-router.post("/declaration/production/:production_id/edit", isConnectionOpen, isLoggedIn, upload.single("page"), function(req, res){
-	Production.findById(req.params.production_id, function(err, production){
-		if(err || !production){
+router.post("/declaration/production/:production_id/edit", isConnectionOpen, isLoggedIn, upload.single("page"), function (req, res) {
+	Production.findById(req.params.production_id, function (err, production) {
+		if (err || !production) {
 			req.flash("error", "An error occured while retrieving info about selected production report");
 			return res.redirect(`/production/${req.params.production_id}`);
 		}
@@ -404,14 +411,14 @@ router.post("/declaration/production/:production_id/edit", isConnectionOpen, isL
 		const fileToDelete = production.declaration.id;
 		production.declaration.id = req.file.id;
 
-		production.save(function(err, saved){
-			if(err || !saved){
-				req.flash("error", "Error occured while updating file id in the production report")
+		production.save(function (err, saved) {
+			if (err || !saved) {
+				req.flash("error", "Error occured while updating file id in the production report");
 				return res.redirect(`/production/${req.params.production_id}`);
 			}
-			
-			const gfs = new mongoose.mongo.GridFSBucket( req.DBconnection, { bucketName: "declarations" });
-			
+
+			const gfs = new mongoose.mongo.GridFSBucket(req.DBconnection, { bucketName: "declarations" });
+
 			gfs.delete(new mongoose.Types.ObjectId(fileToDelete), function (err) {
 				if (err) {
 					req.flash("error", "Error occured while replacing existing declaration. Contact admin");
@@ -425,16 +432,16 @@ router.post("/declaration/production/:production_id/edit", isConnectionOpen, isL
 });
 
 // 4. Downloading declaration
-router.post("/declaration/production/:production_id/download", isConnectionOpen, upload.single("page"), function(req, res){
-	Production.findById(req.params.production_id, function(err, production){
-		if(err || !production){
+router.post("/declaration/production/:production_id/download", isConnectionOpen, upload.single("page"), function (req, res) {
+	Production.findById(req.params.production_id, function (err, production) {
+		if (err || !production) {
 			req.flash("error", "An error occured while retrieving info about selected production report");
 			return res.redirect(`/production/${req.params.production_id}`);
 		}
 		const fName = "declaration" + production.uniqueCode + ".pdf";
 		const gfsR = new mongoose.mongo.GridFSBucket(req.DBconnection, { bucketName: "declarations" });
 
-		gfsR.find({filename: fName}).toArray((err, file)=>{
+		gfsR.find({ filename: fName }).toArray((err, file) => {
 			if (err || !file[0]) {
 				req.flash("error", "Error occured while downloading file");
 				return res.redirect(req.headers.referer);
@@ -447,25 +454,21 @@ router.post("/declaration/production/:production_id/download", isConnectionOpen,
 
 			const readstream = gfsR.openDownloadStreamByName(file[0].filename);
 			readstream.pipe(res);
-		})
+		});
 	});
-})
-
+});
 
 // Seeding the data base
 // Non-blasting shifting
 router.get("/production/night/seed", isConnectionOpen, isAdmin, function (req, res) {
-
-	const date = new Date("2022-10-01T00:00:00.000Z")
-	const dates = []
-	const arrToInsert = []
+	const date = new Date("2023-04-01T00:00:00.000Z");
+	const dates = [];
+	const arrToInsert = [];
 
 	while (date <= new Date()) {
-		dates.push(date.toLocaleDateString())
+		dates.push(date.toLocaleDateString());
 		date.setDate(date.getDate() + 1);
 	}
-
-
 
 	dates.forEach(d => {
 		const production = {
@@ -529,34 +532,30 @@ router.get("/production/night/seed", isConnectionOpen, isAdmin, function (req, r
 			author: req.user._id,
 		};
 
-		arrToInsert.push(production)
-	})
+		arrToInsert.push(production);
+	});
 
-
-	Production.insertMany(arrToInsert, function(err, inserted){
-		if(err || !inserted){
-			console.log(err.message)
-			req.flash("error", "Error occured while inserting documents")
-			return res.redirect("/production")
+	Production.insertMany(arrToInsert, function (err, inserted) {
+		if (err || !inserted) {
+			console.log(err.message);
+			req.flash("error", "Error occured while inserting documents");
+			return res.redirect("/production");
 		}
-		console.log(inserted.length)
-		res.send("Successfully seeded database")
-	})
+		console.log(inserted.length);
+		res.send("Successfully seeded database");
+	});
 });
 
 // Blasting Shift
 router.get("/production/day/seed", isConnectionOpen, isAdmin, function (req, res) {
-
-	const date = new Date("2022-10-01T00:00:00.000Z")
-	const dates = []
-	const arrToInsert = []
+	const date = new Date("2023-04-01T00:00:00.000Z");
+	const dates = [];
+	const arrToInsert = [];
 
 	while (date <= new Date()) {
-		dates.push(date.toLocaleDateString())
+		dates.push(date.toLocaleDateString());
 		date.setDate(date.getDate() + 1);
 	}
-
-
 
 	dates.forEach(d => {
 		const production = {
@@ -570,7 +569,7 @@ router.get("/production/day/seed", isConnectionOpen, isAdmin, function (req, res
 			declaration: { isAttached: false },
 			general: [
 				{
-					shift: "night",
+					shift: "morning",
 					isProduction: false,
 					comments: "Hello there!",
 					shiftStart: d,
@@ -580,9 +579,30 @@ router.get("/production/day/seed", isConnectionOpen, isAdmin, function (req, res
 				{
 					isCleaned: true,
 					isMeasured: true,
-					panel: "NONE",
-					length: 0,
+					panel: "58E",
+					length: 8,
+					advance: 2.3,
+				},
+				{
+					isCleaned: true,
+					isMeasured: true,
+					panel: "58EH",
+					length: 6,
+					advance: 2.4,
+				},
+				{
+					isCleaned: true,
+					isMeasured: true,
+					panel: "59E",
+					length: 10,
 					advance: 2.7,
+				},
+				{
+					isCleaned: true,
+					isMeasured: true,
+					panel: "60E",
+					length: 8,
+					advance: 2.6,
 				},
 			],
 			clean: [
@@ -616,16 +636,36 @@ router.get("/production/day/seed", isConnectionOpen, isAdmin, function (req, res
 					buckets: 57,
 				},
 			],
-			uniqueCode: "SECTION_1" + d + "night",
+			uniqueCode: "SECTION_1" + d + "morning",
 			author: req.user._id,
 		};
 
-		arrToInsert.push(production)
-	})
+		arrToInsert.push(production);
+	});
 
-	res.send("Successfully seeded database for blasting shift")
+	Production.insertMany(arrToInsert, function (err, inserted) {
+		if (err || !inserted) {
+			console.log(err.message);
+			req.flash("error", "Error occured while inserting documents");
+			return res.redirect("/production");
+		}
+		console.log(inserted.length);
+		res.send("Successfully seeded database for blasting shift");
+	});
 });
 
+// Deleting all reports
+router.get("/production/ronny/delete", isConnectionOpen, isAdmin, function (req, res) {
+	Production.deleteMany({ "section.name": "SECTION_1" }, function (err) {
+		if (err) {
+			console.log(err.message);
+			req.flash("error", "Error occured while inserting documents");
+			return res.redirect("/production");
+		}
+		res.send("Successfully deleted many productions database");
+	});
 
+	// res.send("Successfully seeded database for blasting shift");
+});
 
 module.exports = router;

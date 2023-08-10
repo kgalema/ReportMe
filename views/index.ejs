@@ -1,0 +1,154 @@
+<%- include("./partials/header") %>
+
+<div class="index-parent1">
+  <div class="index-parent">
+    <div id="fromDB">
+      <p id="productions">
+        <%= JSON.stringify(productions) %>
+      </p>
+
+      <p id="shifts">
+        <%= JSON.stringify(shifts) %>
+      </p>
+
+      <p>
+        <% const MOs = [] %>
+        <% locals.productions.forEach(production => { %>
+        <% if (MOs.indexOf(production.section.id.mineOverseer.name) === -1) { %>
+        <% MOs.push(production.section.id.mineOverseer.name) %>
+        <% } %>
+        <% }) %>
+      </p>
+
+      <p>
+        <% const sections = [] %>
+        <% locals.productions.forEach(production => { %>
+        <% if (sections.indexOf(production.section.name) === -1) { %>
+        <% sections.push(production.section.name) %>
+        <% } %>
+        <% }) %>
+      </p>
+
+      <p>
+        <% const shifts1 = [] %>
+        <% locals.productions.forEach(production => { %>
+        <% if (shifts1.indexOf(production.general[0].shift) === -1) { %>
+        <% shifts1.push(production.general[0].shift) %>
+        <% } %>
+        <% }) %>
+      </p>
+    </div>
+
+
+    <div>
+      <a href="/production">HOME</a>
+    </div>
+
+    <div class="index-selectors">
+      <label for="chart-from">From:</label>
+      <input type="date" id="chart-from" data-period="start" oninput="chartRangeChange()">
+      <label for="chart-to">To:</label>
+      <input type="date" id="chart-to" data-period="end" oninput="chartRangeChange()">
+
+      <select name="" id="index-shift" oninput="chartRangeChange()">
+        <% shifts1.forEach(shift => { %>
+        <option value=<%= shift %>><%= shift.toUpperCase() %></option>
+        <% }) %>
+      </select>
+
+      <select name="" id="moFilter" oninput="chartRangeChange()">
+        <option value="allMO" selected>--all MOs--</option>
+        <% MOs.forEach(mo => { %>
+        <option value=<%= mo %>> <%= mo %> </option>
+        <% }) %>
+      </select>
+
+      <select name="" id="sectionFilter" oninput="chartRangeChange()">
+        <option value="allSections" selected>--all sections--</option>
+        <% sections.forEach(section => { %>
+        <option value=<%= section %>> <%= section %> </option>
+        <% }) %>
+      </select>
+    </div>
+
+
+
+    <div class="index-charts">
+      <div class="index-chart">
+        <div class="chart-header">
+          <h3>BLAST</h3>
+        </div>
+        <div class="chart-filters">
+          <input type="radio" checked name="blast" onclick="propertyChange(this)" id="blast-meter">
+          <label for="blast-meter">m</label>
+          <input type="radio" name="blast" onclick="propertyChange(this)" id="blast-meter-sqr">
+          <label for="blast-meter-sqr">m <sup>2</sup> </label>
+          <input type="radio" name="blast" onclick="propertyChange(this)" id="blast-panels">
+          <label for="blast-panels">panels</label>
+        </div>
+        <canvas id="blast"></canvas>
+      </div>
+      <div class="index-chart">
+        <div class="chart-header">
+          <h3>CLEAN</h3>
+        </div>
+        <div class="chart-filters">
+          <input type="radio" checked name="clean" onclick="propertyChange(this)" id="clean-meter">
+          <label for="clean-meter">m</label>
+          <input type="radio" name="clean" onclick="propertyChange(this)" id="clean-meter-sqr">
+          <label for="clean-meter-sqr">m <sup>2</sup> </label>
+          <input type="radio" name="clean" onclick="propertyChange(this)" id="clean-panels">
+          <label for="clean-panels">panels</label>
+        </div>
+        <canvas id="clean"></canvas>
+      </div>
+      <div class="index-chart">
+        <div class="chart-header">
+          <h3>SUPPORT</h3>
+        </div>
+        <div class="chart-filters">
+          <input type="radio" checked name="support" id="support-meter">
+          <label for="support-meter">m</label>
+          <input type="radio" name="support" id="support-panels">
+          <label for="support-panels">panels</label>
+          <input type="radio" name="support" id="support-bolts">
+          <label for="support-bolts">roofbolts</label>
+          <input type="radio" name="support" id="support-anchors">
+          <label for="support-anchors">anchors</label>
+        </div>
+        <canvas id="support"></canvas>
+      </div>
+      <div class="index-chart">
+        <div class="chart-header">
+          <h3>DRILL</h3>
+        </div>
+        <div class="chart-filters">
+          <input type="radio" checked name="drill" id="drill-meter">
+          <label for="drill-meter">m</label>
+          <input type="radio" name="drill" id="drill-panels">
+          <label for="drill-panels">panels</label>
+          <input type="radio" name="drill" id="drill-holes">
+          <label for="drill-holes">shot holes</label>
+        </div>
+        <canvas id="drill"></canvas>
+      </div>
+      <div class="index-chart">
+        <div class="chart-header">
+          <h3>PREPARED</h3>
+        </div>
+        <div class="chart-filters">
+          <input type="radio" checked name="prepared" id="prepared-meter">
+          <label for="prepared-meter">m</label>
+          <input type="radio" name="prepared" id="prepared-panels">
+          <label for="prepared-panels">panels</label>
+        </div>
+        <canvas id="prepared"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/home.js">
+</script>
+
+<%- include("./partials/footer") %>
